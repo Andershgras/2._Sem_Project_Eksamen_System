@@ -1,3 +1,5 @@
+using _2._Sem_Project_Eksamen_System.Models;
+
 namespace _2._Sem_Project_Eksamen_System
 {
     public class Program
@@ -8,6 +10,8 @@ namespace _2._Sem_Project_Eksamen_System
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddDbContext<EksamensDBContext>();
+
 
             var app = builder.Build();
 

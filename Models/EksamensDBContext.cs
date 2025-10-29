@@ -4,17 +4,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.Models;
 
-public partial class MovieDBContext : DbContext
+public partial class EksamensDBContext : DbContext
 {
-    public MovieDBContext()
+    string? connectionString = null;
+    public EksamensDBContext(IConfiguration conf)
     {
+        connectionString = conf.GetConnectionString("EksamensDBCornection");
     }
 
-    public MovieDBContext(DbContextOptions<MovieDBContext> options)
-        : base(options)
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
+        //options.UseSqlServer (@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=RegistrationDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        //Finder appsettings.json connection string
+        options.UseSqlServer(connectionString);
     }
-
+  
     public virtual DbSet<EksaminationsUndervise> EksaminationsUndervises { get; set; }
 
     public virtual DbSet<Elever> Elevers { get; set; }
@@ -31,9 +35,7 @@ public partial class MovieDBContext : DbContext
 
     public virtual DbSet<Underviser> Undervisers { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=mssql11.unoeuro.com;Initial Catalog=andershgras_dk_db_eksamenproject;User ID=andershgras_dk;Password=dBFybtpRwacg3rG9zhm5;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
