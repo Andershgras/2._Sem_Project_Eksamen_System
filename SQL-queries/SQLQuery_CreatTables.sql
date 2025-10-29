@@ -1,4 +1,6 @@
-﻿-- ================================================
+﻿-- De nederstående Queries er skrevet ved hjælp af ChatGPT
+
+-- ================================================
 -- Database: Exam Management System
 -- Safe Version: Cascades only on junction tables
 -- ================================================
