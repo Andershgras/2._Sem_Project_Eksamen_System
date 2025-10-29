@@ -1,22 +1,111 @@
-html {
-  font-size: 14px;
+/* Basic layout */
+.app-shell {
+    min-height: 100vh;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    min-width: 220px;
+    max-width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    .sidebar .sidebar-brand {
+        background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent);
+    }
+
+.sidebar-menu .nav-link {
+    padding: 12px 10px;
+    border-radius: 6px;
+    transition: background .12s;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+    .sidebar-menu .nav-link:hover,
+    .sidebar-menu .nav-link.active {
+        background: rgba(255,255,255,0.06);
+    }
+
+/* Collapsed sidebar (mobile) */
+.app-shell.sidebar-collapsed .sidebar {
+    transform: translateX(-100%);
+    position: absolute;
+    z-index: 1030;
 }
 
-body {
-  margin-bottom: 60px;
+/* Main content */
+.main-content {
+    background: #f7f8fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+    background: white;
+}
+
+/* Exam list styling that matches prototype */
+.exam-list {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.exam-card {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+    border: 1px solid rgba(16,24,40,0.04);
+}
+
+.exam-info {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex: 1;
+}
+
+.exam-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.exam-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.exam-sub {
+    color: #6b7280; /* muted */
+    font-size: 0.95rem;
+}
+
+/* Action button */
+.btn-edit {
+    min-width: 88px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1030;
+    }
+
+    .exam-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
