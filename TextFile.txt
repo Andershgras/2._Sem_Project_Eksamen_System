@@ -3,4 +3,12 @@
 Database -> Code Script:
 
 Template for Scaffold-DbContext command:
-Scaffold-DbContext "<database connection string>" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Models -Context MovieDBContext -DataAnnotations -ForceCornectionstring:Data Source=mssql11.unoeuro.com;Initial Catalog=andershgras_dk_db_eksamenproject;User ID=andershgras_dk;Password=dBFybtpRwacg3rG9zhm5;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=FalseTemplate filled with connection string:Scaffold-DbContext "Data Source=mssql11.unoeuro.com;Initial Catalog=andershgras_dk_db_eksamenproject;User ID=andershgras_dk;Password=dBFybtpRwacg3rG9zhm5;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Models -Context MovieDBContext -DataAnnotations -Forceis placed in Package Manager Console in Visual Studio.
+Scaffold-DbContext "<database connection string>" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Models -Context MovieDBContext -DataAnnotations -Force
+
+Cornectionstring:
+Data Source=mssql11.unoeuro.com;Initial Catalog=andershgras_dk_db_eksamenproject;User ID=andershgras_dk;Password=dBFybtpRwacg3rG9zhm5;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False
+
+Template filled with connection string:
+Scaffold-DbContext "Data Source=mssql11.unoeuro.com;Initial Catalog=andershgras_dk_db_eksamenproject;User ID=andershgras_dk;Password=dBFybtpRwacg3rG9zhm5;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -ContextDir Models -Context MovieDBContext -DataAnnotations -Force
+
+is placed in Package Manager Console in Visual Studio.
