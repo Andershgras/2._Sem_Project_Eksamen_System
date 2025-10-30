@@ -29,7 +29,15 @@
         /// <param name="id"></param>
         /// <returns></returns>
         T? GetItemById(int id);
-        void DeleteItem(T item);
+        /// <summary>
+        /// Sletter et item af typen T.
+        /// </summary>
+        /// <remarks>Brug GetItemById method til at finde det specifikke object</remarks>
+        void DeleteItem(int id);
+        /// <summary>
+        /// Opdaterer et item af typen T.
+        /// </summary>
+        /// <param name="item"></param>
         void UpdateItem(T item);
         #endregion
     }
