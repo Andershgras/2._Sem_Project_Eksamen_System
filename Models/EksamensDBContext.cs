@@ -31,7 +31,7 @@ public partial class EksamensDBContext : DbContext
 
     public virtual DbSet<Lokale> Lokales { get; set; }
 
-    public virtual DbSet<Movie> Movies { get; set; }
+   
 
     public virtual DbSet<Underviser> Undervisers { get; set; }
 
@@ -142,12 +142,7 @@ public partial class EksamensDBContext : DbContext
             entity.HasKey(e => e.LokaleId).HasName("PK__Lokale__1C7789B24F589146");
         });
 
-        modelBuilder.Entity<Movie>(entity =>
-        {
-            entity.HasKey(e => e.MovieId).HasName("PK__Movies__4BD2943AAF2324FA");
 
-            entity.Property(e => e.MovieId).ValueGeneratedNever();
-        });
 
         modelBuilder.Entity<Underviser>(entity =>
         {
