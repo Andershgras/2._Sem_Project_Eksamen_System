@@ -1,111 +1,445 @@
-/* Basic layout */
+/* 
+   Zealand-inspired enhanced stylesheet
+   - Improved color system and consistency
+   - Better responsive behavior
+   - Enhanced accessibility
+   - Maintained all existing functionality
+*/
+
+/* ===== COLOR SYSTEM ===== */
+:root {
+    /* Primary Zealand colors */
+    --zealand-blue: #002b45;
+    --zealand-gold: #f4b942;
+    --zealand-gold-light: #f8d48a;
+    --zealand-gold-dark: #d9a339;
+    /* Neutral colors */
+    --zealand-bg: #f7f9fb;
+    --text-primary: #222;
+    --text-secondary: #6b6f76;
+    --nav-bg: #ffffff;
+    --nav-text: #23323f;
+    /* Semantic colors */
+    --border-light: #e6eef5;
+    --shadow-light: rgba(2, 16, 28, 0.04);
+    --overlay: rgba(0, 0, 0, 0.5);
+    /* Spacing system */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    /* Transitions */
+    --transition-fast: 0.14s ease;
+    --transition-normal: 0.22s ease;
+    --transition-slow: 0.3s ease;
+}
+
+/* ===== BASE STYLES ===== */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--zealand-bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== APP SHELL LAYOUT ===== */
 .app-shell {
+    display: flex;
     min-height: 100vh;
+    align-items: stretch;
+    position: relative;
 }
 
-/* Sidebar */
+/* ===== SIDEBAR STYLES ===== */
 .sidebar {
-    width: 260px;
-    min-width: 220px;
-    max-width: 300px;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1000;
+}
+
+/* Gold flag accent */
+.sidebar-flag {
+    width: 8px;
+    background: var(--zealand-gold);
+    border-right: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+/* Sidebar content area */
+.sidebar-content {
+    width: 240px;
+    background: var(--nav-bg);
+    padding: var(--space-lg) var(--space-md);
     display: flex;
     flex-direction: column;
+    gap: var(--space-sm);
+    border-right: 1px solid var(--border-light);
+    box-shadow: 1px 0 2px var(--shadow-light);
+    transition: transform var(--transition-normal);
 }
 
-    .sidebar .sidebar-brand {
-        background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent);
-    }
-
-.sidebar-menu .nav-link {
-    padding: 12px 10px;
-    border-radius: 6px;
-    transition: background .12s;
+/* ===== BRAND STYLES ===== */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: var(--space-sm) var(--space-xs);
+    margin-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--space-md);
 }
 
-    .sidebar-menu .nav-link:hover,
-    .sidebar-menu .nav-link.active {
-        background: rgba(255,255,255,0.06);
-    }
-
-/* Collapsed sidebar (mobile) */
-.app-shell.sidebar-collapsed .sidebar {
-    transform: translateX(-100%);
-    position: absolute;
-    z-index: 1030;
+.brand-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-/* Main content */
-.main-content {
-    background: #f7f8fa;
+.brand-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--zealand-blue);
+    letter-spacing: -0.01em;
+}
+
+/* ===== NAVIGATION STYLES ===== */
+.nav-list {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-}
-
-/* Header */
-.app-header {
-    background: white;
-}
-
-/* Exam list styling that matches prototype */
-.exam-list {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.exam-card {
-    background: white;
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 2px rgba(16,24,40,0.04);
-    border: 1px solid rgba(16,24,40,0.04);
-}
-
-.exam-info {
-    display: flex;
-    gap: 16px;
-    align-items: center;
+    gap: var(--space-xs);
+    margin-top: var(--space-sm);
     flex: 1;
 }
 
-.exam-meta {
+/* Base nav item styles */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    color: var(--nav-text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+}
+
+    /* Default subtle hover state */
+    .nav-item:hover,
+    .nav-item:focus {
+        background: rgba(0, 43, 69, 0.04);
+        color: var(--nav-text);
+        outline: none;
+    }
+
+    /* Active gold hover state - visible and consistent */
+    .nav-item:hover,
+    .nav-item:focus,
+    .nav-item:active {
+        background: var(--zealand-gold);
+        color: var(--zealand-blue);
+        box-shadow: 0 2px 8px rgba(244, 185, 66, 0.3);
+        transform: translateX(2px);
+    }
+
+    /* Ensure SVG icons inherit text color */
+    .nav-item .icon svg {
+        transition: all var(--transition-fast);
+        stroke: currentColor;
+        fill: none;
+    }
+
+    .nav-item .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    /* Focus accessibility improvements */
+    .nav-item:focus-visible {
+        box-shadow: 0 0 0 3px rgba(36, 90, 120, 0.15);
+        outline: none;
+    }
+
+/* Privacy nav item - inherits same hover rules */
+.nav-privacy {
+    margin-top: auto;
+    border-top: 1px solid var(--border-light);
+    padding-top: var(--space-md);
+}
+
+/* ===== MAIN CONTENT AREA ===== */
+.main-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    min-width: 0; /* Prevents flex overflow */
 }
 
-.exam-title {
+/* ===== HEADER STYLES ===== */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    background: linear-gradient(90deg, rgba(244, 185, 66, 0.08) 0%, rgba(0, 0, 0, 0) 60%);
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+/* Sidebar toggle button */
+.btn-toggle {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    cursor: pointer;
+    color: var(--zealand-blue);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn-toggle:hover,
+    .btn-toggle:focus {
+        background: var(--zealand-gold);
+        border-color: var(--zealand-gold);
+        box-shadow: 0 2px 4px rgba(244, 185, 66, 0.3);
+        outline: none;
+    }
+
+/* Page title */
+.page-title {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--zealand-blue);
     font-weight: 600;
-    margin-bottom: 6px;
 }
 
-.exam-sub {
-    color: #6b7280; /* muted */
+.header-right {
+    /* Reserved for future user menu/actions */
+}
+
+/* ===== PAGE BODY CONTENT ===== */
+.page-body {
+    padding: var(--space-xl);
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ===== WELCOME CARD COMPONENT ===== */
+.welcome-card {
+    background: white;
+    border-left: 6px solid var(--zealand-gold);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px var(--shadow-light);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+    .welcome-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(2, 16, 28, 0.08);
+    }
+
+    .welcome-card h1 {
+        margin: 0 0 12px 0;
+        font-size: 1.8rem;
+        color: var(--zealand-blue);
+        font-weight: 700;
+    }
+
+    .welcome-card p {
+        margin: 0;
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .welcome-card a {
+        color: var(--zealand-blue);
+        text-decoration: underline;
+        font-weight: 500;
+        transition: color var(--transition-fast);
+    }
+
+        .welcome-card a:hover {
+            color: var(--zealand-gold-dark);
+        }
+
+/* ===== FOOTER STYLES ===== */
+.app-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-md);
+    background: linear-gradient(90deg, rgba(244, 185, 66, 0.06) 0%, rgba(0, 0, 0, 0) 100%);
+    border-top: 1px solid var(--border-light);
+    margin-top: auto;
+}
+
+.footer-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-accent {
+    width: 16px;
+    height: 16px;
+    background: var(--zealand-gold);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.footer-text {
+    color: var(--text-secondary);
     font-size: 0.95rem;
+    font-weight: 500;
 }
 
-/* Action button */
-.btn-edit {
-    min-width: 88px;
-}
+/* ===== RESPONSIVE BEHAVIOR ===== */
 
-/* Responsive */
-@media (max-width: 768px) {
-    .sidebar {
-        position: absolute;
+/* Tablet and mobile styles */
+@media (max-width: 900px) {
+    .sidebar-content {
+        position: fixed;
         left: 0;
         top: 0;
         bottom: 0;
-        z-index: 1030;
+        transform: translateX(-100%);
+        z-index: 1000;
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
     }
 
-    .exam-card {
-        flex-direction: column;
-        align-items: flex-start;
+    /* Overlay for mobile navigation */
+    .app-shell.collapsed::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--overlay);
+        z-index: 999;
+        animation: fadeIn var(--transition-normal);
+    }
+
+    .app-shell.collapsed .sidebar-content {
+        transform: translateX(0);
+    }
+
+    .sidebar-flag {
+        display: none;
+    }
+
+    .page-body {
+        padding: var(--space-md);
+    }
+
+    .app-header {
+        padding: var(--space-md);
+    }
+
+    .welcome-card {
+        padding: var(--space-md);
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .page-body {
+        padding: var(--space-sm);
+    }
+
+    .welcome-card h1 {
+        font-size: 1.5rem;
+    }
+
+    .brand-text {
+        font-size: 1rem;
+    }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --zealand-gold: #000000;
+        --border-light: #000000;
+    }
+
+    .nav-item:hover,
+    .nav-item:focus {
+        outline: 2px solid currentColor;
     }
 }
