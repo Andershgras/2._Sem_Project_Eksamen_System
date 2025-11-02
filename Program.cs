@@ -1,4 +1,6 @@
+using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models;
+using _2._Sem_Project_Eksamen_System.EFservices;
 
 namespace _2._Sem_Project_Eksamen_System
 {
@@ -11,7 +13,7 @@ namespace _2._Sem_Project_Eksamen_System
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<EksamensDBContext>();
-
+            builder.Services.AddTransient<ICRUD<Exam>, EFEksamenService>();
 
             var app = builder.Build();
 

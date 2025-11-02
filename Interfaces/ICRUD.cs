@@ -5,40 +5,37 @@
     //(where T: <Type constraint>)
     public interface ICRUD<T> where T : class
     {
-        #region Properties
-        IEnumerable<T> Items { get; set; }
 
-        #endregion
         #region Methods
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns>Returnere alle items af typen T</returns>
-        IEnumerable<T> GetAll();
+        public IEnumerable<T> GetAll();
 
         /// <summary>
         /// Tilføjer et item af typen T, til en User specificeret corlection.
         /// </summary>
         /// <param name="item"></param>
-        void AddItem(T item);
+        public void AddItem(T item);
 
         /// <summary>
         /// Henter et item af typen T ved brug af et ID.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        T? GetItemById(int id);
+        public T? GetItemById(int id);
         /// <summary>
         /// Sletter et item af typen T.
         /// </summary>
         /// <remarks>Brug GetItemById method til at finde det specifikke object</remarks>
-        void DeleteItem(int id);
+        public void DeleteItem(int id);
         /// <summary>
         /// Opdaterer et item af typen T.
         /// </summary>
         /// <param name="item"></param>
-        void UpdateItem(T item);
+        public void UpdateItem(T item);
         #endregion
     }
 }

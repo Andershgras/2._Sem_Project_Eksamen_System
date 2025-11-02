@@ -1,0 +1,29 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Eksamner.GetEksamnerModel
+@{
+    ViewData["Title"] = "GetEksamner";
+}
+
+<h1>GetCourses</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> Eksamens ID</th>
+            <th> Title</th>
+            <th> Hold ID</th>
+            <th> Dato</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var exam in Model.Eksamner)
+        {
+            <tr>
+                <td>@exam.ExamId</td>
+                <td>@exam.ExamName</td>
+                <td>@exam.Hold</td>
+                <td>@exam.ExamDate</td>
+            </tr>
+        }
+    </tbody>
+</table>

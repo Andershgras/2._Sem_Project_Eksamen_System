@@ -1,0 +1,59 @@
+﻿using _2._Sem_Project_Eksamen_System.Interfaces;
+using _2._Sem_Project_Eksamen_System.Models;
+using Microsoft.EntityFrameworkCore;
+
+
+namespace _2._Sem_Project_Eksamen_System.EFservices
+{
+    public class EFEksamenService: ICRUD<Exam>
+    {
+        EksamensDBContext context;
+        public EFEksamenService(EksamensDBContext dBContext) 
+        {
+            this.context = dBContext;
+        }
+      
+        public IEnumerable<Exam> GetAll()
+        {
+            return context.Exams;
+        }
+
+        public void AddItem(Exam item)
+        {
+            context.Add(item);
+            context.SaveChanges();
+        }
+
+        public Exam? GetItemById(int id)
+        {
+            return context.Find<Exam>(id);
+        }
+
+        public void DeleteItem(int id)
+        {
+            var examToDelete = GetItemById(id);
+            if (examToDelete != null)
+            {
+                context.Remove(examToDelete);
+                context.SaveChanges();
+            }
+        }
+        
+        public void UpdateItem(Exam item)
+        {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
+            var existingExam = context.Exams.Find(item.ExamId);
+            if (existingExam != null)
+            {
+                context.Entry(existingExam).CurrentValues.SetValues(item);
+                context.SaveChanges();
+            }
+        }
+       
+
+    }
+}
