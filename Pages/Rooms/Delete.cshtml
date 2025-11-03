@@ -1,0 +1,18 @@
+﻿@page "{id:int}"
+@model _2._Sem_Project_Eksamen_System.Pages.Rooms.DeleteModel
+@{
+    ViewData["Title"] = "Delete Room";
+}
+<h2>Delete Room</h2>
+@if (Model.Room is null)
+{
+    <p>Room not found.</p>
+}
+else
+{
+    <p>Er du sikker på at du vil slette <strong>@Model.Room.Name</strong> (ID: @Model.Room.RoomId)?</p>
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+}

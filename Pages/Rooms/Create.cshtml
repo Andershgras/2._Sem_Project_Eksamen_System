@@ -1,0 +1,20 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Rooms.CreateModel
+@{
+    ViewData["Title"] = "Create Room";
+}
+<h2>Create Room</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="Room.Name" class="form-label"></label>
+        <input asp-for="Room.Name" class="form-control" />
+        <span asp-validation-for="Room.Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

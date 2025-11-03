@@ -1,0 +1,33 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Rooms.IndexModel
+@{
+    ViewData["Title"] = "Rooms";
+}
+<h2>Rooms</h2>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>RoomId</th>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model.Rooms)
+        {
+            <tr>
+                <td>@r.RoomId</td>
+                <td>@r.Name</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@r.RoomId">Edit</a> |
+                    <a asp-page="Delete" asp-route-id="@r.RoomId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
