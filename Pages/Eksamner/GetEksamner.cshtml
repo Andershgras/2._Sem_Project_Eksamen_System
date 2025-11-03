@@ -8,7 +8,7 @@
 <div>
     @foreach (var e in Model.Eksamner)
     {
-        <div class="card">
+        <div class="card mb-2">
             <h5 class="card-header">Featured</h5>
             <div class="card-body">
                 <h5 class="card-title">Special title treatment</h5>
@@ -26,6 +26,8 @@
             <th> Eksamens ID</th>
             <th> Title</th>
             <th> Hold ID</th>
+            <th> Eksaminator</th>
+            <th> Censor</th>
             <th> Dato</th>
         </tr>
     </thead>
@@ -36,9 +38,25 @@
             <tr>
                 <td>@eksamen.ExamId</td>
                 <td>@eksamen.ExamName</td>
-                <td>@eksamen.ClassId</td>
-                <td>@eksamen.ExamStartDate</td>
-            </tr>
+                <!-- FInder navnet på Class, hvis null -> "ikke tildelt"-->
+                <td>@(eksamen.Class?.ClassName ?? "Ikke tildelt")</td>
+                <td>
+                    @(eksamen.ExaminationTeachers?
+                                    .FirstOrDefault(et => et.Rolle != null &&
+                                    (et.Rolle.Equals("Eksaminator", System.StringComparison.OrdinalIgnoreCase) ||
+                                    et.Rolle.Equals("Examinator", System.StringComparison.OrdinalIgnoreCase) ||
+                                    et.Rolle.Equals("Examiner", System.StringComparison.OrdinalIgnoreCase)))
+                                    ?.Teacher?.TeacherName ?? "Ikke tildelt")
+                </td>
+            <td>
+                    @(eksamen.ExaminationTeachers?
+                                    .FirstOrDefault(et => et.Rolle != null &&
+                                    (et.Rolle.Equals("Censor", System.StringComparison.OrdinalIgnoreCase)))
+                                    ?.Teacher?.TeacherName ?? "Ikke tildelt")
+            </td>
+            <td>@(eksamen.ExamStartDate?.ToString("yyyy-MM-dd") ?? "")</td>
+        </tr>
+            
         }
     </tbody>
 </table>
