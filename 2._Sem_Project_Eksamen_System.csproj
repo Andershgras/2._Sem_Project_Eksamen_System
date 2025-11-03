@@ -21,6 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Elever\" />
+    <Folder Include="Pages\Hold\" />
+    <Folder Include="Pages\Lokaler\" />
+    <Folder Include="Pages\Fag\" />
+    <Folder Include="Pages\Undervisere\" />
     <Folder Include="SQL-queries\" />
   </ItemGroup>
 
