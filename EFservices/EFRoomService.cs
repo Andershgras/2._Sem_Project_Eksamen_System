@@ -12,6 +12,15 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
         public IEnumerable<Room> GetAll() => _context.Rooms.AsNoTracking().OrderBy(r => r.RoomId);
 
+        public IEnumerable<Room> GetAll(string name)
+        {
+            name = name.ToLower();
+            return _context.Rooms
+                .Where(r => r.Name.ToLower().StartsWith(name))
+                .AsNoTracking()
+                .ToList();
+        }
+
         public Room? GetItemById(int id) => _context.Rooms.Find(id);
 
         public void AddItem(Room item)

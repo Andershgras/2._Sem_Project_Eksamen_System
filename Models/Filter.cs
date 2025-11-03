@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace _2._Sem_Project_Eksamen_System.Models;
 
 [Table("Class")]
-public partial class Class
+public partial class Filter
 {
     [Key]
     [Column("ClassID")]

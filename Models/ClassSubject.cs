@@ -22,7 +22,7 @@ public partial class ClassSubject
 
     [ForeignKey("ClassId")]
     [InverseProperty("ClassSubjects")]
-    public virtual Class Class { get; set; } = null!;
+    public virtual Filter Class { get; set; } = null!;
 
     [ForeignKey("SubjectId")]
     [InverseProperty("ClassSubjects")]

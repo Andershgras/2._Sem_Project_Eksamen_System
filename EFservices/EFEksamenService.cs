@@ -24,6 +24,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
            .ToList();
         }
 
+        public IEnumerable<Exam> GetAll(GenericFilter Filter)
+        {
+            return context.Exams.Where(s => s.ExamName.ToLower().StartsWith(Filter.FilterByName)).AsNoTracking().ToList();
+        }
+
         public void AddItem(Exam item)
         {
             context.Add(item);

@@ -5,21 +5,18 @@
 }
 
 <h1>GetEksamner</h1>
-<div>
-    @foreach (var e in Model.Eksamner)
-    {
-        <div class="card mb-2">
-            <h5 class="card-header">Featured</h5>
-            <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-        </div>
-    }
-</div>
+<!-- Filter -->
+<form>
+    <p>
+        Search: <input type="text" asp-for="Filter.FilterByName" />
+        
+        <input type="submit" value="Filter" />
+        <a asp-page="/Eksamner/GetEksamner">Back to Full List </a>
+    </p>
+</form>
 
 
+<!-- Tabel over Eksamner -->
 <table class="table">
     <thead>
         <tr>

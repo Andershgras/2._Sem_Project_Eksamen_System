@@ -1,4 +1,6 @@
-﻿namespace _2._Sem_Project_Eksamen_System.Interfaces
+﻿using _2._Sem_Project_Eksamen_System.Models;
+
+namespace _2._Sem_Project_Eksamen_System.Interfaces
 {
     //<T> where T : class
     // overstående betydder at T skal være en reference type (class) og ikke en værdi type (struct).
@@ -13,7 +15,7 @@
         /// <typeparam name="T"></typeparam>
         /// <returns>Returnere alle items af typen T</returns>
         public IEnumerable<T> GetAll();
-
+        public IEnumerable<T> GetAll(GenericFilter Filter);
         /// <summary>
         /// Tilføjer et item af typen T, til en User specificeret corlection.
         /// </summary>

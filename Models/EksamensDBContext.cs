@@ -20,7 +20,7 @@ public partial class EksamensDBContext : DbContext
     }
 
 
-    public virtual DbSet<Class> Classes { get; set; }
+    public virtual DbSet<Filter> Classes { get; set; }
 
     public virtual DbSet<ClassSubject> ClassSubjects { get; set; }
 
@@ -46,7 +46,7 @@ public partial class EksamensDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Class>(entity =>
+        modelBuilder.Entity<Filter>(entity =>
         {
             entity.HasKey(e => e.ClassId).HasName("PK__Class__CB1927A0459CDFAC");
         });

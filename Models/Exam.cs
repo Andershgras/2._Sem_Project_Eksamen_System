@@ -47,7 +47,7 @@ public partial class Exam
 
     [ForeignKey("ClassId")]
     [InverseProperty("Exams")]
-    public virtual Class? Class { get; set; }
+    public virtual Filter? Class { get; set; }
 
     [InverseProperty("Exam")]
     public virtual ICollection<ExaminationTeacher> ExaminationTeachers { get; set; } = new List<ExaminationTeacher>();

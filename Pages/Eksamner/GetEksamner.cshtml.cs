@@ -12,14 +12,25 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public IEnumerable<Exam> Eksamner { get; set; }
         public ICRUD<Exam> context { get; set; }
 
+
+        [BindProperty(SupportsGet = true)]
+        public GenericFilter ? Filter { get; set; }
+
         public GetEksamnerModel(ICRUD<Exam> service)
         {
             context = service;
             Eksamner = new List<Exam>();
+            Filter = new GenericFilter();
         }
+
         public void OnGet()
         {
-            Eksamner = context.GetAll();
+            if (!string.IsNullOrEmpty(Filter.FilterByName))
+            {
+                Eksamner = context.GetAll(Filter);
+            }
+            else
+                Eksamner = context.GetAll();
         }
     }
 }
