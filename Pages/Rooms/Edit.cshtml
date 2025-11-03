@@ -1,0 +1,21 @@
+﻿@page "{id:int}"
+@model _2._Sem_Project_Eksamen_System.Pages.Rooms.EditModel
+@{
+    ViewData["Title"] = "Edit Room";
+}
+<h2>Edit Room</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Room.RoomId" />
+    <div class="mb-3">
+        <label asp-for="Room.Name" class="form-label"></label>
+        <input asp-for="Room.Name" class="form-control" />
+        <span asp-validation-for="Room.Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
