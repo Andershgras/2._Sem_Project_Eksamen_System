@@ -8,11 +8,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
     public class EFEksamenService: ICRUD<Exam>
     {
         EksamensDBContext context;
-        public EFEksamenService(EksamensDBContext dBContext) 
+        public EFEksamenService(EksamensDBContext dBContext)
         {
             this.context = dBContext;
         }
-      
+
         public IEnumerable<Exam> GetAll()
         {
             return context.Exams;
@@ -38,7 +38,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 context.SaveChanges();
             }
         }
-        
+
         public void UpdateItem(Exam item)
         {
             if (item == null)
@@ -53,7 +53,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 context.SaveChanges();
             }
         }
-       
+
 
     }
 }

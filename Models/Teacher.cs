@@ -6,24 +6,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.Models;
 
-[Table("Underviser")]
-public partial class Underviser
+[Table("Teacher")]
+public partial class Teacher
 {
     [Key]
-    [Column("UnderviserID")]
-    public int UnderviserId { get; set; }
+    [Column("TeacherID")]
+    public int TeacherId { get; set; }
 
     [StringLength(250)]
     [Unicode(false)]
-    public string? UnderviserNavn { get; set; }
+    public string TeacherName { get; set; } = null!;
 
     [StringLength(250)]
     [Unicode(false)]
     public string? Mail { get; set; }
 
-    [InverseProperty("Underviser")]
-    public virtual ICollection<EksaminationsUndervise> EksaminationsUndervises { get; set; } = new List<EksaminationsUndervise>();
+    [InverseProperty("Teacher")]
+    public virtual ICollection<ExaminationTeacher> ExaminationTeachers { get; set; } = new List<ExaminationTeacher>();
 
-    [InverseProperty("Underviser")]
+    [InverseProperty("Teacher")]
     public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
 }

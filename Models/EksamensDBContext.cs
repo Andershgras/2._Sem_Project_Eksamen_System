@@ -18,135 +18,116 @@ public partial class EksamensDBContext : DbContext
         //Finder appsettings.json connection string
         options.UseSqlServer(connectionString);
     }
-  
-    public virtual DbSet<EksaminationsUndervise> EksaminationsUndervises { get; set; }
 
-    public virtual DbSet<Elever> Elevers { get; set; }
+
+    public virtual DbSet<Class> Classes { get; set; }
+
+    public virtual DbSet<ClassSubject> ClassSubjects { get; set; }
 
     public virtual DbSet<Exam> Exams { get; set; }
 
-    public virtual DbSet<Fag> Fags { get; set; }
+    public virtual DbSet<ExaminationTeacher> ExaminationTeachers { get; set; }
 
-    public virtual DbSet<Hold> Holds { get; set; }
+    public virtual DbSet<Room> Rooms { get; set; }
 
-    public virtual DbSet<Lokale> Lokales { get; set; }
+    public virtual DbSet<Student> Students { get; set; }
 
-   
+    public virtual DbSet<StudentClass> StudentClasses { get; set; }
 
-    public virtual DbSet<Underviser> Undervisers { get; set; }
+    public virtual DbSet<StudentExam> StudentExams { get; set; }
 
+    public virtual DbSet<Subject> Subjects { get; set; }
 
+    public virtual DbSet<Teacher> Teachers { get; set; }
+
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Data Source=mssql11.unoeuro.com;Initial Catalog=andershgras_dk_db_eksamenproject;User ID=andershgras_dk;Password=dBFybtpRwacg3rG9zhm5;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<EksaminationsUndervise>(entity =>
+        modelBuilder.Entity<Class>(entity =>
         {
-            entity.HasKey(e => new { e.ExamId, e.UnderviserId }).HasName("PK__Eksamina__AB614231798B511C");
-
-            entity.HasOne(d => d.Exam).WithMany(p => p.EksaminationsUndervises).HasConstraintName("FK_EksaminationsUndervise_Exam");
-
-            entity.HasOne(d => d.Underviser).WithMany(p => p.EksaminationsUndervises)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EksaminationsUndervise_Underviser");
+            entity.HasKey(e => e.ClassId).HasName("PK__Class__CB1927A0459CDFAC");
         });
 
-        modelBuilder.Entity<Elever>(entity =>
+        modelBuilder.Entity<ClassSubject>(entity =>
         {
-            entity.HasKey(e => e.ElevId).HasName("PK__Elever__4AE80D63D3519114");
+            entity.HasKey(e => e.ClassSubjectId).HasName("PK__ClassSub__79A973399E3407F1");
+
+            entity.HasOne(d => d.Class).WithMany(p => p.ClassSubjects).HasConstraintName("FK_ClassSubject_Class");
+
+            entity.HasOne(d => d.Subject).WithMany(p => p.ClassSubjects).HasConstraintName("FK_ClassSubject_Subject");
         });
 
         modelBuilder.Entity<Exam>(entity =>
         {
-            entity.HasKey(e => e.ExamId).HasName("PK__Exam__297521C75DEB807B");
+            entity.HasKey(e => e.ExamId).HasName("PK__Exam__297521A767594786");
 
-            entity.HasOne(d => d.Fag).WithMany(p => p.Exams)
+            entity.Property(e => e.IsReExam).HasDefaultValue(false);
+
+            entity.HasOne(d => d.Class).WithMany(p => p.Exams)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Exam_Fag");
+                .HasConstraintName("FK_Exam_Class");
 
-            entity.HasOne(d => d.Hold).WithMany(p => p.Exams)
+            entity.HasOne(d => d.Room).WithMany(p => p.Exams)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Exam_Hold");
+                .HasConstraintName("FK_Exam_Room");
 
-            entity.HasOne(d => d.Lokale).WithMany(p => p.Exams)
+            entity.HasOne(d => d.Subject).WithMany(p => p.Exams)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Exam_Lokale");
+                .HasConstraintName("FK_Exam_Subject");
 
-            entity.HasOne(d => d.Underviser).WithMany(p => p.Exams)
+            entity.HasOne(d => d.Teacher).WithMany(p => p.Exams)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Exam_Underviser");
-
-            entity.HasMany(d => d.Elevs).WithMany(p => p.Exams)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ElevEksaman",
-                    r => r.HasOne<Elever>().WithMany()
-                        .HasForeignKey("ElevId")
-                        .HasConstraintName("FK_ElevExam_Elev"),
-                    l => l.HasOne<Exam>().WithMany()
-                        .HasForeignKey("ExamId")
-                        .HasConstraintName("FK_ElevExam_Exam"),
-                    j =>
-                    {
-                        j.HasKey("ExamId", "ElevId").HasName("PK__ELEV_EKS__0DDBA17724BFB73D");
-                        j.ToTable("ELEV_EKSAMEN");
-                        j.IndexerProperty<int>("ExamId").HasColumnName("ExamID");
-                        j.IndexerProperty<int>("ElevId").HasColumnName("ElevID");
-                    });
+                .HasConstraintName("FK_Exam_Teacher");
         });
 
-        modelBuilder.Entity<Fag>(entity =>
+        modelBuilder.Entity<ExaminationTeacher>(entity =>
         {
-            entity.HasKey(e => e.FagId).HasName("PK__Fag__9A31300B430E6CC1");
+            entity.HasKey(e => e.ExaminationTeacherId).HasName("PK__Examinat__50759235931F1BCF");
+
+            entity.HasOne(d => d.Exam).WithMany(p => p.ExaminationTeachers).HasConstraintName("FK_ExaminationTeacher_Exam");
+
+            entity.HasOne(d => d.Teacher).WithMany(p => p.ExaminationTeachers).HasConstraintName("FK_ExaminationTeacher_Teacher");
         });
 
-        modelBuilder.Entity<Hold>(entity =>
+        modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.HoldId).HasName("PK__Hold__6E24D9C42AE420FB");
-
-            entity.HasMany(d => d.Elevs).WithMany(p => p.Holds)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ElevHold",
-                    r => r.HasOne<Elever>().WithMany()
-                        .HasForeignKey("ElevId")
-                        .HasConstraintName("FK_ElevHold_Elev"),
-                    l => l.HasOne<Hold>().WithMany()
-                        .HasForeignKey("HoldId")
-                        .HasConstraintName("FK_ElevHold_Hold"),
-                    j =>
-                    {
-                        j.HasKey("HoldId", "ElevId").HasName("PK__ELEV_HOL__4A8A5AF40EEDDD84");
-                        j.ToTable("ELEV_HOLD");
-                        j.IndexerProperty<int>("HoldId").HasColumnName("HoldID");
-                        j.IndexerProperty<int>("ElevId").HasColumnName("ElevID");
-                    });
-
-            entity.HasMany(d => d.Fags).WithMany(p => p.Holds)
-                .UsingEntity<Dictionary<string, object>>(
-                    "HoldFag",
-                    r => r.HasOne<Fag>().WithMany()
-                        .HasForeignKey("FagId")
-                        .HasConstraintName("FK_HoldFag_Fag"),
-                    l => l.HasOne<Hold>().WithMany()
-                        .HasForeignKey("HoldId")
-                        .HasConstraintName("FK_HoldFag_Hold"),
-                    j =>
-                    {
-                        j.HasKey("HoldId", "FagId").HasName("PK__HOLD_FAG__C787C9249D8E94C8");
-                        j.ToTable("HOLD_FAG");
-                        j.IndexerProperty<int>("HoldId").HasColumnName("HoldID");
-                        j.IndexerProperty<int>("FagId").HasColumnName("FagID");
-                    });
+            entity.HasKey(e => e.RoomId).HasName("PK__Room__3286391939FD5A33");
         });
 
-        modelBuilder.Entity<Lokale>(entity =>
+        modelBuilder.Entity<Student>(entity =>
         {
-            entity.HasKey(e => e.LokaleId).HasName("PK__Lokale__1C7789B24F589146");
+            entity.HasKey(e => e.StudentId).HasName("PK__Student__32C52A793BE317C1");
         });
 
-
-
-        modelBuilder.Entity<Underviser>(entity =>
+        modelBuilder.Entity<StudentClass>(entity =>
         {
-            entity.HasKey(e => e.UnderviserId).HasName("PK__Undervis__21463969F57A2088");
+            entity.HasKey(e => e.StudentClassId).HasName("PK__StudentC__2FF121679E358C88");
+
+            entity.HasOne(d => d.Class).WithMany(p => p.StudentClasses).HasConstraintName("FK_StudentClass_Class");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.StudentClasses).HasConstraintName("FK_StudentClass_Student");
+        });
+
+        modelBuilder.Entity<StudentExam>(entity =>
+        {
+            entity.HasKey(e => e.StudentExamId).HasName("PK__StudentE__C57949568B69BBD0");
+
+            entity.HasOne(d => d.Exam).WithMany(p => p.StudentExams).HasConstraintName("FK_StudentExam_Exam");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.StudentExams).HasConstraintName("FK_StudentExam_Student");
+        });
+
+        modelBuilder.Entity<Subject>(entity =>
+        {
+            entity.HasKey(e => e.SubjectId).HasName("PK__Subject__AC1BA388284A5582");
+        });
+
+        modelBuilder.Entity<Teacher>(entity =>
+        {
+            entity.HasKey(e => e.TeacherId).HasName("PK__Teacher__EDF259443B1C1561");
         });
 
         OnModelCreatingPartial(modelBuilder);

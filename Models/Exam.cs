@@ -10,54 +10,60 @@ namespace _2._Sem_Project_Eksamen_System.Models;
 public partial class Exam
 {
     [Key]
+    [Column("ExamID")]
     public int ExamId { get; set; }
 
     [StringLength(250)]
     [Unicode(false)]
-    public string? ExamName { get; set; }
+    public string ExamName { get; set; } = null!;
 
-    [Column("FagID")]
-    public int? FagId { get; set; }
+    [Column("SubjectID")]
+    public int? SubjectId { get; set; }
 
-    [StringLength(250)]
+    [StringLength(100)]
     [Unicode(false)]
-    public string? ExamType { get; set; }
+    public string ExamType { get; set; } = null!;
 
-    public DateTime? ExamDate { get; set; }
+    public DateOnly? ExamStartDate { get; set; }
 
-    [Column("HoldID")]
-    public int? HoldId { get; set; }
+    public DateOnly? ExamEndDate { get; set; }
 
-    [Column("UnderviserID")]
-    public int? UnderviserId { get; set; }
+    public DateOnly? DeliveryDate { get; set; }
 
-    [Column("LokaleID")]
-    public int? LokaleId { get; set; }
+    [Column("ClassID")]
+    public int? ClassId { get; set; }
+
+    [Column("TeacherID")]
+    public int? TeacherId { get; set; }
+
+    [Column("RoomID")]
+    public int? RoomId { get; set; }
 
     public int? TimeDuration { get; set; }
 
-    public DateTime? ReEksamenDato { get; set; }
+    public DateOnly? ReExamDate { get; set; }
+
+    public bool? IsReExam { get; set; }
+
+    [ForeignKey("ClassId")]
+    [InverseProperty("Exams")]
+    public virtual Class? Class { get; set; }
 
     [InverseProperty("Exam")]
-    public virtual ICollection<EksaminationsUndervise> EksaminationsUndervises { get; set; } = new List<EksaminationsUndervise>();
+    public virtual ICollection<ExaminationTeacher> ExaminationTeachers { get; set; } = new List<ExaminationTeacher>();
 
-    [ForeignKey("FagId")]
+    [ForeignKey("RoomId")]
     [InverseProperty("Exams")]
-    public virtual Fag? Fag { get; set; }
+    public virtual Room? Room { get; set; }
 
-    [ForeignKey("HoldId")]
-    [InverseProperty("Exams")]
-    public virtual Hold? Hold { get; set; }
+    [InverseProperty("Exam")]
+    public virtual ICollection<StudentExam> StudentExams { get; set; } = new List<StudentExam>();
 
-    [ForeignKey("LokaleId")]
+    [ForeignKey("SubjectId")]
     [InverseProperty("Exams")]
-    public virtual Lokale? Lokale { get; set; }
+    public virtual Subject? Subject { get; set; }
 
-    [ForeignKey("UnderviserId")]
+    [ForeignKey("TeacherId")]
     [InverseProperty("Exams")]
-    public virtual Underviser? Underviser { get; set; }
-
-    [ForeignKey("ExamId")]
-    [InverseProperty("Exams")]
-    public virtual ICollection<Elever> Elevs { get; set; } = new List<Elever>();
+    public virtual Teacher? Teacher { get; set; }
 }

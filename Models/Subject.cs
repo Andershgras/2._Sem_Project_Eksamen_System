@@ -6,16 +6,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.Models;
 
-[Table("Lokale")]
-public partial class Lokale
+[Table("Subject")]
+public partial class Subject
 {
     [Key]
-    public int LokaleId { get; set; }
+    [Column("SubjectID")]
+    public int SubjectId { get; set; }
 
     [StringLength(250)]
     [Unicode(false)]
-    public string? Navn { get; set; }
+    public string Name { get; set; } = null!;
 
-    [InverseProperty("Lokale")]
+    [InverseProperty("Subject")]
+    public virtual ICollection<ClassSubject> ClassSubjects { get; set; } = new List<ClassSubject>();
+
+    [InverseProperty("Subject")]
     public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
 }

@@ -16,13 +16,14 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var exam in Model.Eksamner)
+       @false
+        @foreach (var eksamen in Model.Eksamner)
         {
             <tr>
-                <td>@exam.ExamId</td>
-                <td>@exam.ExamName</td>
-                <td>@exam.HoldId</td>
-                <td>@exam.ExamDate</td>
+                <td>@eksamen.ExamId</td>
+                <td>@eksamen.ExamName</td>
+                <td>@eksamen.ClassId</td>
+                <td>@eksamen.ExamStartDate</td>
             </tr>
         }
     </tbody>

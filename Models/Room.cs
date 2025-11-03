@@ -6,21 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.Models;
 
-[Table("Fag")]
-public partial class Fag
+[Table("Room")]
+public partial class Room
 {
     [Key]
-    [Column("FagID")]
-    public int FagId { get; set; }
+    [Column("RoomID")]
+    public int RoomId { get; set; }
 
     [StringLength(250)]
     [Unicode(false)]
-    public string? Navn { get; set; }
+    public string Name { get; set; } = null!;
 
-    [InverseProperty("Fag")]
+    [InverseProperty("Room")]
     public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
-
-    [ForeignKey("FagId")]
-    [InverseProperty("Fags")]
-    public virtual ICollection<Hold> Holds { get; set; } = new List<Hold>();
 }
