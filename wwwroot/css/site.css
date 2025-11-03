@@ -1,45 +1,61 @@
-/* 
-   Zealand-inspired enhanced stylesheet
-   - Improved color system and consistency
-   - Better responsive behavior
-   - Enhanced accessibility
-   - Maintained all existing functionality
+﻿/* 
+   Zealand Exam Planning System - Enhanced Stylesheet
+   Organized by functional sections for easy maintenance
+   ====================================================
+   SECTION INDEX:
+   1. CSS Variables & Design Tokens
+   2. Reset & Base Styles
+   3. Layout Components
+   4. Navigation & Sidebar
+   5. Header & Footer
+   6. Dashboard Components
+   7. Data Tables & Content
+   8. Responsive Breakpoints
+   9. Utilities & Accessibility
 */
 
-/* ===== COLOR SYSTEM ===== */
+/* ===== 1. CSS VARIABLES & DESIGN TOKENS ===== */
+/* 
+   Centralized design system for consistent theming
+   Update colors, spacing, and effects here for global changes
+*/
 :root {
-    /* Primary Zealand colors */
+    /* Primary brand colors */
     --zealand-blue: #002b45;
     --zealand-gold: #f4b942;
     --zealand-gold-light: #f8d48a;
     --zealand-gold-dark: #d9a339;
-    /* Neutral colors */
+    /* Neutral color palette */
     --zealand-bg: #f7f9fb;
     --text-primary: #222;
     --text-secondary: #6b6f76;
     --nav-bg: #ffffff;
     --nav-text: #23323f;
-    /* Semantic colors */
+    /* UI element colors */
     --border-light: #e6eef5;
     --shadow-light: rgba(2, 16, 28, 0.04);
     --overlay: rgba(0, 0, 0, 0.5);
-    /* Spacing system */
+    /* Spacing scale - use for consistent margins/padding */
     --space-xs: 4px;
     --space-sm: 8px;
     --space-md: 16px;
     --space-lg: 24px;
     --space-xl: 32px;
-    /* Border radius */
+    /* Border radius scale */
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
-    /* Transitions */
+    /* Animation timing */
     --transition-fast: 0.14s ease;
     --transition-normal: 0.22s ease;
     --transition-slow: 0.3s ease;
 }
 
-/* ===== BASE STYLES ===== */
+/* ===== 2. RESET & BASE STYLES ===== */
+/* 
+   Fundamental reset and base element styling
+   Affects all HTML elements globally
+*/
 * {
     box-sizing: border-box;
 }
@@ -58,7 +74,11 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== APP SHELL LAYOUT ===== */
+/* ===== 3. LAYOUT COMPONENTS ===== */
+/* 
+   Main layout structure - app shell, flex containers, grid systems
+   Handles overall page structure and positioning
+*/
 .app-shell {
     display: flex;
     min-height: 100vh;
@@ -66,7 +86,37 @@ body {
     position: relative;
 }
 
-/* ===== SIDEBAR STYLES ===== */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0; /* Prevents flex overflow */
+}
+
+.page-body {
+    padding: var(--space-xl);
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ===== 4. NAVIGATION & SIDEBAR ===== */
+/* 
+   Sidebar navigation styles including:
+   - Sidebar layout and positioning
+   - Navigation items and interactions
+   - Branding and logo area
+*/
 .sidebar {
     display: flex;
     align-items: stretch;
@@ -76,14 +126,12 @@ body {
     z-index: 1000;
 }
 
-/* Gold flag accent */
 .sidebar-flag {
     width: 8px;
     background: var(--zealand-gold);
     border-right: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-/* Sidebar content area */
 .sidebar-content {
     width: 240px;
     background: var(--nav-bg);
@@ -96,7 +144,6 @@ body {
     transition: transform var(--transition-normal);
 }
 
-/* ===== BRAND STYLES ===== */
 .brand {
     display: flex;
     align-items: center;
@@ -121,7 +168,6 @@ body {
     letter-spacing: -0.01em;
 }
 
-/* ===== NAVIGATION STYLES ===== */
 .nav-list {
     display: flex;
     flex-direction: column;
@@ -130,7 +176,6 @@ body {
     flex: 1;
 }
 
-/* Base nav item styles */
 .nav-item {
     display: flex;
     align-items: center;
@@ -146,15 +191,6 @@ body {
     position: relative;
 }
 
-    /* Default subtle hover state */
-    .nav-item:hover,
-    .nav-item:focus {
-        background: rgba(0, 43, 69, 0.04);
-        color: var(--nav-text);
-        outline: none;
-    }
-
-    /* Active gold hover state - visible and consistent */
     .nav-item:hover,
     .nav-item:focus,
     .nav-item:active {
@@ -164,7 +200,6 @@ body {
         transform: translateX(2px);
     }
 
-    /* Ensure SVG icons inherit text color */
     .nav-item .icon svg {
         transition: all var(--transition-fast);
         stroke: currentColor;
@@ -180,29 +215,22 @@ body {
         flex-shrink: 0;
     }
 
-    /* Focus accessibility improvements */
     .nav-item:focus-visible {
         box-shadow: 0 0 0 3px rgba(36, 90, 120, 0.15);
         outline: none;
     }
 
-/* Privacy nav item - inherits same hover rules */
 .nav-privacy {
     margin-top: auto;
     border-top: 1px solid var(--border-light);
     padding-top: var(--space-md);
 }
 
-/* ===== MAIN CONTENT AREA ===== */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    min-width: 0; /* Prevents flex overflow */
-}
-
-/* ===== HEADER STYLES ===== */
+/* ===== 5. HEADER & FOOTER ===== */
+/* 
+   Top header and bottom footer components
+   Includes sticky header behavior and footer branding
+*/
 .app-header {
     display: flex;
     justify-content: space-between;
@@ -222,7 +250,6 @@ body {
     gap: var(--space-md);
 }
 
-/* Sidebar toggle button */
 .btn-toggle {
     background: transparent;
     border: 1px solid var(--border-light);
@@ -244,7 +271,6 @@ body {
         outline: none;
     }
 
-/* Page title */
 .page-title {
     margin: 0;
     font-size: 1.25rem;
@@ -252,20 +278,53 @@ body {
     font-weight: 600;
 }
 
-.header-right {
-    /* Reserved for future user menu/actions */
+.app-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-md);
+    background: linear-gradient(90deg, rgba(244, 185, 66, 0.06) 0%, rgba(0, 0, 0, 0) 100%);
+    border-top: 1px solid var(--border-light);
+    margin-top: auto;
 }
 
-/* ===== PAGE BODY CONTENT ===== */
-.page-body {
-    padding: var(--space-xl);
-    flex: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
+.footer-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* ===== WELCOME CARD COMPONENT ===== */
+.footer-accent {
+    width: 16px;
+    height: 16px;
+    background: var(--zealand-gold);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.footer-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* ===== 6. DASHBOARD COMPONENTS ===== */
+/* 
+   Dashboard-specific components organized by functionality
+   ========================================================
+   SUBSECTIONS:
+   6.1 Welcome & Hero Cards
+   6.2 Quick Action Buttons
+   6.3 Statistics & Metrics Grid
+   6.4 Section Containers & Headers
+   6.5 Quick Links & Navigation Cards
+*/
+
+/* ===== 6.1 WELCOME & HERO CARDS ===== */
+/* 
+   Primary welcome cards and hero sections
+   Used for prominent dashboard introductions and key messaging
+*/
 .welcome-card {
     background: white;
     border-left: 6px solid var(--zealand-gold);
@@ -304,40 +363,234 @@ body {
             color: var(--zealand-gold-dark);
         }
 
-/* ===== FOOTER STYLES ===== */
-.app-footer {
+/* ===== 6.2 QUICK ACTION BUTTONS ===== */
+/* 
+   Quick action buttons and primary CTA elements
+   Used for main dashboard actions and navigation
+*/
+/*.quick-actions {
     display: flex;
+    gap: var(--space-md);
     justify-content: center;
-    align-items: center;
-    padding: var(--space-md);
-    background: linear-gradient(90deg, rgba(244, 185, 66, 0.06) 0%, rgba(0, 0, 0, 0) 100%);
-    border-top: 1px solid var(--border-light);
-    margin-top: auto;
+    flex-wrap: wrap;
+}*/
+/* ===== 6.2 QUICK ACTION BUTTONS ===== */
+/* 
+   Quick action buttons and primary CTA elements
+   Used for main dashboard actions and navigation
+   Features single row layout matching statistic cards grid
+   Sized to match statistic cards for visual harmony
+*/
+.quick-actions {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    justify-content: space-between;
 }
 
-.footer-inner {
+/* Remove action-row since we want single row layout */
+.action-row {
+    display: contents; /* This makes the children act as direct flex items */
+}
+
+/* Dashboard-specific button styles for quick actions */
+.quick-actions .btn-toggle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    min-height: 80px; /* Match stat-item height */
+    box-shadow: 0 1px 4px var(--shadow-light); /* Match stat-item shadow */
+}
+
+    .quick-actions .btn-toggle:hover {
+        border-color: var(--zealand-blue);
+        background-color: var(--zealand-bg);
+        transform: translateY(-1px); /* Same as stat-item */
+        box-shadow: 0 2px 8px rgba(2, 16, 28, 0.1); /* Same as stat-item */
+    }
+
+.btn-icon {
+    font-size: 1.5rem; /* Match stat-icon size */
+    margin-bottom: var(--space-xs);
+}
+
+/* ===== 6.3 STATISTICS & METRICS GRID ===== */
+/* 
+   Statistics cards, metrics display, and data visualization
+   Used for showing key numbers, counts, and performance metrics
+*/
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+    margin: var(--space-lg) 0;
+}
+
+.stat-item {
+    background: white;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    box-shadow: 0 1px 4px var(--shadow-light);
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-md);
+    transition: all var(--transition-fast);
+    min-height: 80px;
 }
 
-.footer-accent {
-    width: 16px;
-    height: 16px;
-    background: var(--zealand-gold);
-    border-radius: var(--radius-sm);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    .stat-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(2, 16, 28, 0.1);
+    }
+
+.stat-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
 }
 
-.footer-text {
+.stat-content {
+    flex: 1;
+    text-align: left;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--zealand-blue);
+    margin: 0;
+    line-height: 1;
+}
+
+.stat-label {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 0.8rem;
+    margin: 2px 0 0 0;
     font-weight: 500;
 }
 
-/* ===== RESPONSIVE BEHAVIOR ===== */
+/* ===== 6.4 SECTION CONTAINERS & HEADERS ===== */
+/* 
+   Section containers, headers, and content blocks
+   Used for organizing dashboard content into logical sections
+*/
+.section-card {
+    background: white;
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 8px var(--shadow-light);
+    overflow: hidden;
+}
 
-/* Tablet and mobile styles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--border-light);
+}
+
+    .section-header h2 {
+        margin: 0;
+        color: var(--zealand-blue);
+        font-size: 1.25rem;
+    }
+
+/* ===== 6.5 QUICK LINKS & NAVIGATION CARDS ===== */
+/* 
+   Quick link cards and secondary navigation elements
+   Used for additional actions, resources, and secondary navigation
+*/
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+}
+
+    .quick-links .welcome-card {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+        .quick-links .welcome-card h3 {
+            margin: 0 0 var(--space-sm) 0;
+            color: var(--zealand-blue);
+            font-size: 1.1rem;
+        }
+
+        .quick-links .welcome-card p {
+            flex: 1;
+            margin: 0 0 var(--space-lg) 0;
+            color: var(--text-secondary);
+        }
+
+    .quick-links .btn-toggle {
+        align-self: center;
+        margin-top: auto;
+    }
+/* ===== 7. DATA TABLES & CONTENT ===== */
+/* 
+   Table styles and data presentation components
+   For displaying tabular data and content sections
+*/
+.table-container {
+    padding: 0;
+}
+
+    .table-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-container th {
+        background: var(--zealand-bg);
+        padding: var(--space-md);
+        text-align: left;
+        font-weight: 600;
+        color: var(--zealand-blue);
+        border-bottom: 2px solid var(--border-light);
+    }
+
+    .table-container td {
+        padding: var(--space-md);
+        border-bottom: 1px solid var(--border-light);
+    }
+
+.action-buttons {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+    .action-buttons .btn-toggle {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+.no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: var(--space-xl) !important;
+}
+
+/* ===== 8. RESPONSIVE BREAKPOINTS ===== */
+/* 
+   Mobile-first responsive design adjustments
+   Organized by screen size breakpoints
+*/
+
+/* Tablet and mobile styles (≤ 900px) */
 @media (max-width: 900px) {
     .sidebar-content {
         position: fixed;
@@ -349,7 +602,6 @@ body {
         box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
     }
 
-    /* Overlay for mobile navigation */
     .app-shell.collapsed::before {
         content: '';
         position: fixed;
@@ -381,9 +633,48 @@ body {
     .welcome-card {
         padding: var(--space-md);
     }
+
+    /* Dashboard responsive adjustments */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-links {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: var(--space-md);
+        align-items: flex-start;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
 }
 
-/* Small mobile devices */
+/* Medium screen adjustments (≤ 1200px) */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Small tablet adjustments (≤ 768px) */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .stat-item {
+        min-height: 70px;
+        padding: var(--space-sm);
+    }
+}
+
+/* Mobile phone adjustments (≤ 480px) */
 @media (max-width: 480px) {
     .page-body {
         padding: var(--space-sm);
@@ -396,9 +687,41 @@ body {
     .brand-text {
         font-size: 1rem;
     }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-item {
+        min-height: 60px;
+        padding: var(--space-sm);
+    }
+
+    .stat-number {
+        font-size: 1.3rem;
+    }
+
+    .stat-icon {
+        font-size: 1.3rem;
+    }
+
+    .quick-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .quick-actions .btn-toggle {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
 }
 
-/* ===== ANIMATIONS ===== */
+/* ===== 9. UTILITIES & ACCESSIBILITY ===== */
+/* 
+   Helper classes and accessibility enhancements
+   Screen reader support, reduced motion, high contrast mode
+*/
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -409,7 +732,6 @@ body {
     }
 }
 
-/* ===== UTILITY CLASSES ===== */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -422,7 +744,7 @@ body {
     border: 0;
 }
 
-/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
