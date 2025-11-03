@@ -13,6 +13,7 @@ namespace _2._Sem_Project_Eksamen_System
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<EksamensDBContext>();
+            // Muliggør dependency injection for ICRUD interface, hvor funktionaliteten referers til EFEksamenService
             builder.Services.AddTransient<ICRUD<Exam>, EFEksamenService>();
 
             var app = builder.Build();
