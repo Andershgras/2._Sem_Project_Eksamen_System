@@ -38,17 +38,17 @@
                 <!-- FInder navnet på Class, hvis null -> "ikke tildelt"-->
                 <td>@(eksamen.Class?.ClassName ?? "Ikke tildelt")</td>
                 <td>
-                    @(eksamen.ExaminationTeachers?
-                                    .FirstOrDefault(et => et.Rolle != null &&
-                                    (et.Rolle.Equals("Eksaminator", System.StringComparison.OrdinalIgnoreCase) ||
-                                    et.Rolle.Equals("Examinator", System.StringComparison.OrdinalIgnoreCase) ||
+                    @(eksamen.TeachersToExams?
+                                    .FirstOrDefault(et => et.Role != null &&
+                                    (et.Role.Equals("Eksaminator", System.StringComparison.OrdinalIgnoreCase) ||
+                                    et.Role.Equals("Examinator", System.StringComparison.OrdinalIgnoreCase) ||
                                     et.Rolle.Equals("Examiner", System.StringComparison.OrdinalIgnoreCase)))
                                     ?.Teacher?.TeacherName ?? "Ikke tildelt")
                 </td>
             <td>
-                    @(eksamen.ExaminationTeachers?
-                                    .FirstOrDefault(et => et.Rolle != null &&
-                                    (et.Rolle.Equals("Censor", System.StringComparison.OrdinalIgnoreCase)))
+                    @(eksamen.TeachersToExams?
+                                    .FirstOrDefault(et => et.Role != null &&
+                                    (et.Role.Equals("Censor", System.StringComparison.OrdinalIgnoreCase)))
                                     ?.Teacher?.TeacherName ?? "Ikke tildelt")
             </td>
             <td>@(eksamen.ExamStartDate?.ToString("yyyy-MM-dd") ?? "")</td>
