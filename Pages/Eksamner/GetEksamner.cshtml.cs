@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using _2._Sem_Project_Eksamen_System.Interfaces;
-using _2._Sem_Project_Eksamen_System.Models;
+using _2._Sem_Project_Eksamen_System.Models1;
 
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
@@ -14,7 +14,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
 
         [BindProperty(SupportsGet = true)]
-        public GenericFilter ? Filter { get; set; }
+        public GenericFilter? Filter { get; set; }
 
         public GetEksamnerModel(ICRUD<Exam> service)
         {

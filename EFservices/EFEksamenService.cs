@@ -1,5 +1,5 @@
 ﻿using _2._Sem_Project_Eksamen_System.Interfaces;
-using _2._Sem_Project_Eksamen_System.Models;
+using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -17,7 +17,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         {
             return context.Exams
            .Include(e => e.Class)
-           .Include(e => e.ExaminationTeachers)
+           .Include(e => e.TeachersToExams)
                .ThenInclude(et => et.Teacher)
            .AsNoTracking()
            .OrderBy(e => e.ExamStartDate)
