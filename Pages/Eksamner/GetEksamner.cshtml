@@ -42,7 +42,7 @@
                                     .FirstOrDefault(et => et.Role != null &&
                                     (et.Role.Equals("Eksaminator", System.StringComparison.OrdinalIgnoreCase) ||
                                     et.Role.Equals("Examinator", System.StringComparison.OrdinalIgnoreCase) ||
-                                    et.Rolle.Equals("Examiner", System.StringComparison.OrdinalIgnoreCase)))
+                                    et.Role.Equals("Examiner", System.StringComparison.OrdinalIgnoreCase)))
                                     ?.Teacher?.TeacherName ?? "Ikke tildelt")
                 </td>
             <td>
