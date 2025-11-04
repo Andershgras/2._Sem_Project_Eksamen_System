@@ -16,6 +16,8 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         public IEnumerable<Exam> GetAll()
         {
             return context.Exams
+           .Include(e => e.StudentsToExams)
+           .Include(e => e.RoomsToExams)
            .Include(e => e.Class)
            .Include(e => e.TeachersToExams)
                .ThenInclude(et => et.Teacher)

@@ -51,7 +51,7 @@
                                     (et.Role.Equals("Censor", System.StringComparison.OrdinalIgnoreCase)))
                                     ?.Teacher?.TeacherName ?? "Ikke tildelt")
             </td>
-            <td>@(eksamen.ExamStartDate?.ToString("yyyy-MM-dd") ?? "")</td>
+            <td>@(eksamen.ExamStartDate?.ToString("dd-mm-yyyy") ?? "")</td>
         </tr>
             
         }
