@@ -1,4 +1,36 @@
-﻿@page
+﻿@page "{id:int}"
 @model _2._Sem_Project_Eksamen_System.Pages.Eksamner.Edit_ExamModel
 @{
+    ViewData["Title"] = "Edit Exam";
 }
+
+<h2>Edit Exam</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Exam.ExamId" />
+    <input type="hidden" asp-for="Exam.ClassId" />
+    
+    <div class="mb-3">
+        <label asp-for="Exam.ExamName" class="form-label">Exam Name</label>
+        <input asp-for="Exam.ExamName" class="form-control" />
+        <span asp-validation-for="Exam.ExamName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
+        <input asp-for="Exam.ExamStartDate" class="form-control" type="date" />
+        <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Exam.Description" class="form-label">Description</label>
+        <textarea asp-for="Exam.Description" class="form-control"></textarea>
+        <span asp-validation-for="Exam.Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+

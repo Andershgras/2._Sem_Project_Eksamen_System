@@ -16,7 +16,7 @@
         <a asp-page="/Eksamner/GetEksamner">Back to Full List </a>
     </p>
 </form>
-
+@* 
 <div>
     @foreach (var eksamen in Model.Eksamner)
     {
@@ -39,7 +39,7 @@
             </div>
         </div>
     }
-</div>
+</div> *@
 
 <
 
@@ -50,8 +50,8 @@
             <th> Dato</th>
             <th> Title</th>
             <th> Hold ID</th>
-            <th> Eksaminator</th>
-            <th> Censor</th>
+            <@* th> Eksaminator</th>
+            <th> Censor</th> *@
             <th> Antal Stud</th>
             <th> Re-Eksamen-Dato</th>
         </tr>
@@ -65,7 +65,7 @@
                 <td>@eksamen.ExamName</td>
                 <!-- FInder navnet på Class, hvis null -> "ikke tildelt"-->
                 <td>@(eksamen.Class?.ClassName ?? "Ikke tildelt")</td>
-                <td>
+               @*  <td>
                     @(eksamen.TeachersToExams?
                                     .FirstOrDefault(et => et.Role != null &&
                                     (et.Role.Equals("Eksaminator", System.StringComparison.OrdinalIgnoreCase) ||
@@ -78,9 +78,15 @@
                                     .FirstOrDefault(et => et.Role != null &&
                                     (et.Role.Equals("Censor", System.StringComparison.OrdinalIgnoreCase)))
                                     ?.Teacher?.TeacherName ?? "Ikke tildelt")
-            </td>
+            </td> *@
             <td>@(eksamen.StudentsToExams.Count)</td>
             <td>@(eksamen?.ReExam?.ExamStartDate.ToString())</td>
+            <td>
+                <a asp-page="Edit_Exam" asp-route-id="@eksamen.ExamId">Edit</a> |
+            </td>
+            <td>
+                <a href="#" class="btn btn-danger">Slet</a>
+            </td>
         </tr>
             
         }
