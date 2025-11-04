@@ -16,13 +16,15 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         public IEnumerable<Exam> GetAll()
         {
             return context.Exams
-           .Include(e => e.StudentsToExams)
-           .Include(e => e.RoomsToExams)
            .Include(e => e.Class)
+           .Include(e => e.StudentsToExams)
+                .ThenInclude(se => se.Student)
+           .Include(e => e.RoomsToExams)
+                .ThenInclude(re => re.Room)
            .Include(e => e.TeachersToExams)
                .ThenInclude(et => et.Teacher)
            .AsNoTracking()
-           .OrderBy(e => e.ExamStartDate)
+           .OrderBy(e => e.ExamId)
            .ToList();
         }
 

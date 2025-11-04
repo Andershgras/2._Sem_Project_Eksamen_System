@@ -5,6 +5,8 @@
 }
 
 <h1>GetEksamner</h1>
+<a href="#" class="btn btn-primary">Create Eksamen</a>
+
 <!-- Filter -->
 <form>
     <p>
@@ -15,17 +17,43 @@
     </p>
 </form>
 
+<div>
+    @foreach (var eksamen in Model.Eksamner)
+    {
+        <div class="card mb-3">
+            <h6 class="card-header">Dato:@(eksamen.ExamStartDate?.ToString("dd-MM-yyyy") ?? "")</h6>
+            <div class="card-body">
+                <h5 class="card-title">@eksamen.ExamName - Hold: @(eksamen.Class?.ClassName ?? "Ikke tildelt")</h5>
+                <p class="card-text"><h6>Eksaminator:</h6> @(eksamen.TeachersToExams?
+                                    .FirstOrDefault(et => et.Role != null &&
+                                    (et.Role.Equals("Eksaminator", System.StringComparison.OrdinalIgnoreCase) ||
+                                    et.Role.Equals("Examinator", System.StringComparison.OrdinalIgnoreCase) ||
+                                    et.Role.Equals("Examiner", System.StringComparison.OrdinalIgnoreCase)))
+                                    ?.Teacher?.TeacherName ?? "Ikke tildelt")
+                </p>
+                <p class="card-text"><h6>Censor:</h6> @(eksamen.CensorType?.ToString())
+                <p class="card-text"><h6>Discription: </h6>@(eksamen.Description?.ToString())</p>                
+                <a href="#" class="btn btn-primary">Edit</a>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <a href="#" class="btn btn-danger">Slet</a>
+            </div>
+        </div>
+    }
+</div>
+
+<
 
 <!-- Tabel over Eksamner -->
 <table class="table">
     <thead>
         <tr>
-            <th> Eksamens ID</th>
+            <th> Dato</th>
             <th> Title</th>
             <th> Hold ID</th>
             <th> Eksaminator</th>
             <th> Censor</th>
-            <th> Dato</th>
+            <th> Antal Stud</th>
+            <th> Re-Eksamen-Dato</th>
         </tr>
     </thead>
     <tbody>
@@ -33,7 +61,7 @@
         @foreach (var eksamen in Model.Eksamner)
         {
             <tr>
-                <td>@eksamen.ExamId</td>
+                <td>@(eksamen.ExamStartDate?.ToString("dd-MM-yyyy") ?? "")</td>
                 <td>@eksamen.ExamName</td>
                 <!-- FInder navnet på Class, hvis null -> "ikke tildelt"-->
                 <td>@(eksamen.Class?.ClassName ?? "Ikke tildelt")</td>
@@ -51,7 +79,8 @@
                                     (et.Role.Equals("Censor", System.StringComparison.OrdinalIgnoreCase)))
                                     ?.Teacher?.TeacherName ?? "Ikke tildelt")
             </td>
-            <td>@(eksamen.ExamStartDate?.ToString("dd-mm-yyyy") ?? "")</td>
+            <td>@(eksamen.StudentsToExams.Count)</td>
+            <td>@(eksamen?.ReExam?.ExamStartDate.ToString())</td>
         </tr>
             
         }
