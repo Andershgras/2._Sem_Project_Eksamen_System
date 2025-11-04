@@ -12,3 +12,17 @@ Template filled with connection string:
 Scaffold-DbContext "Data Source=mssql11.unoeuro.com;Initial Catalog=andershgras_dk_db_eksamenproject;User ID=andershgras_dk;Password=dBFybtpRwacg3rG9zhm5;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models1 -ContextDir Models1 -Context MovieDBContext -DataAnnotations -Force
 
 is placed in Package Manager Console in Visual Studio.
+
+
+ string? connectionString = null;
+    public EksamensDBContext(IConfiguration conf)
+    {
+        connectionString = conf.GetConnectionString("EksamensDBCornection");
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    {
+        //options.UseSqlServer (@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=RegistrationDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        //Finder appsettings.json connection string
+        options.UseSqlServer(connectionString);
+    }
