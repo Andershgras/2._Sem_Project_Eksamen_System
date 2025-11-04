@@ -26,6 +26,7 @@ namespace _2._Sem_Project_Eksamen_System
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
