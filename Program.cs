@@ -17,7 +17,7 @@ namespace _2._Sem_Project_Eksamen_System
             builder.Services.AddTransient<ICRUD<Exam>, EFEksamenService>();
             builder.Services.AddScoped<ICRUD<Room>, EFRoomService>();
             builder.Services.AddScoped<ICRUDT<Student>, EFStudentService>();
-            
+            builder.Services.AddScoped<ICRUD<Class>, EFHoldService>();
 
             var app = builder.Build();
 
