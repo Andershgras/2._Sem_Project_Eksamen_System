@@ -7,7 +7,7 @@
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
-            <h1>Studenter Oversigt</h1>
+            <h1>Studenter Overview</h1>
             <p>Se og administrer alle studenter i systemet</p>
         </div>
 
@@ -23,7 +23,7 @@
                     <thead>
                         <tr>
                             <th>Student ID</th>
-                            <th>Hold</th>
+                            <th>Class/Hold</th>
                             <th>Navn</th>
                             <th>Email</th>
                             <th class="actions-header">Handlinger</th>
@@ -37,7 +37,7 @@
                                 <tr>
                                     <td>@student.StudentId</td>
                                     <td>
-                                        <span class="not-assigned">Ikke tildelt</span>
+                                        <span class="not-assigned">Not Assigned</span>
                                     </td>
                                     <td>@student.StudentName</td>
                                     <td>
@@ -47,7 +47,7 @@
                                         }
                                         else
                                         {
-                                            <span class="not-assigned">Ikke angivet</span>
+                                            <span class="not-assigned">Not Given</span>
                                         }
                                     </td>
                                     <td class="action-buttons">
