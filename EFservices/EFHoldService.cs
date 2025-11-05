@@ -6,9 +6,9 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 {
     public class EFHoldService : ICRUD<Class>
     {
-        private readonly EksamensDBContext _context;
+        EksamensDBContext _context;
 
-        EFHoldService(EksamensDBContext context)
+        public EFHoldService(EksamensDBContext context)
         {
             _context = context;
         }
