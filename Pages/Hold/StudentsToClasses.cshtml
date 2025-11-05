@@ -1,0 +1,30 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Hold.StudentsToClassesModel
+@{
+    ViewData["Title"] = "Students To Classes";
+}
+
+
+<h1>HOld - @(Model.ClassItem.ClassName)</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var s in Model.Students)
+    {
+        <tr>
+            <td>@s.StudentId.</td>
+            <td>@s.StudentName</td>
+            <td>@s.Email</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-page="Index" class="btn btn-secondary mb-3"> <i class="bi bi-arrow-left"></i> Back to Hold List</a>

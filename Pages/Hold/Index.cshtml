@@ -27,12 +27,12 @@
     @foreach (var hold in Model.HoldList)
     {
         <tr>
-            
-            <td><a href="#" class="btn btn-icon"><i class="bi bi-list"></i></a></td>
+            <td><a asp-page="StudentsToClasses" class="btn btn-icon" asp-route-id="@hold.ClassId"><i class="bi bi-list"></i></a></td>
             <td>@hold.ClassId</td>
             <td>@hold.ClassName</td>
             <td>@hold.StudentsToClasses.Count</td>
         </tr>
+
     }
     </tbody>
 </table>
