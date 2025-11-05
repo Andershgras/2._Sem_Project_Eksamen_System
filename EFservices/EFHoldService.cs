@@ -43,9 +43,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
      
         public Class? GetItemById(int id)
         {
-            return _context.Classes.Include(c => c.StudentsToClasses)
-            .ThenInclude(stc => stc.Student)
-            .FirstOrDefault(c => c.ClassId == id);
+            return _context.Classes
+                .Include(c => c.StudentsToClasses)
+                    .ThenInclude(stc => stc.Student)
+                .Include(c => c.Exams) 
+                .FirstOrDefault(c => c.ClassId == id);
         }
        
         public void DeleteItem(int id)

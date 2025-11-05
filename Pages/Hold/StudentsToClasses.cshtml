@@ -6,6 +6,11 @@
 
 
 <h1>HOld - @(Model.ClassItem.ClassName)</h1>
+<nav>
+    <a asp-page="StudentsToClasses" asp-route-id="@Model.ClassItem.ClassId" class="btn btn-primary">Students</a>
+    <a asp-page="ExamsToClass" asp-route-id="@Model.ClassItem.ClassId" class="btn btn-outline-primary">Exams</a>
+</nav>
+<!-- nav between this corlection over students and a colection of exams this class is linked to-->
 
 <table class="table">
     <thead>
@@ -22,6 +27,7 @@
             <td>@s.StudentId.</td>
             <td>@s.StudentName</td>
             <td>@s.Email</td>
+            
         </tr>
     }
     </tbody>

@@ -1,0 +1,30 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Hold.ExamsToClassModel
+@{
+    ViewData["Title"] = "Exams To Class";
+}
+
+<h1>Exams for @(Model.ClassItem.ClassName)</h1>
+
+<nav>
+    <a asp-page="StudentsToClasses" asp-route-id="@Model.ClassItem.ClassId" class="btn btn-primary">Students</a>
+    <a asp-page="ExamsToClass" asp-route-id="@Model.ClassItem.ClassId" class="btn btn-outline-primary">Exams</a>
+</nav>
+
+<table class="table">
+    <thead>
+        <tr><th>Exam ID</th><th>Exam Title</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var exam in Model.Exams)
+        {
+            <tr>
+                <td>@exam.ExamId</td>
+                <td>@exam.ExamName</td>
+                <td>@exam.ExamStartDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-page="Index" class="btn btn-secondary mb-3"> <i class="bi bi-arrow-left"></i> Back to Hold List</a>
