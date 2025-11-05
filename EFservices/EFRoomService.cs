@@ -50,5 +50,16 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.Rooms.Remove(room);
             _context.SaveChanges();
         }
+        public IEnumerable<Room> Search(GenericFilter filter)
+        {
+            var term = (filter?.FilterByName ?? string.Empty).Trim().ToLower();
+
+            var query = _context.Rooms.AsNoTracking();
+
+            if (!string.IsNullOrEmpty(term))
+                query = query.Where(r => r.Name.ToLower().Contains(term));
+
+            return query.OrderBy(r => r.RoomId).ToList();
+        }
     }
 }

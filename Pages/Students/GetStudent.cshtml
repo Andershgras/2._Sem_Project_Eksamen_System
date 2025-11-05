@@ -1,0 +1,79 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Eksamner.Students.GetStudentModel
+@{
+    ViewData["Title"] = "Studenter Oversigt";
+}
+
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Studenter Oversigt</h1>
+            <p>Se og administrer alle studenter i systemet</p>
+        </div>
+
+        <!-- TABLE DISPLAY SECTION -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Alle Studenter</h2>
+                <a asp-page="./CreateStudent" class="btn-toggle">Tilføj ny student</a>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Hold</th>
+                            <th>Navn</th>
+                            <th>Email</th>
+                            <th class="actions-header">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Students != null && Model.Students.Any())
+                        {
+                            foreach (var student in Model.Students)
+                            {
+                                <tr>
+                                    <td>@student.StudentId</td>
+                                    <td>
+                                        @* Placeholder for hold/klasse - replace with correct navigation property if available *@
+                                        <span class="not-assigned">Ikke tildelt</span>
+                                    </td>
+                                    <td>@student.StudentName</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(student.Email))
+                                        {
+                                            @student.Email
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">Ikke angivet</span>
+                                        }
+                                    </td>
+                                    <td class="action-buttons">
+                                        <a asp-page="./EditStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-edit">Rediger</a>
+                                        <a asp-page="./DetailsStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">Detaljer</a>
+                                        <a asp-page="./DeleteStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-delete">Slet</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="no-data">
+                                    <div class="empty-state">
+                                        <span class="empty-icon">👥</span>
+                                        <p>Ingen studenter fundet</p>
+                                        <a asp-page="./CreateStudent" class="btn-toggle">Tilføj første student</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
