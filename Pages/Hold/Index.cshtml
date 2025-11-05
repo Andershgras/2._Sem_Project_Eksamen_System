@@ -1,0 +1,28 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.NewFolder.IndexModel
+@{
+}
+
+<h1>Hold</h1>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Hold ID</th>
+            <th>Hold Navn</th>
+            <th>Antal Stud</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var hold in Model.HoldListe)
+    {
+        <tr>
+            <td>@hold.ClassId</td>
+            <td>@hold.ClassName</td>
+            <td>@hold</td>
+        </tr>
+    }
+    </tbody>
+</table>
