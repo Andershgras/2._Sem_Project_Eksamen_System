@@ -20,6 +20,8 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         public async Task<IEnumerable<Student>> GetAll()
         {
             return await _context.Students
+                .Include(s => s.StudentsToClasses)  // JOIN StudentsToClasses
+                    .ThenInclude(sc => sc.Class)    // JOIN Class
                 .Include(s => s.StudentsToExams)
                     .ThenInclude(se => se.Exam)
                 .AsNoTracking()
