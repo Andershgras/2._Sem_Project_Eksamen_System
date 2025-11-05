@@ -13,26 +13,15 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         [BindProperty]
         public Student Student { get; set; } = new Student();
 
-        public CreateStudentModel(ICRUDT<Student> service)
-        {
-            _service = service;
-        }
+        public CreateStudentModel(ICRUDT<Student> service) => _service = service;
 
-        public void OnGet()
-        {
-            // show empty form
-        }
+        public void OnGet() { }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
+            if (!ModelState.IsValid) return Page();
             await _service.AddItem(Student);
             return RedirectToPage("/Students/GetStudent");
         }
-        
     }
 }
