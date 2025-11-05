@@ -14,26 +14,52 @@
         <div class="section-card">
             <div class="section-header">
                 <h2>Ny Student</h2>
-                <a asp-page="/Students/GetStudent" class="btn-toggle" role="menuitem">Tilbage til oversigt</a>
+                <a asp-page="/Students/GetStudent" class="btn-toggle">Tilbage til oversigt</a>
             </div>
 
             <div class="form-card">
                 <form method="post">
-                    <div class="form-group">
-                        <label asp-for="Student.StudentName"></label>
-                        <input asp-for="Student.StudentName" class="form-control" />
-                        <span asp-validation-for="Student.StudentName" class="text-danger"></span>
-                    </div>
+                    <div class="form-grid">
+                        <!-- Student Name -->
+                        <div class="form-group">
+                            <label asp-for="Student.StudentName" class="form-label">Fulde navn *</label>
+                            <input asp-for="Student.StudentName" class="form-control" placeholder="Indtast studentens fulde navn" />
+                            <span asp-validation-for="Student.StudentName" class="text-danger"></span>
+                        </div>
 
-                    <div class="form-group">
-                        <label asp-for="Student.Email"></label>
-                        <input asp-for="Student.Email" class="form-control" />
-                        <span asp-validation-for="Student.Email" class="text-danger"></span>
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label asp-for="Student.Email" class="form-label">Email *</label>
+                            <input asp-for="Student.Email" class="form-control" placeholder="indtast@student.email" />
+                            <span asp-validation-for="Student.Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Class Dropdown -->
+                        <div class="form-group">
+                            <label asp-for="SelectedClassId" class="form-label">Alocated Class</label>
+                            <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control">
+                                <option value="">Vælg en klasse</option>
+                            </select>
+                            <span asp-validation-for="SelectedClassId" class="text-danger"></span>
+                            <small class="form-text text-muted">Vælg hvilken klasse studenten skal tilknyttes</small>
+                        </div>
+
+                        <!-- Placeholder for additional fields -->
+                        <div class="form-group">
+                            <label class="form-label">Studieprogram</label>
+                            <input class="form-control" placeholder="Valgfrit studieprogram" />
+                        </div>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Opret</button>
-                        <a asp-page="/Students/GetStudent" class="btn btn-secondary" role="menuitem">Annuller</a>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-icon">➕</span>
+                            Opret Student
+                        </button>
+                        <a asp-page="/Students/GetStudent" class="btn btn-secondary">
+                            <span class="btn-icon">↩️</span>
+                            Annuller
+                        </a>
                     </div>
                 </form>
             </div>
