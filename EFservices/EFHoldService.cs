@@ -16,7 +16,12 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         public IEnumerable<Class> GetAll()
         {
             var items = _context.Classes
-                .AsNoTracking().OrderBy(c => c.ClassId).ToList();
+                .Include(c => c.StudentsToClasses)
+                    .ThenInclude(sc => sc.Student)
+                .AsNoTracking()
+                .OrderBy(c => c.ClassId)
+                .ToList();
+
             return items;
         }
 

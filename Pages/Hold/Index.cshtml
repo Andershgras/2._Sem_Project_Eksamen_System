@@ -5,23 +5,33 @@
 
 <h1>Hold</h1>
 
+<form>
+    <p>
+        Search: <input type="text" asp-for="Filter.FilterByName" />
 
+        <input type="submit" value="Filter" />
+        <a asp-page="/Eksamner/GetEksamner">Back to Full List </a>
+    </p>
+</form>
 
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>Hold ID</th>
             <th>Hold Navn</th>
             <th>Antal Stud</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var hold in Model.HoldListe)
+    @foreach (var hold in Model.HoldList)
     {
         <tr>
+            
+            <td><a href="#" class="btn btn-icon"><i class="bi bi-list"></i></a></td>
             <td>@hold.ClassId</td>
             <td>@hold.ClassName</td>
-            <td>@hold</td>
+            <td>@hold.StudentsToClasses.Count</td>
         </tr>
     }
     </tbody>
