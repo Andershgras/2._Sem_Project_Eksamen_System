@@ -31,7 +31,7 @@ public partial class Exam
     [Unicode(false)]
     public string? Format { get; set; }
 
-    public bool? ExamPatrol { get; set; }
+    public bool ExamPatrol { get; set; }
 
     public DateOnly? ExamStartDate { get; set; }
 
@@ -39,9 +39,9 @@ public partial class Exam
 
     public DateOnly? DeliveryDate { get; set; }
 
-    public bool? IsReExam { get; set; }
+    public bool IsReExam { get; set; }
 
-    public bool? IsFinalExam { get; set; }
+    public bool IsFinalExam { get; set; }
 
     [Column(TypeName = "text")]
     public string? Description { get; set; }

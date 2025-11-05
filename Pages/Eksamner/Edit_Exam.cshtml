@@ -7,150 +7,96 @@
 <h2>Edit Exam (@(Model.Exam.ExamId)) @Model.Exam.ExamName</h2>
 
 <form method="post">
+    <!-- ExamId (Hidden) -->
     <input type="hidden" asp-for="Exam.ExamId" />
-    
-    
+
+    <!-- ReExamId (Hidden, unless you want user to select/enter) -->
+    <input type="hidden" asp-for="Exam.ReExamId" />
+
+    <!-- Exam Name -->
     <div class="mb-3">
-        
-        <label asp-for="Exam.ExamName" class="form-label">Exam Name</label>
+        <label asp-for="Exam.ExamName" class="form-label"></label>
         <input asp-for="Exam.ExamName" class="form-control" />
         <span asp-validation-for="Exam.ExamName" class="text-danger"></span>
     </div>
 
-    <!-- Date -->
-    <!-- Validate start og end date-->
-    <div class="row mb-3">
-        <div class="col">
-                <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
-                <input asp-for="Exam.ExamStartDate" class="form-control" type="date" />
-                <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
-        </div>
-        <div class="col">
-                <label asp-for="Exam.ExamEndDate" class="form-label">Slut Dato</label>
-                <input asp-for="Exam.ExamEndDate" class="form-control" type="date" />
-                <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
-        </div>
-        <div class="col-6">
-            <!-- buffer-->
-        </div>
-    </div>
-
-    <!-- Eksaminatore-->
-
-    <!-- Unervier logic-->
-
-
-    <!-- Censor Type -->
-    <div class="row mb-3">
-        <div class="col">
-            <label asp-for="Exam.CensorType" class="form-label">Censor TYpe</label>
-            <select asp-for="Exam.CensorType" class="form-select">
-                <option value="Intern">Intern</option>
-                <option value="Extern">Extern</option>
-            </select>
-            <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
-        </div>
-        <div class="col-10">
-            <!-- buffer-->
-        </div>
-    </div>
-
-    <!-- ReExksamen Logik-->
-
-
-
+    <!-- Class (Dropdown) -->
     <div class="mb-3">
-        <label asp-for="Exam.Description" class="form-label">Description</label>
+        <label asp-for="Exam.ClassId" class="form-label">Hold</label>
+        <select asp-for="Exam.ClassId" class="form-select" asp-items="Model.ClassList">
+            <option value="">-- Select Class --</option>
+        </select>
+        <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
+    </div>
+
+    <!-- CensorType (Dropdown) -->
+    <div class="mb-3">
+        <label asp-for="Exam.CensorType" class="form-label"></label>
+        <select asp-for="Exam.CensorType" class="form-select">
+            <option value="">-- Select --</option>
+            <option value="Intern">Intern</option>
+            <option value="Extern">Extern</option>
+        </select>
+        <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
+    </div>
+
+    <!-- Format -->
+    <div class="mb-3">
+        <label asp-for="Exam.Format" class="form-label"></label>
+        <input asp-for="Exam.Format" class="form-control" />
+        <span asp-validation-for="Exam.Format" class="text-danger"></span>
+    </div>
+
+    <!-- ExamPatrol (Checkbox) -->
+    <div class="mb-3 form-check">
+        <input asp-for="Exam.ExamPatrol" class="form-check-input" type="checkbox" />
+        <label asp-for="Exam.ExamPatrol" class="form-check-label"></label>
+        <span asp-validation-for="Exam.ExamPatrol" class="text-danger"></span>
+    </div>
+
+    <!-- ExamStartDate -->
+    <div class="mb-3">
+        <label asp-for="Exam.ExamStartDate" class="form-label"></label>
+        <input asp-for="Exam.ExamStartDate" type="date" class="form-control" />
+        <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
+    </div>
+
+    <!-- ExamEndDate -->
+    <div class="mb-3">
+        <label asp-for="Exam.ExamEndDate" class="form-label"></label>
+        <input asp-for="Exam.ExamEndDate" type="date" class="form-control" />
+        <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
+    </div>
+
+    <!-- DeliveryDate -->
+    <div class="mb-3">
+        <label asp-for="Exam.DeliveryDate" class="form-label"></label>
+        <input asp-for="Exam.DeliveryDate" type="date" class="form-control" />
+        <span asp-validation-for="Exam.DeliveryDate" class="text-danger"></span>
+    </div>
+
+    <!-- IsReExam (Checkbox) -->
+    <div class="mb-3 form-check">
+        <input asp-for="Exam.IsReExam" class="form-check-input" type="checkbox" />
+        <label asp-for="Exam.IsReExam" class="form-check-label"></label>
+        <span asp-validation-for="Exam.IsReExam" class="text-danger"></span>
+    </div>
+
+    <!-- IsFinalExam (Checkbox) -->
+    <div class="mb-3 form-check">
+        <input asp-for="Exam.IsFinalExam" class="form-check-input" type="checkbox"/>
+        <label asp-for="Exam.IsFinalExam" class="form-check-label">Is Final Exam</label>
+        <span asp-validation-for="Exam.IsFinalExam" class="text-danger"></span>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+        <label asp-for="Exam.Description" class="form-label"></label>
         <textarea asp-for="Exam.Description" class="form-control"></textarea>
         <span asp-validation-for="Exam.Description" class="text-danger"></span>
     </div>
 
-    <!-- Class -->
-    <!-- Man skal kunne søge i classerne-->
-    
-    <div>
-        <label asp-for="Exam.Class.ClassName" class="form-label">Class</label>
-        <!-- nneds a colection of valid classes in the cs file-->
-        @* <select asp-for="Exam.Class.ClassName" class="form-select" asp-items="">
-            <option value="">-- Select Class --</option>
-        </select>
-        <span asp-validation-for="Exam.ClassId" class="text-danger"></span> *@
-    </div>
-
-
-    <!-------------------------------------------------------------------------------------------------------------->
-    <hr />
-
-    <!-- Edit tilhørende Re eksamen-->
-    <<h2>Edit ReExam (@(Model.Exam.ReExam?.ExamId)) @(Model.Exam.ReExam?.ExamName ?? "ikke givet")</h2>
-
-    <div class="mb-3">
-
-        <label asp-for="Exam.ReExam.ExamName" class="form-label">Exam Name</label>
-        <input asp-for="Exam.ReExam.ExamName" class="form-control" />
-        <span asp-validation-for="Exam.ReExam.ExamName" class="text-danger"></span>
-    </div>
-
-    <!-- Date -->
-    <!-- Validate start og end date-->
-    <div class="row mb-3">
-        <div class="col">
-            <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
-            <input asp-for="Exam.ExamStartDate" class="form-control" type="date" />
-            <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
-        </div>
-        <div class="col">
-            <label asp-for="Exam.ExamEndDate" class="form-label">Slut Dato</label>
-            <input asp-for="Exam.ExamEndDate" class="form-control" type="date" />
-            <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
-        </div>
-        <div class="col-6">
-            <!-- buffer-->
-        </div>
-    </div>
-
-    <!-- Eksaminatore-->
-    <!-- Unervier logic-->
-    <!-- Censor Type -->
-    <div class="row mb-3">
-        <div class="col">
-            <label asp-for="Exam.CensorType" class="form-label">Censor TYpe</label>
-            <select asp-for="Exam.CensorType" class="form-select">
-                <option value="Intern">Intern</option>
-                <option value="Extern">Extern</option>
-            </select>
-            <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
-        </div>
-        <div class="col-10">
-            <!-- buffer-->
-        </div>
-    </div>
-
-    <!-- ReExksamen Logik-->
-
-
-
-    <div class="mb-3">
-        <label asp-for="Exam.Description" class="form-label">Description</label>
-        <textarea asp-for="Exam.Description" class="form-control"></textarea>
-        <span asp-validation-for="Exam.Description" class="text-danger"></span>
-    </div>
-
-    <!-- Class -->
-    <!-- Man skal kunne søge i classerne-->
-
-    <div>
-        <label asp-for="Exam.Class.ClassName" class="form-label">Class</label>
-        <!-- nneds a colection of valid classes in the cs file-->
-        @* <select asp-for="Exam.Class.ClassName" class="form-select" asp-items="">
-            <option value="">-- Select Class --</option>
-        </select>
-        <span asp-validation-for="Exam.ClassId" class="text-danger"></span> *@
-    </div>
-
-
+    <!-- Submit/Cancel -->
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">Cancel</a>
-    
 </form>
-
