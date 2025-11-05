@@ -90,13 +90,13 @@
         <span asp-validation-for="Exam.Description" class="text-danger"></span>
     </div>
 
-    <hr />
-
     <!-- Create ReExam? Checkbox -->
     <div class="mb-3 form-check">
         <input asp-for="CreateReExam" type="checkbox" class="form-check-input" id="createReExamBox" />
         <label class="form-check-label" for="createReExamBox">Create linked ReExam?</label>
     </div>
+
+    <hr />
 
     <!-- Optional ReExam Fields (toggle with JS if you want) -->
   
@@ -133,6 +133,8 @@
     <button type="submit" class="btn btn-primary">Create</button>
     <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">Cancel</a>
 </form>
+
+<!-- Lavet ved hjælp a Copilot-->
 
 @section Scripts {
     <script>

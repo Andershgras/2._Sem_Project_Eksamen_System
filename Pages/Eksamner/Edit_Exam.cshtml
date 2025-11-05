@@ -4,13 +4,16 @@
     ViewData["Title"] = "Edit Exam";
 }
 
-<h2>Edit Exam (@(Model.Exam.ExamId)) @Model.Exam.ExamName</h2>
+<h1>Edit Exam @Model.Exam.ExamName (@Model.Exam.ExamId)</h1>
 
 <form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <!-- -->
+    <div asp-validation-summary="All" class="text-danger"></div>
     <!-- ExamId (Hidden) -->
     <input type="hidden" asp-for="Exam.ExamId" />
 
-    <!-- ReExamId (Hidden, unless you want user to select/enter) -->
+    <!-- ReExamId (Hidden) -->
     <input type="hidden" asp-for="Exam.ReExamId" />
 
     <!-- Exam Name -->
@@ -20,18 +23,18 @@
         <span asp-validation-for="Exam.ExamName" class="text-danger"></span>
     </div>
 
-    <!-- Class (Dropdown) -->
+    <!-- Class -->
     <div class="mb-3">
-        <label asp-for="Exam.ClassId" class="form-label">Hold</label>
+        <label asp-for="Exam.ClassId" class="form-label">Class</label>
         <select asp-for="Exam.ClassId" class="form-select" asp-items="Model.ClassList">
             <option value="">-- Select Class --</option>
         </select>
         <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
     </div>
 
-    <!-- CensorType (Dropdown) -->
+    <!-- CensorType -->
     <div class="mb-3">
-        <label asp-for="Exam.CensorType" class="form-label"></label>
+        <label asp-for="Exam.CensorType" class="form-label">Censor Type</label>
         <select asp-for="Exam.CensorType" class="form-select">
             <option value="">-- Select --</option>
             <option value="Intern">Intern</option>
@@ -47,44 +50,40 @@
         <span asp-validation-for="Exam.Format" class="text-danger"></span>
     </div>
 
-    <!-- ExamPatrol (Checkbox) -->
+    <!-- ExamPatrol Checkbox -->
     <div class="mb-3 form-check">
-        <input asp-for="Exam.ExamPatrol" class="form-check-input" type="checkbox" />
-        <label asp-for="Exam.ExamPatrol" class="form-check-label"></label>
+        <input asp-for="Exam.ExamPatrol" type="checkbox" class="form-check-input" />
+        <label asp-for="Exam.ExamPatrol" class="form-check-label">Is Patrol Exam</label>
         <span asp-validation-for="Exam.ExamPatrol" class="text-danger"></span>
     </div>
 
-    <!-- ExamStartDate -->
+    <!-- Dates -->
     <div class="mb-3">
-        <label asp-for="Exam.ExamStartDate" class="form-label"></label>
+        <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
         <input asp-for="Exam.ExamStartDate" type="date" class="form-control" />
         <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
     </div>
-
-    <!-- ExamEndDate -->
     <div class="mb-3">
-        <label asp-for="Exam.ExamEndDate" class="form-label"></label>
+        <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
         <input asp-for="Exam.ExamEndDate" type="date" class="form-control" />
         <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
     </div>
-
-    <!-- DeliveryDate -->
     <div class="mb-3">
-        <label asp-for="Exam.DeliveryDate" class="form-label"></label>
+        <label asp-for="Exam.DeliveryDate" class="form-label">Delivery Date</label>
         <input asp-for="Exam.DeliveryDate" type="date" class="form-control" />
         <span asp-validation-for="Exam.DeliveryDate" class="text-danger"></span>
     </div>
 
-    <!-- IsReExam (Checkbox) -->
+    <!-- IsReExam Checkbox -->
     <div class="mb-3 form-check">
-        <input asp-for="Exam.IsReExam" class="form-check-input" type="checkbox" />
-        <label asp-for="Exam.IsReExam" class="form-check-label"></label>
+        <input asp-for="Exam.IsReExam" type="checkbox" class="form-check-input" />
+        <label asp-for="Exam.IsReExam" class="form-check-label">Is Re-Exam</label>
         <span asp-validation-for="Exam.IsReExam" class="text-danger"></span>
     </div>
 
-    <!-- IsFinalExam (Checkbox) -->
+    <!-- IsFinalExam Checkbox -->
     <div class="mb-3 form-check">
-        <input asp-for="Exam.IsFinalExam" class="form-check-input" type="checkbox"/>
+        <input asp-for="Exam.IsFinalExam" type="checkbox" class="form-check-input" />
         <label asp-for="Exam.IsFinalExam" class="form-check-label">Is Final Exam</label>
         <span asp-validation-for="Exam.IsFinalExam" class="text-danger"></span>
     </div>
@@ -96,7 +95,89 @@
         <span asp-validation-for="Exam.Description" class="text-danger"></span>
     </div>
 
-    <!-- Submit/Cancel -->
-    <button type="submit" class="btn btn-primary">Save</button>
+    <hr />
+
+    <!-- Edit ReExam? Checkbox -->
+    <div class="mb-3 form-check">
+        <input type="checkbox" id="editReExamBox" />
+        <label class="form-check-label" for="editReExamBox">Edit linked ReExam?</label>
+    </div>
+
+    <!-- ReExam block -->
+    <div id="reExamFields" style="display:none;">
+        <h4>ReExam details</h4>
+        <div class="mb-3" id="reExamPreviewBlock" style="display:none;">
+            <label class="form-label">ReExam Name Preview:</label>
+            <span id="reExamNamePreview" class="fw-bold"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ReExam.ExamName" class="form-label"></label>
+            <input asp-for="ReExam.ExamName" class="form-control" />
+            <span asp-validation-for="ReExam.ExamName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ReExam.ExamStartDate" class="form-label">ReExam Start Date</label>
+            <input asp-for="ReExam.ExamStartDate" type="date" class="form-control" />
+            <span asp-validation-for="ReExam.ExamStartDate" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ReExam.ExamEndDate" class="form-label">ReExam End Date</label>
+            <input asp-for="ReExam.ExamEndDate" type="date" class="form-control" />
+            <span asp-validation-for="ReExam.ExamEndDate" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ReExam.DeliveryDate" class="form-label">ReExam Delivery Date</label>
+            <input asp-for="ReExam.DeliveryDate" type="date" class="form-control" />
+            <span asp-validation-for="ReExam.DeliveryDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save changes</button>
     <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">Cancel</a>
 </form>
+
+
+<!-- js udbiklet i sammerbejde med copilet-->
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkbox = document.getElementById('editReExamBox');
+            const reExamFields = document.getElementById('reExamFields');
+            const reExamPreviewBlock = document.getElementById('reExamPreviewBlock');
+            const examNameInput = document.getElementById('Exam_ExamName');
+            const reExamPreview = document.getElementById('reExamNamePreview');
+
+            function toggleReExamSection() {
+                if (checkbox.checked) {
+                    reExamFields.style.display = '';
+                    reExamPreviewBlock.style.display = '';
+                    updatePreview();
+                } else {
+                    reExamFields.style.display = 'none';
+                    reExamPreviewBlock.style.display = 'none';
+                    reExamPreview.textContent = '';
+                }
+            }
+
+            function updatePreview() {
+                if (checkbox.checked && examNameInput) {
+                    const examName = examNameInput.value || '';
+                    reExamPreview.textContent = `ReEksamen-${examName}`;
+                } else {
+                    reExamPreview.textContent = '';
+                }
+            }
+
+            if (checkbox && reExamFields && reExamPreviewBlock && examNameInput && reExamPreview) {
+                reExamFields.style.display = 'none';
+                reExamPreviewBlock.style.display = 'none';
+                checkbox.checked = false;
+
+                checkbox.addEventListener('change', toggleReExamSection);
+                examNameInput.addEventListener('input', updatePreview);
+                toggleReExamSection();
+            }
+        });
+    </script>
+}

@@ -63,7 +63,7 @@
         @foreach (var eksamen in Model.Eksamner)
         {
             <tr>
-                <td><a href="#" class="btn btn-icon"><i class="bi bi-list"></i></a></td>
+                <td><a asp-page="Exam_Details" asp-route-id="@eksamen.ExamId" class="btn btn-icon"><i class="bi bi-list"></i></a></td>
                 <td>@(eksamen.ExamStartDate?.ToString("dd-MM-yyyy") ?? "")</td>
                 <td>@eksamen.ExamName</td>
                 <!-- FInder navnet på Class, hvis null -> "ikke tildelt"-->

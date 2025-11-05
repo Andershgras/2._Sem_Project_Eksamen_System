@@ -1,0 +1,104 @@
+﻿@page "{id:int}"
+@model _2._Sem_Project_Eksamen_System.Pages.Eksamner.Exam_DetailsModel
+@{
+    ViewData["Title"] = "Exam Details";
+    var exam = Model.Exam;
+    var reExam = Model.Exam.ReExam;
+}
+
+<h1>Exam Details</h1>
+@if (exam == null)
+{
+    <div class="alert alert-warning">Exam not found.</div>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">Exam ID</dt>
+        <dd class="col-sm-9">@exam.ExamId</dd>
+
+        <dt class="col-sm-3">Exam Name</dt>
+        <dd class="col-sm-9">@exam.ExamName</dd>
+        
+        <dt class="col-sm-3">Class</dt>
+        <dd class="col-sm-9">@exam.Class?.ClassName ?? "N/A"</dd>
+
+        <dt class="col-sm-3">Censor Type</dt>
+        <dd class="col-sm-9">@exam.CensorType</dd>
+
+        <dt class="col-sm-3">Format</dt>
+        <dd class="col-sm-9">@exam.Format</dd>
+
+        <dt class="col-sm-3">Exam Patrol</dt>
+        <dd class="col-sm-9">@((exam.ExamPatrol ? "Yes" : "No"))</dd>
+
+        <dt class="col-sm-3">Start Date</dt>
+        <dd class="col-sm-9">@exam.ExamStartDate?.ToString("yyyy-MM-dd")</dd>
+
+        <dt class="col-sm-3">End Date</dt>
+        <dd class="col-sm-9">@exam.ExamEndDate?.ToString("yyyy-MM-dd")</dd>
+
+        <dt class="col-sm-3">Delivery Date</dt>
+        <dd class="col-sm-9">@exam.DeliveryDate?.ToString("yyyy-MM-dd")</dd>
+
+        <dt class="col-sm-3">Is ReExam</dt>
+        <dd class="col-sm-9">@((exam.IsReExam ? "Yes" : "No"))</dd>
+
+        <dt class="col-sm-3">Is Final Exam</dt>
+        <dd class="col-sm-9">@((exam.IsFinalExam ? "Yes" : "No"))</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@exam.Description</dd>
+    </dl>
+
+    <hr />
+
+    <h3>ReExam</h3>
+    @if (reExam == null)
+    {
+        <div>N/A</div>
+    }
+    else
+    {
+        <dl class="row">
+            <dt class="col-sm-3">ReExam Name</dt>
+            <dd class="col-sm-9">@reExam.ExamName</dd>
+            <dt class="col-sm-3">Start</dt>
+            <dd class="col-sm-9">@reExam.ExamStartDate?.ToString("yyyy-MM-dd")</dd>
+            <dt class="col-sm-3">End</dt>
+            <dd class="col-sm-9">@reExam.ExamEndDate?.ToString("yyyy-MM-dd")</dd>
+            <dt class="col-sm-3">Delivery Date</dt>
+            <dd class="col-sm-9">@reExam.DeliveryDate?.ToString("yyyy-MM-dd")</dd>
+        </dl>
+    }
+
+    <hr />
+
+    <h3>Teachers</h3>
+    @if (exam.TeachersToExams == null || !exam.TeachersToExams.Any())
+    {
+        <div>No teachers assigned.</div>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var tte in exam.TeachersToExams)
+            {
+                <tr>
+                    <td>@tte.Teacher?.TeacherName</td>
+                    <td>@tte.Role</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+}
+
+<a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">Back to List</a>
