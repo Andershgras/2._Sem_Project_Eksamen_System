@@ -23,9 +23,9 @@
                     <thead>
                         <tr>
                             <th>Student ID</th>
-                            <th>Class/Hold</th>
                             <th>Navn</th>
                             <th>Email</th>
+                            <th>Class/Hold</th>
                             <th class="actions-header">Handlinger</th>
                         </tr>
                     </thead>
@@ -36,9 +36,6 @@
                             {
                                 <tr>
                                     <td>@student.StudentId</td>
-                                    <td>
-                                        <span class="not-assigned">Not Assigned</span>
-                                    </td>
                                     <td>@student.StudentName</td>
                                     <td>
                                         @if (!string.IsNullOrEmpty(student.Email))
