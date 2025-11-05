@@ -17,7 +17,7 @@ public partial class Exam
     public int? ReExamId { get; set; }
 
     [StringLength(250)]
-    [Unicode(false)]
+    [Unicode(false)] 
     public string ExamName { get; set; } = null!;
 
     [Column("ClassID")]

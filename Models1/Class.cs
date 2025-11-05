@@ -13,6 +13,10 @@ public partial class Class
     [Column("ClassID")]
     public int ClassId { get; set; }
 
+    // Example: Data-RO-F-V25B-2sem Format validation
+    [RegularExpression(
+    @"^[A-Za-z]+-[A-Z]{2}-[FV]-[VS]\d{2}[A-Z]-([1-9][0-9]?|100)sem$",
+    ErrorMessage = "ExamName must be in the format: Education-City-F/V-SeasonYearClass-nsem (e.g., Data-RO-F-V25B-2sem).")]
     [StringLength(250)]
     [Unicode(false)]
     public string ClassName { get; set; } = null!;
