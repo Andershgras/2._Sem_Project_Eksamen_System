@@ -4,7 +4,7 @@ using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner.Students
+namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class CreateStudentModel : PageModel
     {
@@ -33,6 +33,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner.Students
             await _service.AddItem(Student);
             return RedirectToPage("/Eksamner/Students/GetStudent");
         }
-        //end class
+        
     }
 }
