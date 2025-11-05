@@ -1,0 +1,47 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Teachers.IndexModel
+@{
+    ViewData["Title"] = "Undervisere";
+}
+
+<h2>Undervisere</h2>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<form method="get" class="mb-3">
+    <p>
+        Search: <input type="text" asp-for="Filter.FilterByName" />
+        <input type="submit" value="Filter" class="btn btn-outline-secondary btn-sm" />
+        <a asp-page="/Teachers/Index" class="btn btn-link btn-sm">Back to Full List</a>
+    </p>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Navn</th>
+            <th>Email</th>
+            <th style="width:90px;">Edit</th>
+            <th style="width:110px;">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model.Teachers)
+        {
+            <tr>
+                <td>@t.TeacherId</td>
+                <td>@t.TeacherName</td>
+                <td>@t.Email</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-page="Edit" asp-route-id="@t.TeacherId">Edit</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger btn-sm" asp-page="Delete" asp-route-id="@t.TeacherId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
