@@ -10,13 +10,14 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
         public EFRoomService(EksamensDBContext context) => _context = context;
 
-        public IEnumerable<Room> GetAll() => _context.Rooms.AsNoTracking().OrderBy(r => r.RoomId);
+        public IEnumerable<Room> GetAll() =>
+            _context.Rooms.AsNoTracking().OrderBy(r => r.RoomId);
 
         public IEnumerable<Room> GetAll(GenericFilter filter)
         {
-           
+            var name = (filter?.FilterByName ?? string.Empty).ToLower();
             return _context.Rooms
-                .Where(r => r.Name.ToLower().StartsWith(filter.FilterByName))
+                .Where(r => r.Name.ToLower().StartsWith(name))
                 .AsNoTracking()
                 .ToList();
         }
@@ -35,6 +36,9 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             if (item == null) throw new ArgumentNullException(nameof(item));
             var existing = _context.Rooms.Find(item.RoomId);
             if (existing == null) return;
+
+            existing.Name = item.Name;
+            existing.Capacity = item.Capacity;
 
             _context.SaveChanges();
         }

@@ -11,6 +11,11 @@
         <input asp-for="Room.Name" class="form-control" />
         <span asp-validation-for="Room.Name" class="text-danger"></span>
     </div>
+    <div class="mb-3">
+        <label asp-for="Room.Capacity" class="form-label"></label>
+        <input asp-for="Room.Capacity" class="form-control" />
+        <span asp-validation-for="Room.Capacity" class="text-danger"></span>
+    </div>
     <button type="submit" class="btn btn-success">Save</button>
     <a asp-page="Index" class="btn btn-secondary">Cancel</a>
 </form>

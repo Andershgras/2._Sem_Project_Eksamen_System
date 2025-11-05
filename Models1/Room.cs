@@ -17,7 +17,7 @@ public partial class Room
     [StringLength(250)]
     [Unicode(false)]
     public string Name { get; set; } = null!;
-
+    [Range(0, 10000, ErrorMessage = "Capacity must be between 0 & 10000")]
     public int? Capacity { get; set; }
 
     [InverseProperty("Room")]
