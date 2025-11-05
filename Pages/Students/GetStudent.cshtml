@@ -15,7 +15,7 @@
         <div class="section-card">
             <div class="section-header">
                 <h2>Alle Studenter</h2>
-                <a asp-page="./CreateStudent" class="btn-toggle">Tilføj ny student</a>
+                <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add New Student</a>
             </div>
 
             <div class="table-container">
@@ -37,7 +37,6 @@
                                 <tr>
                                     <td>@student.StudentId</td>
                                     <td>
-                                        @* Placeholder for hold/klasse - replace with correct navigation property if available *@
                                         <span class="not-assigned">Ikke tildelt</span>
                                     </td>
                                     <td>@student.StudentName</td>
@@ -66,7 +65,7 @@
                                     <div class="empty-state">
                                         <span class="empty-icon">👥</span>
                                         <p>Ingen studenter fundet</p>
-                                        <a asp-page="./CreateStudent" class="btn-toggle">Tilføj første student</a>
+                                        <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Tilføj første student</a>
                                     </div>
                                 </td>
                             </tr>

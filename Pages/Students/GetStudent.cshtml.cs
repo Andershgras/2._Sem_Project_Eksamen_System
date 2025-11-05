@@ -17,19 +17,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         [BindProperty(SupportsGet = true)]
         public GenericFilter Filter { get; set; } = new GenericFilter();
 
-        public GetStudentModel(ICRUDT<Student> service)
-        {
-            _service = service;
-        }
+        public GetStudentModel(ICRUDT<Student> service) => _service = service;
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Students = await _service.GetAll(Filter);
-            if (Students == null)
-            {
-                Students = Enumerable.Empty<Student>();
-            }
-
+            Students = await _service.GetAll(Filter) ?? Enumerable.Empty<Student>();
             return Page();
         }
     }

@@ -1,0 +1,33 @@
+﻿@page "{id:int}"
+@model _2._Sem_Project_Eksamen_System.Pages.Teachers.EditModel
+@{
+    ViewData["Title"] = "Edit Teacher";
+}
+
+<h2>Edit Teacher</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Teacher.TeacherId" />
+
+    <div class="mb-3">
+        <label asp-for="Teacher.TeacherName" class="form-label"></label>
+        <input asp-for="Teacher.TeacherName" class="form-control" />
+        <span asp-validation-for="Teacher.TeacherName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Teacher.Email" class="form-label"></label>
+        <input asp-for="Teacher.Email" class="form-control" />
+        <span asp-validation-for="Teacher.Email" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,21 @@
+﻿@page "{id:int}"
+@model _2._Sem_Project_Eksamen_System.Pages.Teachers.DeleteModel
+@{
+    ViewData["Title"] = "Delete Teacher";
+}
+
+<h2>Delete Teacher</h2>
+
+@if (Model.Teacher is null)
+{
+    <p>Teacher not found.</p>
+}
+else
+{
+    <p>Er du sikker på at du vil slette <strong>@Model.Teacher.TeacherName</strong> (ID: @Model.Teacher.TeacherId)?</p>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+}
