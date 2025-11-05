@@ -21,14 +21,20 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public IActionResult OnGet(int id)
         {
             var exam = _service.GetItemById(id);
-            if (exam == null) return RedirectToPage("/Eksamner/GetEksamner");
+            if (exam == null) {
+                return RedirectToPage("GetEksamner");
+            }
             Exam = exam;
             return Page();
         }
 
+
+        // Fungere ikke
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid) {
+                return Page();
+            }
             _service.UpdateItem(Exam);
             return RedirectToPage("/Eksamner/GetEksamner");
         }

@@ -1,5 +1,6 @@
 ﻿using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -67,6 +68,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 context.Entry(existingExam).CurrentValues.SetValues(item);
                 context.SaveChanges();
             }
+           
         }
 
 

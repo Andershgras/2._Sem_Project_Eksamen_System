@@ -5,7 +5,8 @@
 }
 
 <h1>GetEksamner</h1>
-<a href="#" class="btn btn-primary">Create Eksamen</a>
+
+<a asp-page="Create_Exam" class="btn btn-primary mb-3"> <i class="bi bi-plus"></i> Create New Exam</a>
 
 <!-- Filter -->
 <form>
@@ -47,6 +48,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th> </th>
             <th> Dato</th>
             <th> Title</th>
             <th> Hold ID</th>
@@ -61,6 +63,7 @@
         @foreach (var eksamen in Model.Eksamner)
         {
             <tr>
+                <td><a href="#" class="btn btn-icon"><i class="bi bi-list"></i></a></td>
                 <td>@(eksamen.ExamStartDate?.ToString("dd-MM-yyyy") ?? "")</td>
                 <td>@eksamen.ExamName</td>
                 <!-- FInder navnet på Class, hvis null -> "ikke tildelt"-->
