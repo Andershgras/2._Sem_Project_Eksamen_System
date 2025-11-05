@@ -13,6 +13,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public Exam Exam { get; set; }
 
+        [BindProperty]
+        public Exam ReExam { get; set; }
+
         public Edit_ExamModel(ICRUD<Exam> service)
         {
             _service = service;
@@ -25,6 +28,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 return RedirectToPage("GetEksamner");
             }
             Exam = exam;
+
+            // Hent ReExam hvis den findes
+            var reExam = _service.GetItemById(exam.ReExamId ?? 0);
+            if (reExam != null) {
+                ReExam = reExam;
+            }
+            
             return Page();
         }
 
