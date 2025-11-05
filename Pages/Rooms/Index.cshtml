@@ -14,6 +14,7 @@
         <tr>
             <th>RoomId</th>
             <th>Name</th>
+            <th>Capacity</th>
             <th></th>
         </tr>
     </thead>
@@ -23,6 +24,7 @@
             <tr>
                 <td>@r.RoomId</td>
                 <td>@r.Name</td>
+                <td>@(r.Capacity?.ToString() ?? "-")</td>
                 <td>
                     <a asp-page="Edit" asp-route-id="@r.RoomId">Edit</a> |
                     <a asp-page="Delete" asp-route-id="@r.RoomId">Delete</a>
