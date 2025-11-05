@@ -10,7 +10,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class GetStudentModel : PageModel
     {
-        private readonly ICRUDT<Student> _service;
+        private readonly ICRUDT<Student> _service;// Dependency injection af ICRUDT interface til Student
 
         public IEnumerable<Student> Students { get; private set; } = Enumerable.Empty<Student>();
 
