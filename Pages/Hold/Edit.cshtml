@@ -1,0 +1,18 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Hold.EditModel
+@{
+    ViewData["Title"] = "Edit Exam";
+}
+
+<h1>Edit Hold - (@Model.Class.ClassId) @Model.Class.ClassName</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Class.ClassId"/>
+    <div class="mb-3">
+        <label asp-for="Class.ClassName" class="form-label"></label>
+        <input asp-for="Class.ClassName" class="form-control" />
+        <span asp-validation-for="Class.ClassName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>
