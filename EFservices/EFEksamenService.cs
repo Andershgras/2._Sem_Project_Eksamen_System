@@ -24,6 +24,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .ThenInclude(re => re.Room)
            .Include(e => e.TeachersToExams)
                .ThenInclude(et => et.Teacher)
+           .Include(e => e.ReExam)
            .AsNoTracking()
            .OrderBy(e => e.ExamId)
            .ToList();

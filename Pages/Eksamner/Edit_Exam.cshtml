@@ -8,7 +8,7 @@
 
 <form method="post">
     <input type="hidden" asp-for="Exam.ExamId" />
-    <input type="hidden" asp-for="Exam.ClassId" />
+    
     
     <div class="mb-3">
         
@@ -30,6 +30,9 @@
                 <input asp-for="Exam.ExamEndDate" class="form-control" type="date" />
                 <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
         </div>
+        <div class="col-6">
+            <!-- buffer-->
+        </div>
     </div>
 
     <!-- Eksaminatore-->
@@ -38,15 +41,23 @@
 
 
     <!-- Censor Type -->
-    <div>
-        <label asp-for="Exam.CensorType" class="form-label">Censor TYpe</label>
-        <select asp-for="Exam.CensorType" class="form-select">
-            <option value="">-- Select Class --</option>
-        </select>
-        <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
+    <div class="row mb-3">
+        <div class="col">
+            <label asp-for="Exam.CensorType" class="form-label">Censor TYpe</label>
+            <select asp-for="Exam.CensorType" class="form-select">
+                <option value="Intern">Intern</option>
+                <option value="Extern">Extern</option>
+            </select>
+            <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
+        </div>
+        <div class="col-10">
+            <!-- buffer-->
+        </div>
     </div>
 
     <!-- ReExksamen Logik-->
+
+
 
     <div class="mb-3">
         <label asp-for="Exam.Description" class="form-label">Description</label>
