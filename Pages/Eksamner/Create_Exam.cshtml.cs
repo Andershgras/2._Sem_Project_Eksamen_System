@@ -9,34 +9,41 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     public class Create_ExamModel : PageModel
     {
         private readonly ICRUD<Exam> _examService;
-        private readonly EksamensDBContext _context;
+        private readonly ICRUD<Class> _classService;
+        private readonly ICRUD<Room> _roomService;
 
         [BindProperty]
-        public Exam Exam { get; set; } = default!;
+        public Exam Exam { get; set; } = new Exam();
 
         public SelectList ClassList { get; set; } = default!;
         public SelectList RoomList { get; set; } = default!;
 
-        public Create_ExamModel(ICRUD<Exam> examService, EksamensDBContext context)
+        public Create_ExamModel(
+            ICRUD<Exam> examService,
+            ICRUD<Class> classService,
+            ICRUD<Room> roomService
+        )
         {
             _examService = examService;
-            _context = context;
+            _classService = classService;
+            _roomService = roomService;
         }
 
         public void OnGet()
         {
-            // Load dropdown lists
-            ClassList = new SelectList(_context.Classes, "ClassId", "ClassName");
-            RoomList = new SelectList(_context.Rooms, "RoomId", "Name");
+            // Populate dropdowns for classes and rooms
+            ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
+            RoomList = new SelectList(_roomService.GetAll(), "RoomId", "Name");
         }
 
         public IActionResult OnPost()
         {
+            // Repopulate dropdowns for redisplay on errors
+            ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
+            RoomList = new SelectList(_roomService.GetAll(), "RoomId", "Name");
+
             if (!ModelState.IsValid)
             {
-                // Reload lists if validation fails
-                ClassList = new SelectList(_context.Classes, "ClassId", "ClassName");
-                RoomList = new SelectList(_context.Rooms, "RoomId", "Name");
                 return Page();
             }
 
@@ -44,13 +51,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 _examService.AddItem(Exam);
                 TempData["SuccessMessage"] = "Exam created successfully!";
-                return RedirectToPage("./GetEksamner");
+                return RedirectToPage("GetEksamner");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error creating exam: {ex.Message}");
-                ClassList = new SelectList(_context.Classes, "ClassId", "ClassName");
-                RoomList = new SelectList(_context.Rooms, "RoomId", "Name");
                 return Page();
             }
         }

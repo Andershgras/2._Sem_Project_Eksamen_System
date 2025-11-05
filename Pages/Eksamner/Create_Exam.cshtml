@@ -7,12 +7,100 @@
 <h1>Create Exam</h1>
 
 <form method="post">
-    <!-- Examen-->
+    <!-- Exam Name -->
+    <div class="mb-3">
+        <label asp-for="Exam.ExamName" class="form-label"></label>
+        <input asp-for="Exam.ExamName" class="form-control" />
+        <span asp-validation-for="Exam.ExamName" class="text-danger"></span>
+    </div>
 
+    <!-- ClassId Dropdown -->
+    <div class="mb-3">
+        <label asp-for="Exam.ClassId" class="form-label"></label>
+        <select asp-for="Exam.ClassId" class="form-select" asp-items="Model.ClassList">
+            <option value="">-- Select Class --</option>
+        </select>
+        <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
+    </div>
 
-    <!------------------------------------------------------------------------------->
-    <!-- tilhørende ReExamen -->
-    <button type="submit" class="btn btn-primary">Opret</button>
+    <!-- RoomId Dropdown (optional) -->
+   @*  <div class="mb-3">
+        <label asp-for="Exam.RoomsToExams" class="form-label">Room</label>
+        <select asp-for="Exam." class="form-select" asp-items="Model.RoomList">
+            <option value="">-- Select Room --</option>
+        </select>
+        <span asp-validation-for="Exam.RoomId" class="text-danger"></span>
+    </div> *@
+
+    <!-- CensorType Dropdown -->
+    <div class="mb-3">
+        <label asp-for="Exam.CensorType" class="form-label">Censor Type</label>
+        <select asp-for="Exam.CensorType" class="form-select">
+            <option value="">-- Select --</option>
+            <option value="Intern">Intern</option>
+            <option value="Extern">Extern</option>
+        </select>
+        <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
+    </div>
+
+    <!-- Format -->
+    <div class="mb-3">
+        <label asp-for="Exam.Format" class="form-label"></label>
+        <input asp-for="Exam.Format" class="form-control" />
+        <span asp-validation-for="Exam.Format" class="text-danger"></span>
+    </div>
+
+    <!-- Exam Patrol Checkbox -->
+    <div class="mb-3 form-check">
+        <input asp-for="Exam.ExamPatrol" class="form-check-input" type="checkbox" />
+        <label asp-for="Exam.ExamPatrol" class="form-check-label">Is Patrol Exam</label>
+        <span asp-validation-for="Exam.ExamPatrol" class="text-danger"></span>
+    </div>
+
+    <!-- Exam Start Date -->
+    <div class="mb-3">
+        <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
+        <input asp-for="Exam.ExamStartDate" type="date" class="form-control" />
+        <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
+    </div>
+
+    <!-- Exam End Date -->
+    <div class="mb-3">
+        <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
+        <input asp-for="Exam.ExamEndDate" type="date" class="form-control" />
+        <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
+    </div>
+
+    <!-- Delivery Date -->
+    <div class="mb-3">
+        <label asp-for="Exam.DeliveryDate" class="form-label">Delivery Date</label>
+        <input asp-for="Exam.DeliveryDate" type="date" class="form-control" />
+        <span asp-validation-for="Exam.DeliveryDate" class="text-danger"></span>
+    </div>
+
+    <!-- Is ReExam Checkbox -->
+    <div class="mb-3 form-check">
+        <input asp-for="Exam.IsReExam" class="form-check-input" type="checkbox" />
+        <label asp-for="Exam.IsReExam" class="form-check-label">Is Re-Exam</label>
+        <span asp-validation-for="Exam.IsReExam" class="text-danger"></span>
+    </div>
+
+    <!-- Is Final Exam Checkbox -->
+    <div class="mb-3 form-check">
+        <input asp-for="Exam.IsFinalExam" class="form-check-input" type="checkbox" />
+        <label asp-for="Exam.IsFinalExam" class="form-check-label">Is Final Exam</label>
+        <span asp-validation-for="Exam.IsFinalExam" class="text-danger"></span>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+        <label asp-for="Exam.Description" class="form-label"></label>
+        <textarea asp-for="Exam.Description" class="form-control"></textarea>
+        <span asp-validation-for="Exam.Description" class="text-danger"></span>
+    </div>
+
+    <!-- You may want to handle ReExam linkage, but that is often managed programmatically not user-facing! -->
+
+    <button type="submit" class="btn btn-primary">Create</button>
     <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">Cancel</a>
-
 </form>
