@@ -1,0 +1,48 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Eksamner.Students.CreateStudentModel
+@{
+    ViewData["Title"] = "Tilføj Student";
+}
+
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Tilføj Student</h1>
+            <p>Opret en ny student i systemet</p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Ny Student</h2>
+                <a asp-page="/Eksamner/Students/GetStudent" class="btn-toggle">Tilbage til oversigt</a>
+            </div>
+
+            <div class="form-card">
+                <form method="post">
+                    <div class="form-group">
+                        <label asp-for="Student.StudentName"></label>
+                        <input asp-for="Student.StudentName" class="form-control" />
+                        <span asp-validation-for="Student.StudentName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Student.Email"></label>
+                        <input asp-for="Student.Email" class="form-control" />
+                        <span asp-validation-for="Student.Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Add more fields here if your Student model has them -->
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Opret</button>
+                        <a asp-page="/Eksamner/Students/GetStudent" class="btn btn-secondary">Annuller</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
