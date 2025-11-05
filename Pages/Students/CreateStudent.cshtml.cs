@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
@@ -12,6 +13,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
     {
         private readonly ICRUDT<Student> _studentService;
         private readonly ICRUD<Class> _classService;
+        private readonly EksamensDBContext _context; // Add this
 
         [BindProperty]
         public Student Student { get; set; } = new Student();
@@ -21,10 +23,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         public List<SelectListItem> ClassList { get; set; } = new List<SelectListItem>();
 
-        public CreateStudentModel(ICRUDT<Student> studentService, ICRUD<Class> classService)
+        public CreateStudentModel(
+            ICRUDT<Student> studentService,
+            ICRUD<Class> classService,
+            EksamensDBContext context) // Add this parameter
         {
             _studentService = studentService;
             _classService = classService;
+            _context = context; // Add this
         }
 
         public async Task OnGetAsync()
@@ -54,7 +60,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         private async Task PopulateClassDropdown()
         {
-            // Since your EFHoldService uses synchronous methods, we'll wrap them in Task.Run
             var classes = await Task.Run(() => _classService.GetAll(new GenericFilter()));
 
             ClassList.Clear();
@@ -80,19 +85,15 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         private async Task CreateStudentClassRelationship(int studentId, int classId)
         {
-            // Create the StudentsToClass relationship
+            // ACTUALLY CREATE THE RELATIONSHIP
             var studentClass = new StudentsToClass
             {
                 StudentId = studentId,
                 ClassId = classId
             };
 
-            await Task.Run(() =>
-            {
-                // You'll need to add this to your context and save
-                // _context.StudentsToClasses.Add(studentClass);
-                // _context.SaveChanges();
-            });
+            _context.StudentsToClasses.Add(studentClass);
+            await _context.SaveChangesAsync();
         }
     }
 }
