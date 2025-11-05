@@ -5,12 +5,15 @@
 
 <h1>Hold</h1>
 
+<a asp-page="Create" class="btn btn-primary mb-3"> <i class="bi bi-plus"></i> Hold </a>
+
+<!-- Filter -->
 <form>
     <p>
         Search: <input type="text" asp-for="Filter.FilterByName" />
 
         <input type="submit" value="Filter" />
-        <a asp-page="/Eksamner/GetEksamner">Back to Full List </a>
+        <a asp-page="/Hold/Index">Back to Full List </a>
     </p>
 </form>
 
@@ -31,6 +34,11 @@
             <td>@hold.ClassId</td>
             <td>@hold.ClassName</td>
             <td>@hold.StudentsToClasses.Count</td>
+            <td>
+                    <a asp-page="Edit" asp-route-id="@hold.ClassId">Edit</a> |
+                    <a asp-page="Delete" class="btn btn-danger" asp-route-id="@hold.ClassId">Slet</a>
+            </td>
+                
         </tr>
 
     }
