@@ -50,6 +50,16 @@
                                             <span class="not-assigned">Not Given</span>
                                         }
                                     </td>
+                                    <td>
+                                        @if (student.StudentsToClasses != null && student.StudentsToClasses.Any())
+                                        {
+                                            @string.Join(", ", student.StudentsToClasses.Select(sc => sc.Class?.ClassName))
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">Not Assigned</span>
+                                        }
+                                    </td>
                                     <td class="action-buttons">
                                         <a asp-page="./EditStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-edit">Rediger</a>
                                         <a asp-page="./DetailsStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">Detaljer</a>
