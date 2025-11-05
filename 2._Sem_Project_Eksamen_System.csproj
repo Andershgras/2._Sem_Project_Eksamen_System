@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,10 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Fag\**" />
     <Compile Remove="Pages\Lokaler\**" />
+    <Compile Remove="Pages\Undervisere\**" />
+    <Content Remove="Pages\Fag\**" />
     <Content Remove="Pages\Lokaler\**" />
+    <Content Remove="Pages\Undervisere\**" />
+    <EmbeddedResource Remove="Pages\Fag\**" />
     <EmbeddedResource Remove="Pages\Lokaler\**" />
+    <EmbeddedResource Remove="Pages\Undervisere\**" />
+    <None Remove="Pages\Fag\**" />
     <None Remove="Pages\Lokaler\**" />
+    <None Remove="Pages\Undervisere\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,8 +37,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\Elever\" />
-    <Folder Include="Pages\Fag\" />
-    <Folder Include="Pages\Undervisere\" />
     <Folder Include="SQL-queries\" />
   </ItemGroup>
 
