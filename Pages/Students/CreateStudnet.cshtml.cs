@@ -31,7 +31,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             }
 
             await _service.AddItem(Student);
-            return RedirectToPage("/Eksamner/Students/GetStudent");
+            return RedirectToPage("/Students/GetStudent");
         }
         
     }
