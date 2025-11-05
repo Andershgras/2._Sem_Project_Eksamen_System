@@ -11,7 +11,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
     public class CreateStudentModel : PageModel
     {
         private readonly ICRUDT<Student> _studentService;
-        private readonly ICRUDT<Class> _classService;
+        private readonly ICRUD<Class> _classService;
 
         [BindProperty]
         public Student Student { get; set; } = new Student();
@@ -21,7 +21,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         public List<SelectListItem> ClassList { get; set; } = new List<SelectListItem>();
 
-        public CreateStudentModel(ICRUDT<Student> studentService, ICRUDT<Class> classService)
+        public CreateStudentModel(ICRUDT<Student> studentService, ICRUD<Class> classService)
         {
             _studentService = studentService;
             _classService = classService;
@@ -46,8 +46,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             // If a class was selected, create the relationship
             if (SelectedClassId.HasValue && SelectedClassId > 0)
             {
-                // You'll need to implement this part based on your StudentsToClass relationship
-                // This might require an additional service for StudentsToClass
                 await CreateStudentClassRelationship(Student.StudentId, SelectedClassId.Value);
             }
 
@@ -56,7 +54,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         private async Task PopulateClassDropdown()
         {
-            var classes = await _classService.GetAll(new GenericFilter());
+            // Since your EFHoldService uses synchronous methods, we'll wrap them in Task.Run
+            var classes = await Task.Run(() => _classService.GetAll(new GenericFilter()));
 
             ClassList.Clear();
             ClassList.Add(new SelectListItem
@@ -81,11 +80,19 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         private async Task CreateStudentClassRelationship(int studentId, int classId)
         {
-            // You'll need to implement this method based on your data model
-            // This would typically use a service for StudentsToClass
-            // Example:
-            // var studentClass = new StudentsToClass { StudentId = studentId, ClassId = classId };
-            // await _studentClassService.AddItem(studentClass);
+            // Create the StudentsToClass relationship
+            var studentClass = new StudentsToClass
+            {
+                StudentId = studentId,
+                ClassId = classId
+            };
+
+            await Task.Run(() =>
+            {
+                // You'll need to add this to your context and save
+                // _context.StudentsToClasses.Add(studentClass);
+                // _context.SaveChanges();
+            });
         }
     }
 }

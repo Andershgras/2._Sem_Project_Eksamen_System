@@ -19,6 +19,9 @@ namespace _2._Sem_Project_Eksamen_System
             builder.Services.AddScoped<ICRUDT<Student>, EFStudentService>();
             builder.Services.AddScoped<ICRUD<Class>, EFHoldService>();
             builder.Services.AddScoped<ICRUD<Teacher>, EFUnderviserService>();
+            // In Program.cs or Startup.cs
+            builder.Services.AddScoped<ICRUDT<Student>, EFStudentService>();
+           
 
             var app = builder.Build();
 
