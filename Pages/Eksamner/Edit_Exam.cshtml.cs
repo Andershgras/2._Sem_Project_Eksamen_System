@@ -3,6 +3,7 @@ using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
@@ -40,10 +41,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (Exam.ReExamId.HasValue)
             {
                 ReExam = _service.GetItemById(Exam.ReExamId.Value) ?? new Exam();
+                // Optionally, you can pre-toggle the ReExam edit box
+                // EditReExam = true;
             }
             else
             {
-                ReExam = new Exam(); // Not linked
+                ReExam = new Exam();
             }
 
             return Page();
@@ -53,44 +56,53 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         {
             ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
 
-            // Check EditReExam
+            // Conditionally ignore validation errors from nested ReExam model
+            if (!EditReExam)
+            {
+                foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
+                    ModelState[key].Errors.Clear();
+            }
+
+            if (!ModelState.IsValid)
+                return Page();
+
+            // Save and link ReExam if section is ON
             if (EditReExam)
             {
-                // If there is NO linked ReExam yet
+                // If creating a new ReExam (no ID set yet)
                 if (!Exam.ReExamId.HasValue || Exam.ReExamId.Value == 0)
                 {
-                    // Save new ReExam
+                    // Copy relevant fields from Exam to ReExam
+                    ReExam.ClassId = Exam.ClassId;
+                    if (string.IsNullOrWhiteSpace(ReExam.ExamName))
+                        ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
+                    // Set flags if desired
+                    ReExam.IsReExam = true;
+                    if (Exam.IsFinalExam)
+                        ReExam.IsFinalExam = true;
+                    // You can add other auto-fill logic as needed
+
+                    // Save new ReExam and link it
                     _service.AddItem(ReExam);
-                    // Link to main Exam
                     Exam.ReExamId = ReExam.ExamId;
                 }
                 else
                 {
-                    // Edit existing linked ReExam
-                    if (ReExam != null && ReExam.ExamId > 0)
-                        _service.UpdateItem(ReExam);
+                    // Update existing linked ReExam
+                    _service.UpdateItem(ReExam);
                 }
             }
             else
             {
-                // If unchecked, remove reference to ReExam
+                // Unlink ReExam if unchecked
                 Exam.ReExamId = null;
             }
 
-            if (!ModelState.IsValid)
-            {
-                // Log validation errors for debugging:
-                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(modelError.ErrorMessage); // Or use logger/debug 
-                }
-                return Page();
-            }
             // Save main Exam (with updated ReExamId if any)
             _service.UpdateItem(Exam);
 
-            // Redirect to Exam details page
-            return RedirectToPage("/Eksamner/Exam_Details", new { id = Exam.ExamId }); // Update to your actual details page
+            // Redirect to Exam details page (or list)
+            return RedirectToPage("/Eksamner/Exam_Details", new { id = Exam.ExamId });
         }
     }
 }
