@@ -39,6 +39,8 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             var nameFilter = Filter.FilterByName.ToLower();
             return await _context.Students
                 .Where(s => s.StudentName != null && s.StudentName.ToLower().StartsWith(nameFilter))
+                .Include(s => s.StudentsToClasses)  // ADD THIS LINE
+            .ThenInclude(sc => sc.Class)    // ADD THIS LINE
                 .Include(s => s.StudentsToExams)
                     .ThenInclude(se => se.Exam)
                 .AsNoTracking()
@@ -53,12 +55,13 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await _context.AddAsync(item);
             await _context.SaveChangesAsync();
         }
-
         public async Task<Student?> GetItemById(int id)
         {
             // Use tracking because caller might update the returned entity;
             // if caller only needs read-only, consider AsNoTracking with FirstOrDefaultAsync
             return await _context.Students
+                .Include(s => s.StudentsToClasses)  // ADD THIS LINE
+                    .ThenInclude(sc => sc.Class)    // ADD THIS LINE
                 .Include(s => s.StudentsToExams)
                     .ThenInclude(se => se.Exam)
                 .FirstOrDefaultAsync(s => s.StudentId == id);
