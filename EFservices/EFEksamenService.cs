@@ -55,27 +55,75 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
           .FirstOrDefault(e => e.ExamId == id);
         }
 
-        public void DeleteItem(int id)
+        public void DeleteItem(int id)//TEST
         {
-            var examToDelete = context.Exams
-                .Include(e => e.StudentsToExams)
-                .Include(e => e.TeachersToExams)
-                .Include(e => e.RoomsToExams)
-                .FirstOrDefault(e => e.ExamId == id);
+            using var transaction = context.Database.BeginTransaction();
 
-            if (examToDelete != null)
+            try
             {
-                // Remove all relationships first
-                context.StudentsToExams.RemoveRange(examToDelete.StudentsToExams);
-                context.TeachersToExams.RemoveRange(examToDelete.TeachersToExams);
-                context.RoomsToExams.RemoveRange(examToDelete.RoomsToExams);
+                // Find the exam with ALL relationships including inverse re-exams
+                var examToDelete = context.Exams
+                    .Include(e => e.StudentsToExams)
+                    .Include(e => e.TeachersToExams)
+                    .Include(e => e.RoomsToExams)
+                    .Include(e => e.InverseReExam) // Important: exams that have this as their ReExam
+                    .FirstOrDefault(e => e.ExamId == id);
 
-                // Then remove the exam
-                context.Remove(examToDelete);
-                context.SaveChanges();
+                if (examToDelete != null)
+                {
+                    // 1. Remove StudentsToExams relationships
+                    if (examToDelete.StudentsToExams.Any())
+                    {
+                        context.StudentsToExams.RemoveRange(examToDelete.StudentsToExams);
+                    }
+
+                    // 2. Remove TeachersToExams relationships
+                    if (examToDelete.TeachersToExams.Any())
+                    {
+                        context.TeachersToExams.RemoveRange(examToDelete.TeachersToExams);
+                    }
+
+                    // 3. Remove RoomsToExams relationships
+                    if (examToDelete.RoomsToExams.Any())
+                    {
+                        context.RoomsToExams.RemoveRange(examToDelete.RoomsToExams);
+                    }
+
+                    // 4. Handle inverse re-exams (exams that point to this exam as their ReExam)
+                    if (examToDelete.InverseReExam.Any())
+                    {
+                        foreach (var inverseExam in examToDelete.InverseReExam.ToList())
+                        {
+                            inverseExam.ReExamId = null; // Remove the reference
+                        }
+                    }
+
+                    // 5. If this exam has a ReExam, we need to decide what to do with it
+                    // Option A: Also delete the ReExam (cascade delete)
+                    // Option B: Keep the ReExam but remove the relationship
+                    if (examToDelete.ReExamId.HasValue)
+                    {
+                        // For now, let's just remove the relationship
+                        examToDelete.ReExamId = null;
+                    }
+
+                    // Save all relationship changes first
+                    context.SaveChanges();
+
+                    // 6. Finally delete the exam itself
+                    context.Exams.Remove(examToDelete);
+                    context.SaveChanges();
+
+                    transaction.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception($"Failed to delete exam: {ex.Message}", ex);
             }
         }
-
+        //EndTest
         public void UpdateItem(Exam item)
         {
             if (item == null)
