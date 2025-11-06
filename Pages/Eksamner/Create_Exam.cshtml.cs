@@ -10,6 +10,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     {
         private readonly ICRUD<Exam> _examService;
         private readonly ICRUD<Class> _classService;
+        //private readonly ICRUD<StudentsToExam> _studentsToExamService;
+        private readonly IStudentsToExams _studentsToExamService;
 
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
@@ -24,11 +26,15 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
-            ICRUD<Class> classService
+            ICRUD<Class> classService,
+            IStudentsToExams studentsToExamService
+
         )
         {
             _examService = examService;
             _classService = classService;
+            //_studentsToExamService = studentsToExamService;
+            _studentsToExamService = studentsToExamService;
         }
 
         public void OnGet()
@@ -89,6 +95,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
 
                 _examService.AddItem(Exam);
+
+                // Add all students from the selected class to the newly created exam
+                _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);
+
 
                 TempData["SuccessMessage"] = "Exam created successfully!";
                 return RedirectToPage("./GetEksamner");
