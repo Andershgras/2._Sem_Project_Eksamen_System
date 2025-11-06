@@ -57,9 +57,20 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
         public void DeleteItem(int id)
         {
-            var examToDelete = GetItemById(id);
+            var examToDelete = context.Exams
+                .Include(e => e.StudentsToExams)
+                .Include(e => e.TeachersToExams)
+                .Include(e => e.RoomsToExams)
+                .FirstOrDefault(e => e.ExamId == id);
+
             if (examToDelete != null)
             {
+                // Remove all relationships first
+                context.StudentsToExams.RemoveRange(examToDelete.StudentsToExams);
+                context.TeachersToExams.RemoveRange(examToDelete.TeachersToExams);
+                context.RoomsToExams.RemoveRange(examToDelete.RoomsToExams);
+
+                // Then remove the exam
                 context.Remove(examToDelete);
                 context.SaveChanges();
             }

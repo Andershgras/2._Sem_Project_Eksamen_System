@@ -14,17 +14,17 @@
         <!-- SEARCH AND FILTER SECTION -->
         <div class="section-card">
             <div class="section-header">
-                <h2>Søg og Filtrer</h2>
+                <h2>Search</h2>
             </div>
             <div class="search-container">
                 <form method="get">
                     <div class="search-form">
                         <div class="form-group">
-                            <label for="Filter_FilterByName" class="form-label">Søg efter navn:</label>
+                            <label for="Filter_FilterByName" class="form-label">Search By Name:</label>
                             <input type="text"
                                    asp-for="Filter.FilterByName"
                                    class="form-control"
-                                   placeholder="Indtast student navn..." />
+                                   placeholder="Indtast student name..." />
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
@@ -113,7 +113,7 @@
                                         @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
                                         {
                                             <p>Ingen studenter fundet for "@Model.Filter.FilterByName"</p>
-                                            <a asp-page="/Students/GetStudent" class="btn-toggle" role="menuitem">Vis alle studenter</a>
+                                            <a asp-page="/Students/GetStudent" class="btn-toggle" role="menuitem">Show All Students</a>
                                         }
                                         else
                                         {
