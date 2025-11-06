@@ -1,4 +1,108 @@
-﻿@page
+﻿@page "{id:int}"
 @model _2._Sem_Project_Eksamen_System.Pages.Eksamner.Delete_ExamModel
 @{
+    ViewData["Title"] = "Delete Exam";
 }
+
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Delete Exam</h1>
+            <p>Remove an exam from the system</p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Confirm Deletion</h2>
+                <a asp-page="/Eksamner/GetEksamner" class="btn-toggle">Back to overview</a>
+            </div>
+
+            <div class="form-card">
+                <div class="alert alert-warning">
+                    <strong>Warning!</strong> You are about to delete an exam. This action cannot be undone.
+                </div>
+
+                <div class="exam-details">
+                    <h3>Exam Details:</h3>
+                    <dl class="detail-list">
+                        <dt>Exam ID:</dt>
+                        <dd>@Model.Exam.ExamId</dd>
+
+                        <dt>Exam Name:</dt>
+                        <dd>@Model.Exam.ExamName</dd>
+
+                        <dt>Class:</dt>
+                        <dd>@(Model.Exam.Class?.ClassName ?? "Not assigned")</dd>
+
+                        <dt>Start Date:</dt>
+                        <dd>@(Model.Exam.ExamStartDate?.ToString("dd/MM/yyyy") ?? "Not set")</dd>
+
+                        <dt>End Date:</dt>
+                        <dd>@(Model.Exam.ExamEndDate?.ToString("dd/MM/yyyy") ?? "Not set")</dd>
+
+                        <dt>Students Registered:</dt>
+                        <dd>@(Model.Exam.StudentsToExams?.Count ?? 0)</dd>
+
+                        <dt>Teachers Assigned:</dt>
+                        <dd>@(Model.Exam.TeachersToExams?.Count ?? 0)</dd>
+
+                        <dt>Has Re-Exam:</dt>
+                        <dd>@(Model.Exam.ReExam != null ? "Yes" : "No")</dd>
+                    </dl>
+                </div>
+
+                @if (Model.Exam.StudentsToExams?.Count > 0 || Model.Exam.TeachersToExams?.Count > 0)
+                {
+                    <div class="alert alert-danger">
+                        <strong>Important:</strong> This exam has
+                        @(Model.Exam.StudentsToExams?.Count > 0 ? $"{Model.Exam.StudentsToExams.Count} students registered" : "")
+                        @(Model.Exam.StudentsToExams?.Count > 0 && Model.Exam.TeachersToExams?.Count > 0 ? " and " : "")
+                        @(Model.Exam.TeachersToExams?.Count > 0 ? $"{Model.Exam.TeachersToExams.Count} teachers assigned" : "").
+                        Deleting this exam will remove all these relationships.
+                    </div>
+                }
+
+                <form method="post">
+                    <input type="hidden" asp-for="Exam.ExamId" />
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this exam?')">
+                            <span class="btn-icon">🗑️</span>
+                            Confirm Delete
+                        </button>
+                        <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">
+                            <span class="btn-icon">↩️</span>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .exam-details {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-list {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.5rem 1rem;
+    }
+
+        .detail-list dt {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .detail-list dd {
+            margin: 0;
+            color: #212529;
+        }
+</style>
