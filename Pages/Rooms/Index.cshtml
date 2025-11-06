@@ -3,39 +3,87 @@
 @{
     ViewData["Title"] = "Rooms";
 }
-<h2>Rooms</h2>
 
-<p>
-    <a asp-page="Create" class="btn btn-primary">Create New</a>
-</p>
-<form method="get">
-    <p>
-        Search: <input type="text" asp-for="Filter.FilterByName" />
-        <input type="submit" value="Filter" />
-        <a asp-page="/Rooms/Index">Back to Full List</a>
-    </p>
+<h1>Rooms</h1>
+
+<form method="get" class="mb-3">
+    <div class="input-group" style="max-width:420px;">
+        <input class="form-control" type="text" name="Filter.FilterByName" value="@Model.Filter?.FilterByName" placeholder="Search by name..." />
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </div>
 </form>
-<table class="table">
+
+<table class="table table-sm align-middle">
     <thead>
         <tr>
-            <th>RoomId</th>
-            <th>Name</th>
+            <th style="width:36px;"></th>
+            <th>Room</th>
             <th>Capacity</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var r in Model.Rooms)
         {
+            var rowId = $"room-{r.RoomId}";
             <tr>
-                <td>@r.RoomId</td>
+                <td>
+                    <button type="button"
+                            class="btn btn-link p-0 toggle-upcoming"
+                            data-room-id="@r.RoomId"
+                            aria-expanded="false"
+                            aria-controls="@($"{rowId}-upcoming")"
+                            title="Show upcoming exams">
+                        ▸
+                    </button>
+                </td>
                 <td>@r.Name</td>
                 <td>@(r.Capacity?.ToString() ?? "-")</td>
+
                 <td>
-                    <a asp-page="Edit" asp-route-id="@r.RoomId">Edit</a> |
-                    <a asp-page="Delete" asp-route-id="@r.RoomId">Delete</a>
+                    <a asp-page="./Edit" asp-route-id="@r.RoomId" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-page="./Delete" asp-route-id="@r.RoomId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            <tr id="@($"{rowId}-upcoming")" class="d-none">
+                <td></td>
+                <td colspan="3">
+                    <div class="upcoming-container small text-muted">Loading…</div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.toggle-upcoming');
+            if (!btn) return;
+
+            const roomId = btn.dataset.roomId;
+            const detailsRow = document.getElementById(`room-${roomId}-upcoming`);
+            const box = detailsRow.querySelector('.upcoming-container');
+            const expanded = btn.getAttribute('aria-expanded') === 'true';
+
+            if (expanded) {
+                detailsRow.classList.add('d-none');
+                btn.setAttribute('aria-expanded', 'false');
+                btn.textContent = '▸';
+                return;
+            }
+
+            detailsRow.classList.remove('d-none');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.textContent = '▾';
+
+            if (!detailsRow.dataset.loaded) {
+                box.textContent = 'Loading…';
+                const url = '@Url.Page("Index", "Upcoming")' + `&roomId=${encodeURIComponent(roomId)}`;
+                const resp = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                box.innerHTML = await resp.text();
+                detailsRow.dataset.loaded = '1';
+            }
+        });
+    </script>
+}
