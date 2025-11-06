@@ -1,4 +1,104 @@
 ﻿@page
-@model _2._Sem_Project_Eksamen_System.Pages.Students.DetailStudentModel
+@model _2._Sem_Project_Eksamen_System.Pages.Students.DetailsStudentModel
 @{
+    ViewData["Title"] = "Student Detaljer";
 }
+
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Student Detaljer</h1>
+            <p>Se detaljerede oplysninger om studenten</p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Student Information</h2>
+                <a asp-page="/Students/GetStudent" class="btn-toggle">Tilbage til oversigt</a>
+            </div>
+
+            <div class="form-card">
+                <div class="student-details">
+                    <dl class="detail-list">
+                        <dt>Student ID:</dt>
+                        <dd>@Model.Student.StudentId</dd>
+
+                        <dt>Navn:</dt>
+                        <dd>@Model.Student.StudentName</dd>
+
+                        <dt>Email:</dt>
+                        <dd>
+                            @if (!string.IsNullOrEmpty(Model.Student.Email))
+                            {
+                                @Model.Student.Email
+                            }
+                            else
+                            {
+                                <span class="not-assigned">Not Given</span>
+                            }
+                        </dd>
+
+                        <dt>Klasse(r):</dt>
+                        <dd>
+                            @if (Model.Student.StudentsToClasses != null && Model.Student.StudentsToClasses.Any())
+                            {
+                                @string.Join(", ", Model.Student.StudentsToClasses.Select(sc => sc.Class?.ClassName))
+                            }
+                            else
+                            {
+                                <span class="not-assigned">Not Assigned</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+
+                <!-- Exams Section -->
+                @if (Model.Student.StudentsToExams != null && Model.Student.StudentsToExams.Any())
+                {
+                    <div class="section-header">
+                        <h3>Tilknyttede Eksamener</h3>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Eksamens ID</th>
+                                    <th>Eksamens Navn</th>
+                                    <th>Dato</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exam in Model.Student.StudentsToExams)
+                                {
+                                    <tr>
+                                        <td>@exam.Exam?.ExamId</td>
+                                        <td>@exam.Exam?.ExamName</td>
+                                        <td>@exam.Exam?.ExamDate?.ToString("dd/MM/yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="no-data">
+                        <p>Ingen tilknyttede eksamener</p>
+                    </div>
+                }
+
+                <div class="form-actions">
+                    <a asp-page="./EditStudent" asp-route-id="@Model.Student.StudentId" class="btn btn-primary">
+                        <span class="btn-icon">✏️</span>
+                        Rediger Student
+                    </a>
+                    <a asp-page="/Students/GetStudent" class="btn btn-secondary">
+                        <span class="btn-icon">↩️</span>
+                        Tilbage til oversigt
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
