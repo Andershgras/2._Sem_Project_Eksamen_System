@@ -46,9 +46,6 @@ public partial class Exam
     [Column(TypeName = "text")]
     public string? Description { get; set; }
 
-    [Column("NumOfStud")]
-    public int NoOfStud { get; set; }
-
     [ForeignKey("ClassId")]
     [InverseProperty("Exams")]
     public virtual Class Class { get; set; } = null!;
