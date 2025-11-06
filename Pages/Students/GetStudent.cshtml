@@ -50,10 +50,22 @@
                 </div>
             </div>
 
-            @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
+            @{
+                var activeFilters = new List<string>();
+                if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
+                    activeFilters.Add($"Name: {Model.Filter.FilterByName}");
+                if (!string.IsNullOrEmpty(Model.Filter.FilterByEmail))
+                    activeFilters.Add($"Email: {Model.Filter.FilterByEmail}");
+                if (!string.IsNullOrEmpty(Model.Filter.FilterByClass))
+                    activeFilters.Add($"Class: {Model.Filter.FilterByClass}");
+                if (Model.Filter.FilterById.HasValue)
+                    activeFilters.Add($"ID: {Model.Filter.FilterById}");
+            }
+
+            @if (activeFilters.Any())
             {
                 <div class="filter-info">
-                    <p>Viser resultater for: <strong>"@Model.Filter.FilterByName"</strong></p>
+                    <p>Showing results for: <strong>@string.Join(", ", activeFilters)</strong></p>
                 </div>
             }
 
@@ -110,15 +122,18 @@
                                 <td colspan="5" class="no-data">
                                     <div class="empty-state">
                                         <span class="empty-icon">👥</span>
-                                        @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
+                                        @if (!string.IsNullOrEmpty(Model.Filter.FilterByName) ||
+                                                                            !string.IsNullOrEmpty(Model.Filter.FilterByEmail) ||
+                                                                            !string.IsNullOrEmpty(Model.Filter.FilterByClass) ||
+                                                                            Model.Filter.FilterById.HasValue)
                                         {
-                                            <p>Ingen studenter fundet for "@Model.Filter.FilterByName"</p>
+                                            <p>No students found matching your search criteria</p>
                                             <a asp-page="/Students/GetStudent" class="btn-toggle" role="menuitem">Show All Students</a>
                                         }
                                         else
                                         {
-                                            <p>Ingen studenter fundet</p>
-                                            <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add student</a>
+                                            <p>No students found in the system</p>
+                                            <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add First Student</a>
                                         }
                                     </div>
                                 </td>
@@ -128,9 +143,6 @@
                 </table>
             </div>
         </div>
-    </div>
-</div>
-
 <style>
     .search-container {
         padding: 1.5rem;
