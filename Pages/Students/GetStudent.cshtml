@@ -11,12 +11,51 @@
             <p>View and manage all students in the system</p>
         </div>
 
+        <!-- SEARCH AND FILTER SECTION -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Søg og Filtrer</h2>
+            </div>
+            <div class="search-container">
+                <form method="get">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="Filter_FilterByName" class="form-label">Søg efter navn:</label>
+                            <input type="text"
+                                   asp-for="Filter.FilterByName"
+                                   class="form-control"
+                                   placeholder="Indtast student navn..." />
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-icon">🔍</span>
+                                Søg
+                            </button>
+                            <a asp-page="/Students/GetStudent" class="btn btn-secondary">
+                                <span class="btn-icon">🔄</span>
+                                Nulstil
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- TABLE DISPLAY SECTION -->
         <div class="section-card">
             <div class="section-header">
                 <h2>Alle Studenter</h2>
-                <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add New Student</a>
+                <div class="header-actions">
+                    <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add New Student</a>
+                </div>
             </div>
+
+            @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
+            {
+                <div class="filter-info">
+                    <p>Viser resultater for: <strong>"@Model.Filter.FilterByName"</strong></p>
+                </div>
+            }
 
             <div class="table-container">
                 <table class="data-table">
@@ -59,7 +98,7 @@
                                     </td>
                                     <td class="action-buttons">
                                         <a asp-page="./EditStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-edit">Edit</a>
-                                        <a asp-page="./DetailStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">Details</a>
+                                        <a asp-page="./DetailsStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">Details</a>
                                         <a asp-page="./DeleteStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-delete">Delete</a>
                                     </td>
                                 </tr>
@@ -71,8 +110,16 @@
                                 <td colspan="5" class="no-data">
                                     <div class="empty-state">
                                         <span class="empty-icon">👥</span>
-                                        <p>Ingen studenter fundet</p>
-                                        <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add student</a>
+                                        @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
+                                        {
+                                            <p>Ingen studenter fundet for "@Model.Filter.FilterByName"</p>
+                                            <a asp-page="/Students/GetStudent" class="btn-toggle" role="menuitem">Vis alle studenter</a>
+                                        }
+                                        else
+                                        {
+                                            <p>Ingen studenter fundet</p>
+                                            <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add student</a>
+                                        }
                                     </div>
                                 </td>
                             </tr>
@@ -83,3 +130,56 @@
         </div>
     </div>
 </div>
+
+<style>
+    .search-container {
+        padding: 1.5rem;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .search-form .form-group {
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    .search-form .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .filter-info {
+        background-color: #e8f4fd;
+        border: 1px solid #b6d7e8;
+        border-radius: 4px;
+        padding: 1rem;
+        margin: 1rem 1.5rem;
+    }
+
+    .filter-info p {
+        margin: 0;
+        color: #2c5aa0;
+    }
+
+    @@media (max-width: 768px) {
+        .search-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-form .form-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+    }
+</style>
