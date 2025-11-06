@@ -23,29 +23,29 @@
                             <label for="Filter_FilterByName" class="form-label">Name</label>
                             <input type="text"
                                    asp-for="Filter.FilterByName"
-                                   class="form-control"
-                                   placeholder="Student name..." />
+                                   class="form-control compact-input"
+                                   placeholder="Name..." />
                         </div>
 
                         <div class="form-group">
                             <label for="Filter_FilterByEmail" class="form-label">Email</label>
                             <input type="text"
                                    asp-for="Filter.FilterByEmail"
-                                   class="form-control"
-                                   placeholder="Student email..." />
+                                   class="form-control compact-input"
+                                   placeholder="Email..." />
                         </div>
 
                         <div class="form-group">
                             <label for="Filter_FilterById" class="form-label">Student ID</label>
                             <input type="number"
                                    asp-for="Filter.FilterById"
-                                   class="form-control"
-                                   placeholder="Student ID..." />
+                                   class="form-control compact-input"
+                                   placeholder="ID..." />
                         </div>
 
                         <div class="form-group">
                             <label for="Filter_FilterByClass" class="form-label">Class</label>
-                            <select asp-for="Filter.FilterByClass" class="form-control">
+                            <select asp-for="Filter.FilterByClass" class="form-control compact-input">
                                 <option value="">All Classes</option>
                                 @if (Model.AvailableClasses != null)
                                 {
@@ -71,7 +71,6 @@
                 </form>
             </div>
         </div>
-
         <!-- TABLE DISPLAY SECTION -->
         <div class="section-card">
             <div class="section-header">
