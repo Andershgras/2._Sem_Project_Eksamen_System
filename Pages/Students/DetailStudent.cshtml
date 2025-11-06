@@ -1,7 +1,7 @@
 ﻿@page
-@model _2._Sem_Project_Eksamen_System.Pages.Students.DetailsStudentModel
+@model _2._Sem_Project_Eksamen_System.Pages.Students.DetailStudentModel
 @{
-    ViewData["Title"] = "Student Detaljer";
+    ViewData["Title"] = "Student Details";
 }
 
 <div class="page-body">
@@ -65,7 +65,10 @@
                                 <tr>
                                     <th>Eksamens ID</th>
                                     <th>Eksamens Navn</th>
-                                    <th>Dato</th>
+                                    <th>Start Dato</th>
+                                    <th>Slut Dato</th>
+                                    <th>Format</th>
+                                    <th>Type</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,7 +77,50 @@
                                     <tr>
                                         <td>@exam.Exam?.ExamId</td>
                                         <td>@exam.Exam?.ExamName</td>
-                                        <td>@exam.Exam?.ExamDate?.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            @if (exam.Exam?.ExamStartDate.HasValue == true)
+                                            {
+                                                @exam.Exam.ExamStartDate.Value.ToString("dd/MM/yyyy")
+                                            }
+                                            else
+                                            {
+                                                <span class="not-assigned">Ikke sat</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (exam.Exam?.ExamEndDate.HasValue == true)
+                                            {
+                                                @exam.Exam.ExamEndDate.Value.ToString("dd/MM/yyyy")
+                                            }
+                                            else
+                                            {
+                                                <span class="not-assigned">Ikke sat</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(exam.Exam?.Format))
+                                            {
+                                                @exam.Exam.Format
+                                            }
+                                            else
+                                            {
+                                                <span class="not-assigned">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (exam.Exam?.IsReExam == true)
+                                            {
+                                                <span>Re-eksamen</span>
+                                            }
+                                            else if (exam.Exam?.IsFinalExam == true)
+                                            {
+                                                <span>Afgangseksamen</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Almindelig</span>
+                                            }
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -87,17 +133,6 @@
                         <p>Ingen tilknyttede eksamener</p>
                     </div>
                 }
-
-                <div class="form-actions">
-                    <a asp-page="./EditStudent" asp-route-id="@Model.Student.StudentId" class="btn btn-primary">
-                        <span class="btn-icon">✏️</span>
-                        Rediger Student
-                    </a>
-                    <a asp-page="/Students/GetStudent" class="btn btn-secondary">
-                        <span class="btn-icon">↩️</span>
-                        Tilbage til oversigt
-                    </a>
-                </div>
             </div>
         </div>
     </div>
