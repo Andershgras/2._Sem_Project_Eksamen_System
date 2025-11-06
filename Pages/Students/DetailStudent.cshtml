@@ -1,0 +1,139 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Students.DetailStudentModel
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Student Detaljer</h1>
+            <p>Se detaljerede oplysninger om studenten</p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Student Information</h2>
+                <a asp-page="/Students/GetStudent" class="btn-toggle">Tilbage til oversigt</a>
+            </div>
+
+            <div class="form-card">
+                <div class="student-details">
+                    <dl class="detail-list">
+                        <dt>Student ID:</dt>
+                        <dd>@Model.Student.StudentId</dd>
+
+                        <dt>Navn:</dt>
+                        <dd>@Model.Student.StudentName</dd>
+
+                        <dt>Email:</dt>
+                        <dd>
+                            @if (!string.IsNullOrEmpty(Model.Student.Email))
+                            {
+                                @Model.Student.Email
+                            }
+                            else
+                            {
+                                <span class="not-assigned">Not Given</span>
+                            }
+                        </dd>
+
+                        <dt>Klasse(r):</dt>
+                        <dd>
+                            @if (Model.Student.StudentsToClasses != null && Model.Student.StudentsToClasses.Any())
+                            {
+                                @string.Join(", ", Model.Student.StudentsToClasses.Select(sc => sc.Class?.ClassName))
+                            }
+                            else
+                            {
+                                <span class="not-assigned">Not Assigned</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+
+                <!-- Exams Section -->
+                @if (Model.Student.StudentsToExams != null && Model.Student.StudentsToExams.Any())
+                {
+                    <div class="section-header">
+                        <h3>Tilknyttede Eksamener</h3>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Eksamens ID</th>
+                                    <th>Eksamens Navn</th>
+                                    <th>Start Dato</th>
+                                    <th>Slut Dato</th>
+                                    <th>Format</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exam in Model.Student.StudentsToExams)
+                                {
+                                    <tr>
+                                        <td>@exam.Exam?.ExamId</td>
+                                        <td>@exam.Exam?.ExamName</td>
+                                        <td>
+                                            @if (exam.Exam?.ExamStartDate.HasValue == true)
+                                            {
+                                                @exam.Exam.ExamStartDate.Value.ToString("dd/MM/yyyy")
+                                            }
+                                            else
+                                            {
+                                                <span class="not-assigned">Ikke sat</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (exam.Exam?.ExamEndDate.HasValue == true)
+                                            {
+                                                @exam.Exam.ExamEndDate.Value.ToString("dd/MM/yyyy")
+                                            }
+                                            else
+                                            {
+                                                <span class="not-assigned">Ikke sat</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(exam.Exam?.Format))
+                                            {
+                                                @exam.Exam.Format
+                                            }
+                                            else
+                                            {
+                                                <span class="not-assigned">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (exam.Exam?.IsReExam == true)
+                                            {
+                                                <span>Re-eksamen</span>
+                                            }
+                                            else if (exam.Exam?.IsFinalExam == true)
+                                            {
+                                                <span>Afgangseksamen</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Almindelig</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="no-data">
+                        <p>Ingen tilknyttede eksamener</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

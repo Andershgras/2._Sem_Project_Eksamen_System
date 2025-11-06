@@ -1,14 +1,14 @@
 ﻿@page
 @model _2._Sem_Project_Eksamen_System.Pages.Students.GetStudentModel
 @{
-    ViewData["Title"] = "Studenter Oversigt";
+    ViewData["Title"] = "Student Overview";
 }
 
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
             <h1>Studenter Overview</h1>
-            <p>Se og administrer alle studenter i systemet</p>
+            <p>View and manage all students in the system</p>
         </div>
 
         <!-- TABLE DISPLAY SECTION -->
@@ -23,10 +23,10 @@
                     <thead>
                         <tr>
                             <th>Student ID</th>
-                            <th>Navn</th>
+                            <th>Name</th>
                             <th>Email</th>
                             <th>Class/Hold</th>
-                            <th class="actions-header">Handlinger</th>
+                            <th class="actions-header">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,9 +58,9 @@
                                         }
                                     </td>
                                     <td class="action-buttons">
-                                        <a asp-page="./EditStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-edit">Rediger</a>
-                                        <a asp-page="./DetailsStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">Detaljer</a>
-                                        <a asp-page="./DeleteStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-delete">Slet</a>
+                                        <a asp-page="./EditStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-edit">Edit</a>
+                                        <a asp-page="./DetailStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">Details</a>
+                                        <a asp-page="./DeleteStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-delete">Delete</a>
                                     </td>
                                 </tr>
                             }
@@ -72,7 +72,7 @@
                                     <div class="empty-state">
                                         <span class="empty-icon">👥</span>
                                         <p>Ingen studenter fundet</p>
-                                        <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Tilføj første student</a>
+                                        <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add student</a>
                                     </div>
                                 </td>
                             </tr>

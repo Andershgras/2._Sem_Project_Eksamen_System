@@ -1,18 +1,18 @@
 ﻿@page
 @model _2._Sem_Project_Eksamen_System.Pages.Hold.DeleteModel
 @{
-    ViewData["Title"] = "Delete Hold";
+    ViewData["Title"] = "Delete Class";
 }
 
-<h2>Delete Hold</h2>
+<h2>Delete Class</h2>
 
 @if (Model.Class is null)
 {
-    <p> Hold not found.</p>
+    <p> Class not found.</p>
 }
 else
 {
-    <p>Er du sikker på at du vil slette <strong>@Model.Class.ClassName</strong> (ID: @Model.Class.ClassId)?</p>
+    <p>Are you sure you want to delete? <strong>@Model.Class.ClassName</strong> (ID: @Model.Class.ClassId)?</p>
     <form method="post">
         <button type="submit" class="btn btn-danger">Delete</button>
         <a asp-page="Index" class="btn btn-secondary">Cancel</a>

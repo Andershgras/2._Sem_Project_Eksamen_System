@@ -1,0 +1,68 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Students.EditStudentModel
+@{
+    ViewData["Title"] = "Rediger Student";
+}
+
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Rediger Student</h1>
+            <p>Opdater studentoplysninger</p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Rediger Student</h2>
+                <a asp-page="/Students/GetStudent" class="btn-toggle">Tilbage til oversigt</a>
+            </div>
+
+            <div class="form-card">
+                <form method="post">
+                    <input type="hidden" asp-for="Student.StudentId" />
+
+                    <div class="form-grid">
+                        <!-- Student Name -->
+                        <div class="form-group">
+                            <label asp-for="Student.StudentName" class="form-label">Fulde navn *</label>
+                            <input asp-for="Student.StudentName" class="form-control" placeholder="Indtast studentens fulde navn" />
+                            <span asp-validation-for="Student.StudentName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label asp-for="Student.Email" class="form-label">Email *</label>
+                            <input asp-for="Student.Email" class="form-control" placeholder="indtast@student.email" />
+                            <span asp-validation-for="Student.Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Class Dropdown -->
+                        <div class="form-group">
+                            <label asp-for="SelectedClassId" class="form-label">Alocated Class</label>
+                            <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control">
+                                <option value="">Vælg en klasse</option>
+                            </select>
+                            <span asp-validation-for="SelectedClassId" class="text-danger"></span>
+                            <small class="form-text text-muted">Vælg hvilken klasse studenten skal tilknyttes</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-icon">💾</span>
+                            Gem Ændringer
+                        </button>
+                        <a asp-page="/Students/GetStudent" class="btn btn-secondary">
+                            <span class="btn-icon">↩️</span>
+                            Annuller
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
