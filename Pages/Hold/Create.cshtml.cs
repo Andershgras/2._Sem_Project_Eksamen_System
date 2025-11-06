@@ -17,7 +17,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
             _Class_service = service;
             ClassItem = new Class();
         }
-
         public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
