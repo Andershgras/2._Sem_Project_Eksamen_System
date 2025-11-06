@@ -24,6 +24,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public bool EditReExam { get; set; } = false;
 
+        public bool HasReExam => Exam.ReExamId.HasValue && Exam.ReExamId.Value > 0;
+
         public Edit_ExamModel(
             ICRUD<Exam> service,
             ICRUD<Class> classService,
@@ -42,15 +44,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (Exam == null)
                 return RedirectToPage("GetEksamner");
 
-            if (Exam.ReExamId.HasValue)
+            if (HasReExam)
             {
                 ReExam = _service.GetItemById(Exam.ReExamId.Value) ?? new Exam();
-                EditReExam = true; // auto-toggle section if ReExam exists
             }
             else
             {
                 ReExam = new Exam();
-                EditReExam = false;
             }
 
             return Page();
@@ -65,33 +65,50 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
                     ModelState[key]?.Errors.Clear();
+                    
+
             }
 
-            //// Now validate the rest
-            //if (!ModelState.IsValid)  // Problematic validation causes issues
-            //    return Page();
+            // Validate Exam dates
+            if (Exam.ExamStartDate > Exam.ExamEndDate)
+                ModelState.AddModelError("Exam.ExamStartDate", "Exam start date must not be after end date.");
+            if (Exam.DeliveryDate > Exam.ExamStartDate)
+                ModelState.AddModelError("Exam.DeliveryDate", "Delivery date must not be after start date.");
 
             // Handle ReExam create/update logic if editing/creating
             if (EditReExam)
             {
-                // Always set ReExam.ClassId from Exam.ClassId!
                 ReExam.ClassId = Exam.ClassId;
-
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
+
+                // Validate ReExam dates
+                if (ReExam.ExamStartDate > ReExam.ExamEndDate)
+                    ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must not be after end date.");
+                if (ReExam.DeliveryDate > ReExam.ExamStartDate)
+                    ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery date must not be after start date.");
+
+                // ReExam must be after main Exam
+                if (ReExam.ExamStartDate <= Exam.ExamEndDate)
+                    ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must be after main exam end date.");
+                if (ReExam.ExamEndDate <= Exam.ExamEndDate)
+                    ModelState.AddModelError("ReExam.ExamEndDate", "ReExam end date must be after main exam end date.");
+                if (ReExam.DeliveryDate <= Exam.DeliveryDate)
+                    ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
 
                 ReExam.IsReExam = true;
                 if (Exam.IsFinalExam)
                     ReExam.IsFinalExam = true;
 
-                if (!Exam.ReExamId.HasValue || Exam.ReExamId.Value == 0)
+                // If no prior ReExam AND EditReExam is true, create a new ReExam and link it to Exam
+                if (!HasReExam)
                 {
-                    _service.AddItem(ReExam);
+                    _service.AddItem(ReExam); // creates and gets ReExam.ExamId
                     Exam.ReExamId = ReExam.ExamId;
                 }
                 else
                 {
-                    _service.UpdateItem(ReExam);
+                    _service.UpdateItem(ReExam); // update existing re-exam
                 }
             }
             else
@@ -100,10 +117,24 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 Exam.ReExamId = null;
             }
 
+            // Log ModelState errors for debugging in console (field, state, errors)
+            foreach (var entry in ModelState)
+            {
+                var state = entry.Value.ValidationState;
+                var errorCount = entry.Value.Errors.Count;
+                Console.WriteLine($"Key: {entry.Key} - State: {state} - Errors: {errorCount}");
+                foreach (var error in entry.Value.Errors)
+                {
+                    Console.WriteLine($"  Error: {error.ErrorMessage}");
+                }
+            }
+
+            if (ModelState.ErrorCount > 0)
+                return Page();
+
             _service.UpdateItem(Exam);
             _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
 
-            // Redirect to details page
             return RedirectToPage("GetEksamner");
         }
     }

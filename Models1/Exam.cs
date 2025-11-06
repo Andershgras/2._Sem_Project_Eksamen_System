@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.Models1;
@@ -46,8 +47,10 @@ public partial class Exam
     [Column(TypeName = "text")]
     public string? Description { get; set; }
 
+
     [ForeignKey("ClassId")]
     [InverseProperty("Exams")]
+    [BindNever]
     public virtual Class Class { get; set; } = null!;
 
     [InverseProperty("ReExam")]
