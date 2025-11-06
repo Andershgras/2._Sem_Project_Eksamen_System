@@ -1,0 +1,68 @@
+﻿@page
+@model _2._Sem_Project_Eksamen_System.Pages.Students.DeleteStudentModel
+@{
+    ViewData["Title"] = "Slet Student";
+}
+
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Slet Student</h1>
+            <p>Fjern en student fra systemet</p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Bekræft Sletning</h2>
+                <a asp-page="/Students/GetStudent" class="btn-toggle">Tilbage til oversigt</a>
+            </div>
+
+            <div class="form-card">
+                <div class="alert alert-warning">
+                    <strong>Advarsel!</strong> Du er i gang med at slette en student. Denne handling kan ikke fortrydes.
+                </div>
+
+                <div class="student-details">
+                    <h3>Student Detaljer:</h3>
+                    <dl class="detail-list">
+                        <dt>Student ID:</dt>
+                        <dd>@Model.Student.StudentId</dd>
+
+                        <dt>Navn:</dt>
+                        <dd>@Model.Student.StudentName</dd>
+
+                        <dt>Email:</dt>
+                        <dd>@(string.IsNullOrEmpty(Model.Student.Email) ? "Ikke angivet" : Model.Student.Email)</dd>
+
+                        <dt>Klasse(r):</dt>
+                        <dd>
+                            @if (Model.Student.StudentsToClasses != null && Model.Student.StudentsToClasses.Any())
+                            {
+                                @string.Join(", ", Model.Student.StudentsToClasses.Select(sc => sc.Class?.ClassName))
+                            }
+                            else
+                            {
+                                <span class="not-assigned">Not Assigned</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+
+                <form method="post">
+                    <input type="hidden" asp-for="Student.StudentId" />
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne student?')">
+                            <span class="btn-icon">🗑️</span>
+                            Bekræft Sletning
+                        </button>
+                        <a asp-page="/Students/GetStudent" class="btn btn-secondary">
+                            <span class="btn-icon">↩️</span>
+                            Annuller
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
