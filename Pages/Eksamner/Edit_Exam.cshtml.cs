@@ -45,7 +45,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (Exam.ReExamId.HasValue)
             {
                 ReExam = _service.GetItemById(Exam.ReExamId.Value) ?? new Exam();
-                //EditReExam = true; // auto-toggle section if ReExam exists
+                EditReExam = true; // auto-toggle section if ReExam exists
             }
             else
             {
@@ -67,9 +67,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key]?.Errors.Clear();
             }
 
-            // Now validate the rest
-            if (!ModelState.IsValid)
-                return Page();
+            //// Now validate the rest
+            //if (!ModelState.IsValid)  // Problematic validation causes issues
+            //    return Page();
 
             // Handle ReExam create/update logic if editing/creating
             if (EditReExam)

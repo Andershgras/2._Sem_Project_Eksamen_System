@@ -78,15 +78,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                         return Page();
                     }
 
-                    if (!ModelState.IsValid)
-                    {
-                        // Log validation errors for debugging:
-                        foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
-                        {
-                            Console.WriteLine(modelError.ErrorMessage); // Or use logger/debug 
-                        }
-                        return Page();
-                    }
+                    ModelState.ClearValidationState("ReExam");
+                    //if (!ModelState.IsValid)
+                    //{
+                    //    // Log validation errors for debugging:
+                    //    foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
+                    //    {
+                    //        Console.WriteLine(modelError.ErrorMessage); // Or use logger/debug 
+                    //    }
+                    //    return Page();
+                    //}
+
                     // Save ReExam first (so we get ReExamId)
                     _examService.AddItem(ReExam);
 
