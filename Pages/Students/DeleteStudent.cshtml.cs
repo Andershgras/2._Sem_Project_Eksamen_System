@@ -1,12 +1,49 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using _2._Sem_Project_Eksamen_System.Interfaces;
+using _2._Sem_Project_Eksamen_System.Models1;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class DeleteStudentModel : PageModel
     {
-        public void OnGet()
+        private readonly ICRUDT<Student> _studentService;
+
+        [BindProperty]
+        public Student Student { get; set; } = new Student();
+
+        public DeleteStudentModel(ICRUDT<Student> studentService)
         {
+            _studentService = studentService;
+        }
+
+        public async Task<IActionResult> OnGetAsync(int id)
+        {
+            var student = await _studentService.GetItemById(id);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            Student = student;
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            try
+            {
+                await _studentService.DeleteItem(Student.StudentId);
+                return RedirectToPage("/Students/GetStudent");
+            }
+            catch
+            {
+                // Handle any errors (e.g., database constraints)
+                ModelState.AddModelError(string.Empty, "Kunne ikke slette studenten. Tjek om studenten har tilknyttede eksaminer.");
+                return Page();
+            }
         }
     }
 }
