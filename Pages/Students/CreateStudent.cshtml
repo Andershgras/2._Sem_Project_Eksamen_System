@@ -1,20 +1,20 @@
 ﻿@page
 @model _2._Sem_Project_Eksamen_System.Pages.Students.CreateStudentModel
 @{
-    ViewData["Title"] = "Tilføj Student";
+    ViewData["Title"] = "Create Student";
 }
 
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
-            <h1>Tilføj Student</h1>
-            <p>Opret en ny student i systemet</p>
+            <h1>Add Student</h1>
+            <p>Create a new student in the system</p>
         </div>
 
         <div class="section-card">
             <div class="section-header">
-                <h2>Ny Student</h2>
-                <a asp-page="/Students/GetStudent" class="btn-toggle">Tilbage til oversigt</a>
+                <h2>New Student</h2>
+                <a asp-page="/Students/GetStudent" class="btn-toggle">Back to main page</a>
             </div>
 
             <div class="form-card">
@@ -22,34 +22,34 @@
                     <div class="form-grid">
                         <!-- Student Name -->
                         <div class="form-group">
-                            <label asp-for="Student.StudentName" class="form-label">Fulde navn *</label>
-                            <input asp-for="Student.StudentName" class="form-control" placeholder="Indtast studentens fulde navn" />
+                            <label asp-for="Student.StudentName" class="form-label">Full Name *</label>
+                            <input asp-for="Student.StudentName" class="form-control" placeholder="Enter students full name" />
                             <span asp-validation-for="Student.StudentName" class="text-danger"></span>
                         </div>
 
                         <!-- Email -->
                         <div class="form-group">
                             <label asp-for="Student.Email" class="form-label">Email *</label>
-                            <input asp-for="Student.Email" class="form-control" placeholder="indtast@student.email" />
+                            <input asp-for="Student.Email" class="form-control" placeholder="Enter@student.email" />
                             <span asp-validation-for="Student.Email" class="text-danger"></span>
                         </div>
 
                         <!-- Class Dropdown -->
                         <div class="form-group">
-                            <label asp-for="SelectedClassId" class="form-label">Alocated Class</label>
+                            <label asp-for="SelectedClassId" class="form-label">Allocated Class</label>
                             <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control">
                                 <option value="">Vælg en klasse</option>
                             </select>
                             <span asp-validation-for="SelectedClassId" class="text-danger"></span>
-                            <small class="form-text text-muted">Vælg hvilken klasse studenten skal tilknyttes</small>
+                            <small class="form-text text-muted">Select the students class</small>
                         </div>
 
-                        <!-- Placeholder for additional fields -->
+                        @*@"<!--" Placeholder for additional fields -->
                         <div class="form-group">
                             <label class="form-label">Studieprogram</label>
                             <input class="form-control" placeholder="Valgfrit studieprogram" />
                         </div>
-                    </div>
+                    </div>@*@
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">

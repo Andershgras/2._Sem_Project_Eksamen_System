@@ -7,7 +7,7 @@
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
-            <h1>Studenter Overview</h1>
+            <h1>Student Overview</h1>
             <p>View and manage all students in the system</p>
         </div>
 
@@ -24,12 +24,12 @@
                             <input type="text"
                                    asp-for="Filter.FilterByName"
                                    class="form-control"
-                                   placeholder="Indtast student name..." />
+                                   placeholder="Enter student name..." />
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
                                 <span class="btn-icon">🔍</span>
-                                Søg
+                                Search
                             </button>
                             <a asp-page="/Students/GetStudent" class="btn btn-secondary">
                                 <span class="btn-icon">🔄</span>
@@ -44,7 +44,7 @@
         <!-- TABLE DISPLAY SECTION -->
         <div class="section-card">
             <div class="section-header">
-                <h2>Alle Studenter</h2>
+                <h2>All Students</h2>
                 <div class="header-actions">
                     <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add New Student</a>
                 </div>
