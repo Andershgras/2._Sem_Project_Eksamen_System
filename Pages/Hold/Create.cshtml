@@ -1,16 +1,24 @@
 ﻿@page
 @model _2._Sem_Project_Eksamen_System.Pages.Hold.CreateModel
 @{
-    ViewData["Title"] = "Create Hold";
+    ViewData["Title"] = "Create Class";
 }
 
-<h1>Create Hold</h1>
+<h1>Create Class</h1>
 
 <form method="post">
-    <div class="form-group">
-        <label asp-for="ClassItem.ClassName" class="control-label"></label>
-        <input asp-for="ClassItem.ClassName" class="form-control" />
+    <div class="mb-2">
+        <label asp-for="ClassItem.ClassName" class="form-label"></label>
+        <input asp-for="ClassItem.ClassName"
+               class="form-control"
+               placeholder="Education-LA-F/V-SeasonYearLetter-nsem"
+               pattern="^[A-Za-z]+-[A-Za-z]{2}-[FfVv]-[VvSs]\d{2}[A-Za-z]-([1-9][0-9]?|100)sem$"
+               title="Format: Education-CITY-F/V-SeasonYearLetter-nsem (fx: Data-RO-F-V25B-2sem)" />
         <span asp-validation-for="ClassItem.ClassName" class="text-danger"></span>
+        <small class="text-muted d-block mt-1">
+            Example: Data-RO-F-V25B-2sem, SW-KE-V-S26A-1sem.
+            Tip: Capitalization is corrected automatically (fx Ke → KE).
+        </small>
     </div>
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
