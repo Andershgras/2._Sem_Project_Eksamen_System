@@ -1,40 +1,40 @@
 ﻿@page
 @model _2._Sem_Project_Eksamen_System.Pages.Students.DeleteStudentModel
 @{
-    ViewData["Title"] = "Slet Student";
+    ViewData["Title"] = "Delete Student";
 }
 
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
             <h1>Slet Student</h1>
-            <p>Fjern en student fra systemet</p>
+            <p>Delete student from the system</p>
         </div>
 
         <div class="section-card">
             <div class="section-header">
-                <h2>Bekræft Sletning</h2>
-                <a asp-page="/Students/GetStudent" class="btn-toggle">Tilbage til oversigt</a>
+                <h2>Confirm Delete</h2>
+                <a asp-page="/Students/GetStudent" class="btn-toggle">Back to main page</a>
             </div>
 
             <div class="form-card">
                 <div class="alert alert-warning">
-                    <strong>Advarsel!</strong> Du er i gang med at slette en student. Denne handling kan ikke fortrydes.
+                    <strong>Warning!</strong> You are about to delete a student. This action cannot be undone.
                 </div>
 
                 <div class="student-details">
-                    <h3>Student Detaljer:</h3>
+                    <h3>Student Details:</h3>
                     <dl class="detail-list">
                         <dt>Student ID:</dt>
                         <dd>@Model.Student.StudentId</dd>
 
-                        <dt>Navn:</dt>
+                        <dt>Name:</dt>
                         <dd>@Model.Student.StudentName</dd>
 
                         <dt>Email:</dt>
-                        <dd>@(string.IsNullOrEmpty(Model.Student.Email) ? "Ikke angivet" : Model.Student.Email)</dd>
+                        <dd>@(string.IsNullOrEmpty(Model.Student.Email) ? "Not given" : Model.Student.Email)</dd>
 
-                        <dt>Klasse(r):</dt>
+                        <dt>Hold information:</dt>
                         <dd>
                             @if (Model.Student.StudentsToClasses != null && Model.Student.StudentsToClasses.Any())
                             {
@@ -52,13 +52,13 @@
                     <input type="hidden" asp-for="Student.StudentId" />
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne student?')">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm(' Are you sure you want to delete this student?')">
                             <span class="btn-icon">🗑️</span>
-                            Bekræft Sletning
+                            Confirm Delete
                         </button>
                         <a asp-page="/Students/GetStudent" class="btn btn-secondary">
                             <span class="btn-icon">↩️</span>
-                            Annuller
+                            Cancel
                         </a>
                     </div>
                 </form>

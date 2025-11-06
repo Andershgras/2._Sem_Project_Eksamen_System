@@ -38,7 +38,7 @@
                         <div class="form-group">
                             <label asp-for="SelectedClassId" class="form-label">Allocated Class</label>
                             <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control">
-                                <option value="">Vælg en klasse</option>
+                                <option value="">Select a class</option>
                             </select>
                             <span asp-validation-for="SelectedClassId" class="text-danger"></span>
                             <small class="form-text text-muted">Select the students class</small>
@@ -54,11 +54,11 @@
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
                             <span class="btn-icon">➕</span>
-                            Opret Student
+                            Create Student
                         </button>
                         <a asp-page="/Students/GetStudent" class="btn btn-secondary">
                             <span class="btn-icon">↩️</span>
-                            Annuller
+                            Cancel
                         </a>
                     </div>
                 </form>
