@@ -78,6 +78,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                         ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
                     // Set flags if desired
                     ReExam.IsReExam = true;
+
                     if (Exam.IsFinalExam)
                         ReExam.IsFinalExam = true;
                     // You can add other auto-fill logic as needed
