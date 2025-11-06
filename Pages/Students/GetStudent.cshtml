@@ -14,131 +14,56 @@
         <!-- SEARCH AND FILTER SECTION -->
         <div class="section-card">
             <div class="section-header">
-                <h2>Search & Filter Students</h2>
-                <button type="button" class="btn-toggle" id="toggleFilters">
-                    <span class="btn-icon">⚙️</span>
-                    Toggle Filters
-                </button>
+                <h2>Search & Filter</h2>
             </div>
-
             <div class="search-container">
-                <form method="get" id="filterForm">
-                    <div class="filter-grid" id="filterGrid">
-                        <!-- Quick Search -->
-                        <div class="filter-group">
-                            <label class="form-label">Quick Search</label>
+                <form method="get">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="Filter_FilterByName" class="form-label">Name</label>
                             <input type="text"
                                    asp-for="Filter.FilterByName"
                                    class="form-control"
-                                   placeholder="Search by name, email, or ID..." />
-                            <small class="form-text">Search across name, email, and student ID</small>
+                                   placeholder="Student name..." />
                         </div>
 
-                        <!-- Advanced Filters -->
-                        <div class="filter-group">
-                            <label class="form-label">Filter By</label>
-                            <div class="filter-options">
-                                <!-- Name Filter -->
-                                <div class="filter-option">
-                                    <label class="filter-checkbox">
-                                        <input type="checkbox" id="enableNameFilter" checked />
-                                        <span class="checkmark"></span>
-                                        Name
-                                    </label>
-                                    <input type="text"
-                                           asp-for="Filter.FilterByName"
-                                           class="form-control filter-input"
-                                           placeholder="Student name..."
-                                           id="nameFilter" />
-                                </div>
-
-                                <!-- Email Filter -->
-                                <div class="filter-option">
-                                    <label class="filter-checkbox">
-                                        <input type="checkbox" id="enableEmailFilter" />
-                                        <span class="checkmark"></span>
-                                        Email
-                                    </label>
-                                    <input type="text"
-                                           asp-for="Filter.FilterByEmail"
-                                           class="form-control filter-input"
-                                           placeholder="Student email..."
-                                           id="emailFilter"
-                                           disabled />
-                                </div>
-
-                                <!-- Student ID Filter -->
-                                <div class="filter-option">
-                                    <label class="filter-checkbox">
-                                        <input type="checkbox" id="enableIdFilter" />
-                                        <span class="checkmark"></span>
-                                        Student ID
-                                    </label>
-                                    <input type="number"
-                                           asp-for="Filter.FilterById"
-                                           class="form-control filter-input"
-                                           placeholder="Student ID..."
-                                           id="idFilter"
-                                           disabled />
-                                </div>
-
-                                <!-- Class Filter -->
-                                <div class="filter-option">
-                                    <label class="filter-checkbox">
-                                        <input type="checkbox" id="enableClassFilter" />
-                                        <span class="checkmark"></span>
-                                        Class
-                                    </label>
-                                    <select asp-for="Filter.FilterByClass"
-                                            class="form-control filter-input"
-                                            id="classFilter"
-                                            disabled>
-                                        <option value="">All Classes</option>
-                                        @if (Model.AvailableClasses != null)
-                                        {
-                                            foreach (var className in Model.AvailableClasses)
-                                            {
-                                                <option value="@className">@className</option>
-                                            }
-                                        }
-                                    </select>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label for="Filter_FilterByEmail" class="form-label">Email</label>
+                            <input type="text"
+                                   asp-for="Filter.FilterByEmail"
+                                   class="form-control"
+                                   placeholder="Student email..." />
                         </div>
 
-                        <!-- Search Options -->
-                        <div class="filter-group">
-                            <label class="form-label">Search Options</label>
-                            <div class="search-options">
-                                <label class="option-radio">
-                                    <input type="radio" name="searchType" value="contains" checked />
-                                    <span class="radiomark"></span>
-                                    Contains
-                                </label>
-                                <label class="option-radio">
-                                    <input type="radio" name="searchType" value="startsWith" />
-                                    <span class="radiomark"></span>
-                                    Starts With
-                                </label>
-                                <label class="option-radio">
-                                    <input type="radio" name="searchType" value="exact" />
-                                    <span class="radiomark"></span>
-                                    Exact Match
-                                </label>
-                            </div>
+                        <div class="form-group">
+                            <label for="Filter_FilterById" class="form-label">Student ID</label>
+                            <input type="number"
+                                   asp-for="Filter.FilterById"
+                                   class="form-control"
+                                   placeholder="Student ID..." />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Filter_FilterByClass" class="form-label">Class</label>
+                            <select asp-for="Filter.FilterByClass" class="form-control">
+                                <option value="">All Classes</option>
+                                @if (Model.AvailableClasses != null)
+                                {
+                                    foreach (var className in Model.AvailableClasses)
+                                    {
+                                        <option value="@className">@className</option>
+                                    }
+                                }
+                            </select>
                         </div>
                     </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
                             <span class="btn-icon">🔍</span>
-                            Apply Filters
+                            Search
                         </button>
-                        <button type="button" id="clearFilters" class="btn btn-secondary">
-                            <span class="btn-icon">🗑️</span>
-                            Clear All
-                        </button>
-                        <a asp-page="/Students/GetStudent" class="btn btn-outline">
+                        <a asp-page="/Students/GetStudent" class="btn btn-secondary">
                             <span class="btn-icon">🔄</span>
                             Reset
                         </a>
@@ -152,11 +77,7 @@
             <div class="section-header">
                 <h2>All Students</h2>
                 <div class="header-actions">
-                    <span class="student-count">@(Model.Students?.Count() ?? 0) students found</span>
-                    <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">
-                        <span class="btn-icon">➕</span>
-                        Add New Student
-                    </a>
+                    <a asp-page="/Students/CreateStudent" class="btn-toggle" role="menuitem">Add New Student</a>
                 </div>
             </div>
 
@@ -175,13 +96,7 @@
             @if (activeFilters.Any())
             {
                 <div class="filter-info">
-                    <div class="filter-tags">
-                        <strong>Active Filters:</strong>
-                        @foreach (var filter in activeFilters)
-                        {
-                            <span class="filter-tag">@filter</span>
-                        }
-                    </div>
+                    <p>Showing results for: <strong>@string.Join(", ", activeFilters)</strong></p>
                 </div>
             }
 
@@ -267,254 +182,62 @@
         padding: 1.5rem;
     }
 
-    .filter-grid {
+    .search-form {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        margin-bottom: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        align-items: end;
     }
 
-    .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .filter-options {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .filter-option {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .filter-checkbox {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-        min-width: 100px;
-    }
-
-        .filter-checkbox input[type="checkbox"] {
-            display: none;
+        .search-form .form-group {
+            margin-bottom: 0;
         }
 
-    .checkmark {
-        width: 18px;
-        height: 18px;
-        border: 2px solid #ddd;
-        border-radius: 3px;
-        display: inline-block;
-        position: relative;
-        background: white;
-    }
-
-    .filter-checkbox input[type="checkbox"]:checked + .checkmark {
-        background: #007bff;
-        border-color: #007bff;
-    }
-
-        .filter-checkbox input[type="checkbox"]:checked + .checkmark:after {
-            content: "✓";
-            color: white;
-            position: absolute;
-            top: -2px;
-            left: 2px;
-            font-size: 12px;
+        .search-form .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
         }
 
-    .filter-input {
-        flex: 1;
-    }
-
-        .filter-input:disabled {
-            background-color: #f8f9fa;
-            opacity: 0.6;
-        }
-
-    .search-options {
+    .header-actions {
         display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+        gap: 1rem;
     }
 
-    .option-radio {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
+    .filter-info {
+        background-color: #e8f4fd;
+        border: 1px solid #b6d7e8;
+        border-radius: 4px;
+        padding: 1rem;
+        margin: 1rem 1.5rem;
     }
 
-        .option-radio input[type="radio"] {
-            display: none;
-        }
-
-    .radiomark {
-        width: 18px;
-        height: 18px;
-        border: 2px solid #ddd;
-        border-radius: 50%;
-        display: inline-block;
-        position: relative;
-        background: white;
-    }
-
-    .option-radio input[type="radio"]:checked + .radiomark {
-        border-color: #007bff;
-    }
-
-        .option-radio input[type="radio"]:checked + .radiomark:after {
-            content: "";
-            width: 8px;
-            height: 8px;
-            background: #007bff;
-            border-radius: 50%;
-            position: absolute;
-            top: 3px;
-            left: 3px;
+        .filter-info p {
+            margin: 0;
+            color: #2c5aa0;
         }
 
     .form-actions {
         display: flex;
         gap: 1rem;
         justify-content: flex-end;
-        border-top: 1px solid #eee;
+        margin-top: 1.5rem;
         padding-top: 1.5rem;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .student-count {
-        color: #6c757d;
-        font-weight: 500;
-    }
-
-    .filter-info {
-        background-color: #e8f4fd;
-        border: 1px solid #b6d7e8;
-        border-radius: 8px;
-        padding: 1rem;
-        margin: 1rem 1.5rem;
-    }
-
-    .filter-tags {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-
-    .filter-tag {
-        background: #007bff;
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.875rem;
-    }
-
-    .btn-outline {
-        background: transparent;
-        border: 1px solid #6c757d;
-        color: #6c757d;
-    }
-
-        .btn-outline:hover {
-            background: #6c757d;
-            color: white;
-        }
-
-    @@media (max-width: 1024px) {
-        .filter-grid {
-            grid-template-columns: 1fr;
-        }
+        border-top: 1px solid #eee;
     }
 
     @@media (max-width: 768px) {
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
         .form-actions {
             flex-direction: column;
         }
 
-        .header-actions {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .filter-tags {
-            flex-direction: column;
-            align-items: flex-start;
+        .search-form .form-actions {
+            display: flex;
+            gap: 0.5rem;
         }
     }
 </style>
-
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle filter inputs based on checkbox state
-            const toggleFilter = (checkboxId, inputId) => {
-                const checkbox = document.getElementById(checkboxId);
-                const input = document.getElementById(inputId);
-
-                if (checkbox && input) {
-                    // Set initial state
-                    input.disabled = !checkbox.checked;
-
-                    // Add event listener
-                    checkbox.addEventListener('change', function() {
-                        input.disabled = !this.checked;
-                        if (!this.checked) {
-                            if (input.tagName === 'SELECT') {
-                                input.value = '';
-                            } else {
-                                input.value = '';
-                            }
-                        }
-                    });
-                }
-            };
-
-            // Initialize all filter toggles
-            toggleFilter('enableNameFilter', 'nameFilter');
-            toggleFilter('enableEmailFilter', 'emailFilter');
-            toggleFilter('enableIdFilter', 'idFilter');
-            toggleFilter('enableClassFilter', 'classFilter');
-
-            // Clear all filters
-            document.getElementById('clearFilters')?.addEventListener('click', function() {
-                const form = document.getElementById('filterForm');
-                const inputs = form.querySelectorAll('input, select');
-                inputs.forEach(input => {
-                    if (input.type !== 'submit' && input.type !== 'button') {
-                        input.value = '';
-                    }
-                });
-
-                // Uncheck all filter checkboxes except name
-                document.getElementById('enableEmailFilter').checked = false;
-                document.getElementById('enableIdFilter').checked = false;
-                document.getElementById('enableClassFilter').checked = false;
-
-                // Disable corresponding inputs
-                document.getElementById('emailFilter').disabled = true;
-                document.getElementById('idFilter').disabled = true;
-                document.getElementById('classFilter').disabled = true;
-
-                form.submit();
-            });
-
-            // Toggle filters visibility
-            document.getElementById('toggleFilters')?.addEventListener('click', function() {
-                const filterGrid = document.getElementById('filterGrid');
-                filterGrid.style.display = filterGrid.style.display === 'none' ? 'grid' : 'none';
-            });
-        });
-    </script>
-}
