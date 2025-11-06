@@ -183,7 +183,7 @@
 
     .search-form {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 1rem;
         align-items: end;
     }
@@ -194,9 +194,16 @@
 
         .search-form .form-label {
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             display: block;
+            font-size: 0.9rem;
         }
+
+    .compact-input {
+        height: 36px;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
 
     .header-actions {
         display: flex;
@@ -233,10 +240,5 @@
         .form-actions {
             flex-direction: column;
         }
-
-        .search-form .form-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
     }
-</style>
+</style>/style>
