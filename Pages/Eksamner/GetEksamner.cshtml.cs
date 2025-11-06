@@ -25,7 +25,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public void OnGet()
         {
-            if (!string.IsNullOrEmpty(Filter.FilterByName))
+            if (!string.IsNullOrEmpty(Filter?.FilterByName))
             {
                 Eksamner = context.GetAll(Filter);
             }

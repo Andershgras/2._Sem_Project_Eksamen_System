@@ -101,7 +101,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
 
                 TempData["SuccessMessage"] = "Exam created successfully!";
-                return RedirectToPage("./GetEksamner");
+                return RedirectToPage("GetEksamner");
             }
             catch (Exception ex)
             {

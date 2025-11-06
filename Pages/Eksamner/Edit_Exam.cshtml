@@ -27,7 +27,7 @@
     <div class="mb-3">
         <label asp-for="Exam.ClassId" class="form-label">Class</label>
         <select asp-for="Exam.ClassId" class="form-select" asp-items="Model.ClassList">
-            <option value="">-- Select Class --</option>
+            
         </select>
         <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
     </div>
@@ -115,6 +115,7 @@
             <input asp-for="ReExam.ExamName" class="form-control" />
             <span asp-validation-for="ReExam.ExamName" class="text-danger"></span>
         </div>
+
         <div class="mb-3">
             <label asp-for="ReExam.ExamStartDate" class="form-label">ReExam Start Date</label>
             <input asp-for="ReExam.ExamStartDate" type="date" class="form-control" />

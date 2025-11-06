@@ -11,8 +11,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     {
         private readonly ICRUD<Exam> _service;
         private readonly ICRUD<Class> _classService;
+        private readonly IStudentsToExams _studentsToExamService;
 
-        // Dropdown for Class
         public SelectList ClassList { get; set; } = default!;
 
         [BindProperty]
@@ -24,10 +24,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public bool EditReExam { get; set; } = false;
 
-        public Edit_ExamModel(ICRUD<Exam> service, ICRUD<Class> classService)
+        public Edit_ExamModel(
+            ICRUD<Exam> service,
+            ICRUD<Class> classService,
+            IStudentsToExams studentsToExamService)
         {
             _service = service;
             _classService = classService;
+            _studentsToExamService = studentsToExamService;
         }
 
         public IActionResult OnGet(int id)
@@ -41,12 +45,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (Exam.ReExamId.HasValue)
             {
                 ReExam = _service.GetItemById(Exam.ReExamId.Value) ?? new Exam();
-                // Optionally, you can pre-toggle the ReExam edit box
-                // EditReExam = true;
+                //EditReExam = true; // auto-toggle section if ReExam exists
             }
             else
             {
                 ReExam = new Exam();
+                EditReExam = false;
             }
 
             return Page();
@@ -56,54 +60,51 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         {
             ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
 
-            // Conditionally ignore validation errors from nested ReExam model
+            // Clear validation for all ReExam fields when not editing/creating a ReExam
             if (!EditReExam)
             {
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
-                    ModelState[key].Errors.Clear();
+                    ModelState[key]?.Errors.Clear();
             }
 
+            // Now validate the rest
             if (!ModelState.IsValid)
                 return Page();
 
-            // Save and link ReExam if section is ON
+            // Handle ReExam create/update logic if editing/creating
             if (EditReExam)
             {
-                // If creating a new ReExam (no ID set yet)
+                // Always set ReExam.ClassId from Exam.ClassId!
+                ReExam.ClassId = Exam.ClassId;
+
+                if (string.IsNullOrWhiteSpace(ReExam.ExamName))
+                    ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
+
+                ReExam.IsReExam = true;
+                if (Exam.IsFinalExam)
+                    ReExam.IsFinalExam = true;
+
                 if (!Exam.ReExamId.HasValue || Exam.ReExamId.Value == 0)
                 {
-                    // Copy relevant fields from Exam to ReExam
-                    ReExam.ClassId = Exam.ClassId;
-                    if (string.IsNullOrWhiteSpace(ReExam.ExamName))
-                        ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
-                    // Set flags if desired
-                    ReExam.IsReExam = true;
-
-                    if (Exam.IsFinalExam)
-                        ReExam.IsFinalExam = true;
-                    // You can add other auto-fill logic as needed
-
-                    // Save new ReExam and link it
                     _service.AddItem(ReExam);
                     Exam.ReExamId = ReExam.ExamId;
                 }
                 else
                 {
-                    // Update existing linked ReExam
                     _service.UpdateItem(ReExam);
                 }
             }
             else
             {
-                // Unlink ReExam if unchecked
+                // Unlink ReExam from Exam
                 Exam.ReExamId = null;
             }
 
-            // Save main Exam (with updated ReExamId if any)
             _service.UpdateItem(Exam);
+            _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
 
-            // Redirect to Exam details page (or list)
-            return RedirectToPage("/Eksamner/Exam_Details", new { id = Exam.ExamId });
+            // Redirect to details page
+            return RedirectToPage("GetEksamner");
         }
     }
 }
