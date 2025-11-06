@@ -21,7 +21,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public IActionResult OnGet(int id)
         {
-                Exam = _context.Exams
+            Exam = _context.Exams
                 .Include(e => e.Class)
                 .Include(e => e.ReExam)
                 .Include(e => e.StudentsToExams)
