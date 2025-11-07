@@ -1,15 +1,14 @@
 ﻿@page
 @model _2._Sem_Project_Eksamen_System.Pages.Eksamner.GetEksamnerModel
+@using _2._Sem_Project_Eksamen_System.ViewModels
 @{
     ViewData["Title"] = "Exam Overview";
 }
 
 <div class="page-body">
     <div class="dashboard-container">
-        <div class="welcome-card">
-            <h1>Exam Overview</h1>
-            <p>View and manage all exams in the system</p>
-        </div>
+        <partial name="~/Pages/Shared/_PageHeader.cshtml"
+                 model='new PageHeaderModel("Exam Overview", "View, edit and manage all exams")' />
 
         <!-- SEARCH AND FILTER SECTION -->
         <div class="section-card">
