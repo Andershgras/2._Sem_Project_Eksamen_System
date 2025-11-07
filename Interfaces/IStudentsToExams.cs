@@ -7,6 +7,13 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
     {
 
         #region Custom Methods for StudentsToExam
+
+        /// <summary>
+        /// Returns the number of students added to the exam
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="examId"></param>
+        /// <returns></returns>
         public void AddStudentsFromClassToExam(int classId, int examId);
         // Remove all students from exam (if class changes or exam deleted)
         public void RemoveAllFromExam(int examId);

@@ -58,15 +58,18 @@
     </div>
 
     <!-- Dates -->
-    <div class="mb-3">
-        <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
-        <input asp-for="Exam.ExamStartDate" type="date" class="form-control" />
-        <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
-        <input asp-for="Exam.ExamEndDate" type="date" class="form-control" />
-        <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
+    <div class="row mb-3">
+        <div class="col mb-3">
+            <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
+            <input asp-for="Exam.ExamStartDate" type="date" class="form-control" />
+            <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
+        </div>
+        <div class="col mb-3">
+            <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
+            <input asp-for="Exam.ExamEndDate" type="date" class="form-control" />
+            <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
+        </div>
+
     </div>
     <div class="mb-3">
         <label asp-for="Exam.DeliveryDate" class="form-label">Delivery Date</label>
