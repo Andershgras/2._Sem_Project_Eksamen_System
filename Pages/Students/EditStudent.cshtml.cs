@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.EntityFrameworkCore;
+using _2._Sem_Project_Eksamen_System.Utils;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
@@ -34,6 +35,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
+        // id is the StudentId
         {
             var student = await _studentService.GetItemById(id);
 
