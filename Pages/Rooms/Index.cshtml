@@ -42,8 +42,8 @@
                 <td>@r.Name</td>
                 <td>@(r.Capacity?.ToString() ?? "-")</td>
 
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@r.RoomId" class="btn btn-sm btn-warning">Edit</a>
+                <td class="action-buttons">
+                    <a asp-page="./Edit" asp-route-id="@r.RoomId" class="btn-toggle btn-edit">Edit</a>
                     <partial name="~/Pages/Shared/_DeleteButton.cshtml"
                              model="@(("./Delete", r.RoomId))" />
                 </td>
