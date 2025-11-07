@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.EntityFrameworkCore;
+using _2._Sem_Project_Eksamen_System.Utils;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
