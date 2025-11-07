@@ -41,7 +41,8 @@
                     <a class="btn btn-primary btn-sm" asp-page="Edit" asp-route-id="@t.TeacherId">Edit</a>
                 </td>
                 <td>
-                    <a class="btn btn-danger btn-sm" asp-page="Delete" asp-route-id="@t.TeacherId">Delete</a>
+                    <partial name="~/Pages/Shared/_DeleteButton.cshtml"
+                             model="@(("./Delete", t.TeacherId))" />
                 </td>
             </tr>
         }

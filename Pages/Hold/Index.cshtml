@@ -38,11 +38,9 @@
             <td>@hold.StudentsToClasses.Count</td>
             <td>
                     <a asp-page="Edit" asp-route-id="@hold.ClassId">Edit</a> |
-                    <a asp-page="Delete" class="btn btn-danger" asp-route-id="@hold.ClassId">Slet</a>
-            </td>
-                
+                    <partial name="~/Pages/Shared/_DeleteButton.cshtml" model="@(("./Delete", hold.ClassId))" />
+                </td>
         </tr>
-
     }
     </tbody>
 </table>
