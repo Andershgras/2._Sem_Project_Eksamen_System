@@ -8,15 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Elever\**" />
     <Compile Remove="Pages\Fag\**" />
     <Compile Remove="Pages\Lokaler\**" />
     <Compile Remove="Pages\Undervisere\**" />
+    <Content Remove="Pages\Elever\**" />
     <Content Remove="Pages\Fag\**" />
     <Content Remove="Pages\Lokaler\**" />
     <Content Remove="Pages\Undervisere\**" />
+    <EmbeddedResource Remove="Pages\Elever\**" />
     <EmbeddedResource Remove="Pages\Fag\**" />
     <EmbeddedResource Remove="Pages\Lokaler\**" />
     <EmbeddedResource Remove="Pages\Undervisere\**" />
+    <None Remove="Pages\Elever\**" />
     <None Remove="Pages\Fag\**" />
     <None Remove="Pages\Lokaler\**" />
     <None Remove="Pages\Undervisere\**" />
@@ -36,7 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Elever\" />
     <Folder Include="SQL-queries\" />
   </ItemGroup>
 

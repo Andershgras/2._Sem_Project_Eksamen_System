@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
+using _2._Sem_Project_Eksamen_System.Utils;
 
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner

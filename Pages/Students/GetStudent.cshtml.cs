@@ -31,6 +31,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         }
 
         private async Task PopulateAvailableClasses()
+        //Filles the AvailableClasses list with distinct class names from all students
         {
             var allStudents = await _service.GetAll(new ExtendedStudentFilter());
             AvailableClasses = allStudents
