@@ -6,99 +6,463 @@
     var reExam = Model.Exam.ReExam;
 }
 
-<h1>Exam Details</h1>
-@if (exam == null)
-{
-    <div class="alert alert-warning">Exam not found.</div>
-}
-else
-{
-    <dl class="row">
-        <dt class="col-sm-3">Exam ID</dt>
-        <dd class="col-sm-9">@exam.ExamId</dd>
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Exam Details</h1>
+            <p>Detailed information about the exam</p>
+        </div>
 
-        <dt class="col-sm-3">Exam Name</dt>
-        <dd class="col-sm-9">@exam.ExamName</dd>
-        
-        <dt class="col-sm-3">Class</dt>
-        <dd class="col-sm-9">@exam.Class?.ClassName ?? "N/A"</dd>
+        @if (exam == null)
+        {
+            <div class="section-card">
+                <div class="empty-state">
+                    <span class="empty-icon">⚠️</span>
+                    <p>Exam not found</p>
+                    <a asp-page="/Eksamner/GetEksamner" class="btn-toggle" role="menuitem">Back to Exam List</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- MAIN EXAM INFORMATION SECTION -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>Exam Information</h2>
+                </div>
+                <div class="details-container">
+                    <div class="info-card-grid">
+                        <!-- BASIC EXAM INFO CARD -->
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <h3>Basic Information</h3>
+                            </div>
+                            <div class="info-card-content">
+                                <div class="info-row">
+                                    <span class="info-label">Exam ID</span>
+                                    <span class="info-value highlight">@exam.ExamId</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Exam Name</span>
+                                    <span class="info-value">@exam.ExamName</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Class</span>
+                                    <span class="info-value">
+                                        @if (exam.Class != null)
+                                        {
+                                            <span class="class-tag">@exam.Class.ClassName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">Not Assigned</span>
+                                        }
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Description</span>
+                                    <span class="info-value description-text">@exam.Description</span>
+                                </div>
+                            </div>
+                        </div>
 
-        <dt class="col-sm-3">Censor Type</dt>
-        <dd class="col-sm-9">@exam.CensorType</dd>
+                        <!-- EXAM DETAILS CARD -->
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <h3>Exam Details</h3>
+                            </div>
+                            <div class="info-card-content">
+                                <div class="info-row">
+                                    <span class="info-label">Censor Type</span>
+                                    <span class="info-value type-badge">@exam.CensorType</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Format</span>
+                                    <span class="info-value format-badge">@exam.Format</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Exam Patrol</span>
+                                    <span class="info-value">
+                                        <span class="status-badge @(exam.ExamPatrol ? "status-active" : "status-inactive")">
+                                            @(exam.ExamPatrol ? "Yes" : "No")
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Is ReExam</span>
+                                    <span class="info-value">
+                                        <span class="status-badge @(exam.IsReExam ? "status-active" : "status-inactive")">
+                                            @(exam.IsReExam ? "Yes" : "No")
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Is Final Exam</span>
+                                    <span class="info-value">
+                                        <span class="status-badge @(exam.IsFinalExam ? "status-active" : "status-inactive")">
+                                            @(exam.IsFinalExam ? "Yes" : "No")
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
 
-        <dt class="col-sm-3">Format</dt>
-        <dd class="col-sm-9">@exam.Format</dd>
+                        <!-- DATES CARD -->
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <h3>Dates & Schedule</h3>
+                            </div>
+                            <div class="info-card-content">
+                                <div class="info-row">
+                                    <span class="info-label">Start Date</span>
+                                    <span class="info-value date-value">@exam.ExamStartDate?.ToString("yyyy-MM-dd")</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">End Date</span>
+                                    <span class="info-value date-value">@exam.ExamEndDate?.ToString("yyyy-MM-dd")</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Delivery Date</span>
+                                    <span class="info-value date-value">@exam.DeliveryDate?.ToString("yyyy-MM-dd")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <dt class="col-sm-3">Exam Patrol</dt>
-        <dd class="col-sm-9">@((exam.ExamPatrol ? "Yes" : "No"))</dd>
-
-        <dt class="col-sm-3">Start Date</dt>
-        <dd class="col-sm-9">@exam.ExamStartDate?.ToString("yyyy-MM-dd")</dd>
-
-        <dt class="col-sm-3">End Date</dt>
-        <dd class="col-sm-9">@exam.ExamEndDate?.ToString("yyyy-MM-dd")</dd>
-
-        <dt class="col-sm-3">Delivery Date</dt>
-        <dd class="col-sm-9">@exam.DeliveryDate?.ToString("yyyy-MM-dd")</dd>
-
-        <dt class="col-sm-3">Is ReExam</dt>
-        <dd class="col-sm-9">@((exam.IsReExam ? "Yes" : "No"))</dd>
-
-        <dt class="col-sm-3">Is Final Exam</dt>
-        <dd class="col-sm-9">@((exam.IsFinalExam ? "Yes" : "No"))</dd>
-
-        <dt class="col-sm-3">Description</dt>
-        <dd class="col-sm-9">@exam.Description</dd>
-    </dl>
-
-    <hr />
-
-    <h3>ReExam</h3>
-    @if (reExam == null)
-    {
-        <div>N/A</div>
-    }
-    else
-    {
-        <dl class="row">
-            <dt class="col-sm-3">ReExam Name</dt>
-            <dd class="col-sm-9">@reExam.ExamName</dd>
-            <dt class="col-sm-3">Start</dt>
-            <dd class="col-sm-9">@reExam.ExamStartDate?.ToString("yyyy-MM-dd")</dd>
-            <dt class="col-sm-3">End</dt>
-            <dd class="col-sm-9">@reExam.ExamEndDate?.ToString("yyyy-MM-dd")</dd>
-            <dt class="col-sm-3">Delivery Date</dt>
-            <dd class="col-sm-9">@reExam.DeliveryDate?.ToString("yyyy-MM-dd")</dd>
-        </dl>
-    }
-
-    <hr />
-
-    <h3>Teachers</h3>
-    @if (exam.TeachersToExams == null || !exam.TeachersToExams.Any())
-    {
-        <div>No teachers assigned.</div>
-    }
-    else
-    {
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Role</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var tte in exam.TeachersToExams)
+            <!-- REEXAM SECTION -->
+            @if (reExam != null)
             {
-                <tr>
-                    <td>@tte.Teacher?.TeacherName</td>
-                    <td>@tte.Role</td>
-                </tr>
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>ReExam Information</h2>
+                    </div>
+                    <div class="details-container">
+                        <div class="info-card-grid">
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <h3>ReExam Details</h3>
+                                </div>
+                                <div class="info-card-content">
+                                    <div class="info-row">
+                                        <span class="info-label">ReExam Name</span>
+                                        <span class="info-value">@reExam.ExamName</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Start Date</span>
+                                        <span class="info-value date-value">@reExam.ExamStartDate?.ToString("yyyy-MM-dd")</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">End Date</span>
+                                        <span class="info-value date-value">@reExam.ExamEndDate?.ToString("yyyy-MM-dd")</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Delivery Date</span>
+                                        <span class="info-value date-value">@reExam.DeliveryDate?.ToString("yyyy-MM-dd")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-            </tbody>
-        </table>
-    }
-}
 
-<a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">Back to List</a>
+            <!-- TEACHERS SECTION -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>Assigned Teachers</h2>
+                </div>
+                <div class="table-container">
+                    @if (exam.TeachersToExams == null || !exam.TeachersToExams.Any())
+                    {
+                        <div class="empty-state">
+                            <span class="empty-icon">👨‍🏫</span>
+                            <p>No teachers assigned to this exam</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var tte in exam.TeachersToExams)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(tte.Teacher?.TeacherName))
+                                            {
+                                                @tte.Teacher.TeacherName
+                                            }
+                                            else
+                                            {
+                                                <span class="not-assigned">Not Specified</span>
+                                            }
+                                        </td>
+                                        <td>@tte.Role</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="form-actions">
+                <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">
+                    <span class="btn-icon">←</span>
+                    Back to Exam List
+                </a>
+                <div class="header-actions">
+                    <a asp-page="./Edit_Exam" asp-route-id="@exam.ExamId" class="btn-toggle btn-edit">Edit Exam</a>
+                    <a asp-page="./Delete_Exam" asp-route-id="@exam.ExamId" class="btn-toggle btn-delete">Delete Exam</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* DETAILS CONTAINER STYLES */
+    .details-container {
+        padding: 1.5rem;
+    }
+
+    /* INFO CARD GRID LAYOUT */
+    .info-card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* INDIVIDUAL INFO CARD STYLING */
+    .info-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.2s ease;
+    }
+
+        .info-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+    .info-card-header {
+        background: #f8fafc;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+        .info-card-header h3 {
+            margin: 0;
+            color: #374151;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+    .info-card-content {
+        padding: 1.5rem;
+    }
+
+    /* INFO ROW STYLING */
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 500;
+        color: #6b7280;
+        font-size: 0.875rem;
+        flex: 1;
+    }
+
+    .info-value {
+        font-weight: 500;
+        color: #111827;
+        font-size: 0.95rem;
+        flex: 1;
+        text-align: right;
+        word-break: break-word;
+    }
+
+        /* SPECIAL VALUE STYLES */
+        .info-value.highlight {
+            color: #0066cc;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .info-value.description-text {
+            text-align: left;
+            line-height: 1.5;
+            color: #4b5563;
+            font-style: italic;
+        }
+
+        .info-value.date-value {
+            color: #059669;
+            font-weight: 500;
+        }
+
+    /* BADGE AND TAG STYLES */
+    .type-badge, .format-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+
+    .type-badge {
+        background-color: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .format-badge {
+        background-color: #f0fdf4;
+        color: #166534;
+    }
+
+    .class-tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background-color: #f3e8ff;
+        color: #7c3aed;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+
+    .status-active {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-inactive {
+        background-color: #fef2f2;
+        color: #991b1b;
+    }
+
+    /* EMPTY STATE STYLES */
+    .not-assigned {
+        color: #9ca3af;
+        font-style: italic;
+        font-size: 0.875rem;
+    }
+
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        opacity: 0.5;
+    }
+
+    /* ACTION BUTTONS STYLES */
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+    }
+
+    .btn-edit {
+        background-color: #e7f1ff;
+        color: #0066cc;
+        border: 1px solid #b6d7e8;
+    }
+
+    .btn-delete {
+        background-color: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .btn-toggle:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .btn-icon {
+        font-size: 0.875rem;
+    }
+
+    /* RESPONSIVE DESIGN */
+    @@media (max-width: 768px) {
+        .info-card-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .info-row {
+            flex-direction: column;
+            gap: 0.25rem;
+            align-items: flex-start;
+        }
+
+        .info-value {
+            text-align: left;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .header-actions {
+            justify-content: center;
+        }
+    }
+</style>
