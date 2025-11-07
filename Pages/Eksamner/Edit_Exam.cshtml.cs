@@ -128,11 +128,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 {
                     ModelState[key]?.Errors.Clear();
                     if (ModelState[key] != null) // nessesary null check to avoid the unvalidated warning
-                    ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+                        ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
                 }
             
 
             //Log ModelState errors for debugging in console
+            Console.WriteLine("OnPost: in Edit_Exam");
             foreach (var entry in ModelState)
             {
                 var state = entry.Value.ValidationState;
@@ -143,6 +144,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     Console.WriteLine($"  Error: {error.ErrorMessage}");
                 }
             }
+            Console.WriteLine();
 
             if (!ModelState.IsValid)
                 return Page();
