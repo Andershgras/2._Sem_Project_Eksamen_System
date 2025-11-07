@@ -18,12 +18,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public Exam Exam { get; set; }
 
+        [BindProperty]
         public Exam ReExam { get; set; }
 
         public bool HasReExam => Exam.ReExamId.HasValue;
 
         [BindProperty]
-        public bool EditReExam { get; set; } = false;
+        public bool EditReExam { get; set; }
 
         public Edit_ExamModel(
             ICRUD<Exam> service,
@@ -46,6 +47,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (HasReExam)
             {
                 ReExam = _service.GetItemById(Exam.ReExamId.Value);
+                EditReExam = true;
             }
             else
             {
@@ -103,13 +105,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (Exam.IsFinalExam)
                     ReExam.IsFinalExam = true;
 
-                if (!Exam.ReExamId.HasValue || Exam.ReExamId.Value == 0)
+                if (!HasReExam) // Create new ReExam and link it
                 {
                     _service.AddItem(ReExam);
                     Exam.ReExamId = ReExam.ExamId;
                     
                 }
-                else
+                else // Update existing ReExam
                 {
                     _service.UpdateItem(ReExam);
                 }
@@ -120,15 +122,15 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 Exam.ReExamId = null;
             }
 
-            if (!EditReExam)
-            {
-                foreach (var key in ModelState.Keys.Where(k => k.Equals("Exam.Class") || k.Equals("ReExam.Class") || k.Equals("ReExam.ExamName "))) // Removes all Class related errors så Make sure it is vali
+            
+            
+                foreach (var key in ModelState.Keys.Where(k => k.Equals("Exam.Class") || k.Equals("ReExam.Class") || k.Equals("ReExam.ExamName"))) // Removes all Class related errors så Make sure it is vali
                 {
                     ModelState[key]?.Errors.Clear();
                     if (ModelState[key] != null)
                         ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
                 }
-            }
+            
 
             //Log ModelState errors for debugging in console
             foreach (var entry in ModelState)
@@ -142,9 +144,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
             }
 
-            if (ModelState.Count == 0)
+            if (!ModelState.IsValid)
                 return Page();
 
+            Console.WriteLine("-----");
+            Console.WriteLine($"{EditReExam} | Exam.ReExamId = {Exam.ReExamId} | ReExamen.ExamenId = {ReExam.ExamId}");
 
             _service.UpdateItem(Exam);
             _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
