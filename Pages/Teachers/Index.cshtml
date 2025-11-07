@@ -38,7 +38,7 @@
                 <td>@t.TeacherName</td>
                 <td>@t.Email</td>
                 <td>
-                    <a class="btn btn-primary btn-sm" asp-page="Edit" asp-route-id="@t.TeacherId">Edit</a>
+                    <a asp-page="./Edit" asp-route-id="@t.TeacherId" class="btn-toggle btn-edit">Edit</a>
                 </td>
                 <td>
                     <partial name="~/Pages/Shared/_DeleteButton.cshtml"
