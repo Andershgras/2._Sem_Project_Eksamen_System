@@ -34,6 +34,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
+        // id is the StudentId
         {
             var student = await _studentService.GetItemById(id);
 
