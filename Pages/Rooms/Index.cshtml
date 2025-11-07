@@ -44,7 +44,8 @@
 
                 <td>
                     <a asp-page="./Edit" asp-route-id="@r.RoomId" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-page="./Delete" asp-route-id="@r.RoomId" class="btn btn-sm btn-danger">Delete</a>
+                    <partial name="~/Pages/Shared/_DeleteButton.cshtml"
+                             model="@(("./Delete", r.RoomId))" />
                 </td>
             </tr>
             <tr id="@($"{rowId}-upcoming")" class="d-none">
