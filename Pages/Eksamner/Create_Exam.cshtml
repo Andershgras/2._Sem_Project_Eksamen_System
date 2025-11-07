@@ -4,138 +4,423 @@
     ViewData["Title"] = "Create Exam";
 }
 
-<h1>Create Exam</h1>
-
-<form method="post">
-    <!-- Exam Name -->
-    <div class="mb-3">
-        <label asp-for="Exam.ExamName" class="form-label"></label>
-        <input asp-for="Exam.ExamName" class="form-control" />
-        <span asp-validation-for="Exam.ExamName" class="text-danger"></span>
-    </div>
-
-    <!-- ClassId -->
-    <div class="mb-3">
-        <label asp-for="Exam.ClassId" class="form-label"></label>
-        <select asp-for="Exam.ClassId" class="form-select" asp-items="Model.ClassList">
-            <option value="">-- Select Class --</option>
-        </select>
-        <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
-    </div>
-
-    <!-- CensorType -->
-    <div class="mb-3">
-        <label asp-for="Exam.CensorType" class="form-label">Censor Type</label>
-        <select asp-for="Exam.CensorType" class="form-select">
-            <option value="">-- Select --</option>
-            <option value="Intern">Intern</option>
-            <option value="Extern">Extern</option>
-        </select>
-        <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
-    </div>
-
-    <!-- Format -->
-    <div class="mb-3">
-        <label asp-for="Exam.Format" class="form-label"></label>
-        <input asp-for="Exam.Format" class="form-control" />
-   @*      <span asp-validation-for="Exam.Format" class="text-danger"></span> *@
-    </div>
-
-    <!-- ExamPatrol Checkbox -->
-    <div class="mb-3 form-check">
-        <input asp-for="Exam.ExamPatrol" class="form-check-input" type="checkbox" />
-        <label asp-for="Exam.ExamPatrol" class="form-check-label">Is Patrol Exam</label>
-        <span asp-validation-for="Exam.ExamPatrol" class="text-danger"></span>
-    </div>
-
-    <!-- ExamStartDate -->
-    <div class="mb-3">
-        <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
-        <input asp-for="Exam.ExamStartDate" type="date" class="form-control" />
-        <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
-    </div>
-
-    <!-- ExamEndDate -->
-    <div class="mb-3">
-        <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
-        <input asp-for="Exam.ExamEndDate" type="date" class="form-control" />
-        <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
-    </div>
-
-    <!-- DeliveryDate -->
-    <div class="mb-3">
-        <label asp-for="Exam.DeliveryDate" class="form-label">Delivery Date</label>
-        <input asp-for="Exam.DeliveryDate" type="date" class="form-control" />
-        <span asp-validation-for="Exam.DeliveryDate" class="text-danger"></span>
-    </div>
-
-    <!-- IsReExam Checkbox -->
-    <div class="mb-3 form-check">
-        <input asp-for="Exam.IsReExam" class="form-check-input" type="checkbox" />
-        <label asp-for="Exam.IsReExam" class="form-check-label">Is Re-Exam</label>
-        <span asp-validation-for="Exam.IsReExam" class="text-danger"></span>
-    </div>
-
-    <!-- IsFinalExam Checkbox -->
-    <div class="mb-3 form-check">
-        <input asp-for="Exam.IsFinalExam" class="form-check-input" type="checkbox" />
-        <label asp-for="Exam.IsFinalExam" class="form-check-label">Is Final Exam</label>
-        <span asp-validation-for="Exam.IsFinalExam" class="text-danger"></span>
-    </div>
-
-    <!-- Description -->
-    <div class="mb-3">
-        <label asp-for="Exam.Description" class="form-label"></label>
-        <textarea asp-for="Exam.Description" class="form-control"></textarea>
-        <span asp-validation-for="Exam.Description" class="text-danger"></span>
-    </div>
-
-    <!-- Create ReExam? Checkbox -->
-    <div class="mb-3 form-check">
-        <input asp-for="CreateReExam" type="checkbox" class="form-check-input" id="createReExamBox" />
-        <label class="form-check-label" for="createReExamBox">Create linked ReExam?</label>
-    </div>
-
-    <hr />
-
-    <!-- Optional ReExam Fields (toggle with JS if you want) -->
-  
-    <div id="reExamFields" style="display:none;" )>
-        <h2>ReExam details</h2>
-        <!-- ReEksamen Name Preview-->
-        <div class="mb-3" id="reExamPreviewBlock" @(Model.CreateReExam ? "" : "style='display:none;'")>
-            <label class="form-label">ReExam Name Preview:</label>
-            <span id="reExamNamePreview" class="fw-bold"></span>
+<div class="page-body">
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Create Exam</h1>
+            <p>Add a new exam to the system</p>
         </div>
-       @*  <div class="mb-3">
-            <label asp-for="ReExam.ExamName" class="form-label"></label>
-            <input asp-for="ReExam.ExamName" class="form-control" />
-            <span asp-validation-for="ReExam.ExamName" class="text-danger"></span>
-        </div> *@
-        <div class="mb-3">
-            <label asp-for="ReExam.ExamStartDate" class="form-label">ReExam Start Date</label>
-            <input asp-for="ReExam.ExamStartDate" class="form-control" type="date" />
-            <span asp-validation-for="ReExam.ExamStartDate" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="ReExam.ExamEndDate" class="form-label">ReExam End Date</label>
-            <input asp-for="ReExam.ExamEndDate" class="form-control" type="date" />
-            <span asp-validation-for="ReExam.ExamEndDate" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="ReExam.DeliveryDate" class="form-label">ReExam Delivery Date</label>
-            <input asp-for="ReExam.DeliveryDate" class="form-control" type="date" />
-            <span asp-validation-for="ReExam.DeliveryDate" class="text-danger"></span>
-        </div>
-        <!-- Others if you wish: CensorType, Format, etc. -->
-    </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">Cancel</a>
-</form>
+        <!-- CREATE EXAM FORM SECTION -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Exam Information</h2>
+            </div>
+
+            <div class="form-container">
+                <form method="post">
+                    <!-- FORM GRID LAYOUT -->
+                    <div class="form-grid">
+                        <!-- BASIC INFORMATION COLUMN -->
+                        <div class="form-column">
+                            <h3 class="form-section-title">Basic Information</h3>
+
+                            <!-- Exam Name -->
+                            <div class="form-group">
+                                <label asp-for="Exam.ExamName" class="form-label"></label>
+                                <input asp-for="Exam.ExamName" class="form-control compact-input" placeholder="Enter exam name" />
+                                <span asp-validation-for="Exam.ExamName" class="text-danger"></span>
+                            </div>
+
+                            <!-- ClassId -->
+                            <div class="form-group">
+                                <label asp-for="Exam.ClassId" class="form-label"></label>
+                                <select asp-for="Exam.ClassId" class="form-control compact-input" asp-items="Model.ClassList">
+                                    <option value="">-- Select Class --</option>
+                                </select>
+                                <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-group">
+                                <label asp-for="Exam.Description" class="form-label"></label>
+                                <textarea asp-for="Exam.Description" class="form-control" rows="3" placeholder="Enter exam description"></textarea>
+                                <span asp-validation-for="Exam.Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- EXAM DETAILS COLUMN -->
+                        <div class="form-column">
+                            <h3 class="form-section-title">Exam Details</h3>
+
+                            <!-- CensorType -->
+                            <div class="form-group">
+                                <label asp-for="Exam.CensorType" class="form-label">Censor Type</label>
+                                <select asp-for="Exam.CensorType" class="form-control compact-input">
+                                    <option value="">-- Select Censor Type --</option>
+                                    <option value="Intern">Intern</option>
+                                    <option value="Extern">Extern</option>
+                                </select>
+                                <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
+                            </div>
+
+                            <!-- Format -->
+                            <div class="form-group">
+                                <label asp-for="Exam.Format" class="form-label">Format</label>
+                                <input asp-for="Exam.Format" class="form-control compact-input" placeholder="e.g., Oral, Written" />
+                                @* <span asp-validation-for="Exam.Format" class="text-danger"></span> *@
+                            </div>
+
+                            <!-- CHECKBOX GROUP -->
+                            <div class="checkbox-group">
+                                <div class="form-check compact-checkbox">
+                                    <input asp-for="Exam.ExamPatrol" class="form-check-input" type="checkbox" />
+                                    <label asp-for="Exam.ExamPatrol" class="form-check-label">Is Patrol Exam</label>
+                                    <span asp-validation-for="Exam.ExamPatrol" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-check compact-checkbox">
+                                    <input asp-for="Exam.IsReExam" class="form-check-input" type="checkbox" />
+                                    <label asp-for="Exam.IsReExam" class="form-check-label">Is Re-Exam</label>
+                                    <span asp-validation-for="Exam.IsReExam" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-check compact-checkbox">
+                                    <input asp-for="Exam.IsFinalExam" class="form-check-input" type="checkbox" />
+                                    <label asp-for="Exam.IsFinalExam" class="form-check-label">Is Final Exam</label>
+                                    <span asp-validation-for="Exam.IsFinalExam" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DATES COLUMN -->
+                        <div class="form-column">
+                            <h3 class="form-section-title">Dates & Schedule</h3>
+
+                            <!-- ExamStartDate -->
+                            <div class="form-group">
+                                <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
+                                <input asp-for="Exam.ExamStartDate" type="date" class="form-control compact-input" />
+                                <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
+                            </div>
+
+                            <!-- ExamEndDate -->
+                            <div class="form-group">
+                                <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
+                                <input asp-for="Exam.ExamEndDate" type="date" class="form-control compact-input" />
+                                <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
+                            </div>
+
+                            <!-- DeliveryDate -->
+                            <div class="form-group">
+                                <label asp-for="Exam.DeliveryDate" class="form-label">Delivery Date</label>
+                                <input asp-for="Exam.DeliveryDate" type="date" class="form-control compact-input" />
+                                <span asp-validation-for="Exam.DeliveryDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REEXAM OPTION SECTION -->
+                    <div class="reexam-section">
+                        <div class="form-check reexam-toggle">
+                            <input asp-for="CreateReExam" type="checkbox" class="form-check-input" id="createReExamBox" />
+                            <label class="form-check-label" for="createReExamBox">
+                                <span class="reexam-toggle-label">Create linked ReExam?</span>
+                                <span class="reexam-toggle-description">Create a re-examination linked to this exam</span>
+                            </label>
+                        </div>
+
+                        <!-- REEXAM FIELDS (Hidden by default) -->
+                        <div id="reExamFields" class="reexam-fields" style="display:none;">
+                            <div class="reexam-header">
+                                <h3>ReExam Details</h3>
+                            </div>
+
+                            <!-- ReEksamen Name Preview -->
+                            <div class="form-group" id="reExamPreviewBlock" @(Model.CreateReExam ? "" : "style='display:none;'")>
+                                <label class="form-label">ReExam Name Preview:</label>
+                                <div id="reExamNamePreview" class="reexam-preview"></div>
+                            </div>
+
+                            <!-- ReExam Dates -->
+                            <div class="form-grid compact-grid">
+                                <div class="form-group">
+                                    <label asp-for="ReExam.ExamStartDate" class="form-label">ReExam Start Date</label>
+                                    <input asp-for="ReExam.ExamStartDate" class="form-control compact-input" type="date" />
+                                    <span asp-validation-for="ReExam.ExamStartDate" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ReExam.ExamEndDate" class="form-label">ReExam End Date</label>
+                                    <input asp-for="ReExam.ExamEndDate" class="form-control compact-input" type="date" />
+                                    <span asp-validation-for="ReExam.ExamEndDate" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ReExam.DeliveryDate" class="form-label">ReExam Delivery Date</label>
+                                    <input asp-for="ReExam.DeliveryDate" class="form-control compact-input" type="date" />
+                                    <span asp-validation-for="ReExam.DeliveryDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORM ACTIONS -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-icon">➕</span>
+                            Create Exam
+                        </button>
+                        <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">
+                            <span class="btn-icon">←</span>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* FORM CONTAINER STYLES */
+    .form-container {
+        padding: 1.5rem;
+    }
+
+    /* FORM GRID LAYOUT */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .compact-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .form-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /* FORM SECTION TITLES */
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    /* FORM GROUP STYLES */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .form-control {
+        height: 36px;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        transition: border-color 0.2s ease;
+    }
+
+        .form-control:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        }
+
+    .compact-input {
+        height: 36px;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    textarea.form-control {
+        height: auto;
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    /* CHECKBOX STYLES */
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+    }
+
+    .compact-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: #f8fafc;
+        border-radius: 4px;
+        margin: 0;
+    }
+
+    .form-check-input {
+        margin: 0;
+    }
+
+    .form-check-label {
+        font-size: 0.875rem;
+        color: #374151;
+        margin: 0;
+    }
+
+    /* REEXAM SECTION STYLES */
+    .reexam-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .reexam-toggle {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: #f0f9ff;
+        border: 1px solid #b6d7e8;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    .reexam-toggle-label {
+        font-weight: 600;
+        color: #0066cc;
+        font-size: 1rem;
+    }
+
+    .reexam-toggle-description {
+        display: block;
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+
+    .reexam-fields {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .reexam-header {
+        margin-bottom: 1.5rem;
+    }
+
+        .reexam-header h3 {
+            margin: 0;
+            color: #374151;
+            font-size: 1.1rem;
+        }
+
+    .reexam-preview {
+        padding: 0.75rem;
+        background: #ffffff;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-weight: 600;
+        color: #059669;
+    }
+
+    /* FORM ACTIONS */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-start;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background-color: #0066cc;
+        color: white;
+        border-color: #0066cc;
+    }
+
+    .btn-secondary {
+        background-color: #6b7280;
+        color: white;
+        border-color: #6b7280;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .btn-icon {
+        font-size: 0.875rem;
+    }
+
+    /* VALIDATION STYLES */
+    .text-danger {
+        font-size: 0.8rem;
+        color: #dc2626;
+        margin-top: 0.25rem;
+    }
+
+    .field-validation-error {
+        display: block;
+    }
+
+    /* RESPONSIVE DESIGN */
+    @@media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .compact-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .reexam-toggle {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+    }
+</style>
 
 <!-- Lavet ved hjælp a Copilot-->
-
 @section Scripts {
     <script>
         // Update ReExam Name Preview based on Exam Name
