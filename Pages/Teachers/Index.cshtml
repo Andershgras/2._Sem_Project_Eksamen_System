@@ -1,10 +1,12 @@
 ﻿@page
 @model _2._Sem_Project_Eksamen_System.Pages.Teachers.IndexModel
+@using _2._Sem_Project_Eksamen_System.ViewModels
 @{
     ViewData["Title"] = "Undervisere";
 }
 
-<h2>Undervisere</h2>
+<partial name="~/Pages/Shared/_PageHeader.cshtml"
+         model='new PageHeaderModel("Teacher Overview", "View, edit and manage all teachers")' />
 
 <p>
     <a asp-page="Create" class="btn btn-primary">Create New</a>

@@ -1,0 +1,12 @@
+﻿@model _2._Sem_Project_Eksamen_System.ViewModels.PageHeaderModel
+
+<div class="card shadow-sm mb-4" style="border-left: 5px solid #f0ad4e;">
+    <div class="card-body">
+        <h3 class="card-title fw-bold text-dark">@Model.Title</h3>
+
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <p class="text-muted mb-0">@Model.Description</p>
+        }
+    </div>
+</div>
