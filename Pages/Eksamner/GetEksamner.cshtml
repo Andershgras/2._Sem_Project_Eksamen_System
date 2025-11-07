@@ -11,7 +11,7 @@
 <!-- Filter -->
 <form>
     <p>
-        Search: <input type="text" asp-for="Filter.FilterByName" />
+        Search: <input type="text" asp-for="Filter.FilterByName"/>
         
         <input type="submit" value="Filter" />
         <a asp-page="/Eksamner/GetEksamner">Back to Full List </a>
@@ -26,8 +26,9 @@
             <th> Dato</th>
             <th> Title</th>
             <th> Hold ID</th>
-            <@* th> Eksaminator</th>
+            @* <th> Eksaminator</th>
             <th> Censor</th> *@
+
             <th> Antal Stud</th>
             @* <th> Re-Eksamen-Dato</th> *@
         </tr>
