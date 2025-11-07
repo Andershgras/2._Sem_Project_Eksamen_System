@@ -53,6 +53,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key]?.Errors.Clear();
             }
 
+            if(Exam.ExamName.Length > 30)
+                Exam.ExamName = Exam.ExamName.Substring(0, 30);
+
             // Validate Exam dates
             if (Exam.ExamStartDate > Exam.ExamEndDate)
                 ModelState.AddModelError("Exam.ExamStartDate", "Exam start date must not be after end date.");
@@ -66,6 +69,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
+
+                if(ReExam.ExamName.Length > 30)
+                    ReExam.ExamName = ReExam.ExamName.Substring(0, 30);
 
                 // Validate ReExam dates
                 if (ReExam.ExamStartDate > ReExam.ExamEndDate)
