@@ -7,133 +7,425 @@
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
-            <h1>Student Detaljer</h1>
-            <p>Detailed information about Student</p>
+            <h1>Student Details</h1>
+            <p>Detailed information about student</p>
         </div>
 
+        <!-- STUDENT INFORMATION SECTION -->
         <div class="section-card">
             <div class="section-header">
                 <h2>Student Information</h2>
-                <a asp-page="/Students/GetStudent" class="btn-toggle">Back to main page</a>
+                <div class="header-actions">
+                    <a asp-page="/Students/GetStudent" class="btn-toggle">Back to Overview</a>
+                </div>
             </div>
 
-            <div class="form-card">
-                <div class="student-details">
-                    <dl class="detail-list">
-                        <dt>Student ID:</dt>
-                        <dd>@Model.Student.StudentId</dd>
-
-                        <dt>Name:</dt>
-                        <dd>@Model.Student.StudentName</dd>
-
-                        <dt>Email:</dt>
-                        <dd>
-                            @if (!string.IsNullOrEmpty(Model.Student.Email))
-                            {
-                                @Model.Student.Email
-                            }
-                            else
-                            {
-                                <span class="not-assigned">Not Given</span>
-                            }
-                        </dd>
-
-                        <dt>Hold Information:</dt>
-                        <dd>
-                            @if (Model.Student.StudentsToClasses != null && Model.Student.StudentsToClasses.Any())
-                            {
-                                @string.Join(", ", Model.Student.StudentsToClasses.Select(sc => sc.Class?.ClassName))
-                            }
-                            else
-                            {
-                                <span class="not-assigned">Not Assigned</span>
-                            }
-                        </dd>
-                    </dl>
+            <div class="details-container">
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <h3>Basic Information</h3>
+                    </div>
+                    <div class="info-card-content">
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <label class="detail-label">Student ID</label>
+                                <span class="detail-value highlight">@Model.Student.StudentId</span>
+                            </div>
+                            <div class="detail-item">
+                                <label class="detail-label">Name</label>
+                                <span class="detail-value">@Model.Student.StudentName</span>
+                            </div>
+                            <div class="detail-item">
+                                <label class="detail-label">Email</label>
+                                <span class="detail-value">
+                                    @if (!string.IsNullOrEmpty(Model.Student.Email))
+                                    {
+                                        @Model.Student.Email
+                                    }
+                                    else
+                                    {
+                                        <span class="not-assigned">Not Given</span>
+                                    }
+                                </span>
+                            </div>
+                            <div class="detail-item full-width">
+                                <label class="detail-label">Class Information</label>
+                                <span class="detail-value">
+                                    @if (Model.Student.StudentsToClasses != null && Model.Student.StudentsToClasses.Any())
+                                    {
+                                        <div class="class-tags">
+                                            @foreach (var studentClass in Model.Student.StudentsToClasses.Select(sc => sc.Class?.ClassName))
+                                            {
+                                                <span class="class-tag">@studentClass</span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="not-assigned">Not Assigned</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Exams Section -->
+        <!-- ASSOCIATED EXAMS SECTION -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Associated Exams</h2>
+            </div>
+
+            <div class="table-container">
                 @if (Model.Student.StudentsToExams != null && Model.Student.StudentsToExams.Any())
                 {
-                    <div class="section-header">
-                        <h3>Associated Exams</h3>
-                    </div>
-
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Exam ID</th>
+                                <th>Exam Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Format</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var exam in Model.Student.StudentsToExams)
+                            {
                                 <tr>
-                                    <th>Exam ID</th>
-                                    <th>Exam Name</th>
-                                    <th>Start Dato</th>
-                                    <th>End Dato</th>
-                                    <th>Format</th>
-                                    <th>Type</th>
+                                    <td>
+                                        @if (exam.Exam?.ExamId != null)
+                                        {
+                                            <span class="exam-id">@exam.Exam.ExamId</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(exam.Exam?.ExamName))
+                                        {
+                                            @exam.Exam.ExamName
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">Not Specified</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (exam.Exam?.ExamStartDate.HasValue == true)
+                                        {
+                                            <span class="date-value">@exam.Exam.ExamStartDate.Value.ToString("dd/MM/yyyy")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">Not Set</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (exam.Exam?.ExamEndDate.HasValue == true)
+                                        {
+                                            <span class="date-value">@exam.Exam.ExamEndDate.Value.ToString("dd/MM/yyyy")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">Not Set</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(exam.Exam?.Format))
+                                        {
+                                            <span class="format-badge">@exam.Exam.Format</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (exam.Exam?.IsReExam == true)
+                                        {
+                                            <span class="type-badge reexam">Re-Exam</span>
+                                        }
+                                        else if (exam.Exam?.IsFinalExam == true)
+                                        {
+                                            <span class="type-badge final">Final Exam</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="type-badge regular">Regular</span>
+                                        }
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var exam in Model.Student.StudentsToExams)
-                                {
-                                    <tr>
-                                        <td>@exam.Exam?.ExamId</td>
-                                        <td>@exam.Exam?.ExamName</td>
-                                        <td>
-                                            @if (exam.Exam?.ExamStartDate.HasValue == true)
-                                            {
-                                                @exam.Exam.ExamStartDate.Value.ToString("dd/MM/yyyy")
-                                            }
-                                            else
-                                            {
-                                                <span class="not-assigned">Ikke sat</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (exam.Exam?.ExamEndDate.HasValue == true)
-                                            {
-                                                @exam.Exam.ExamEndDate.Value.ToString("dd/MM/yyyy")
-                                            }
-                                            else
-                                            {
-                                                <span class="not-assigned">Ikke sat</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(exam.Exam?.Format))
-                                            {
-                                                @exam.Exam.Format
-                                            }
-                                            else
-                                            {
-                                                <span class="not-assigned">-</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (exam.Exam?.IsReExam == true)
-                                            {
-                                                <span>Re-eksamen</span>
-                                            }
-                                            else if (exam.Exam?.IsFinalExam == true)
-                                            {
-                                                <span>Afgangseksamen</span>
-                                            }
-                                            else
-                                            {
-                                                <span>Almindelig</span>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                            }
+                        </tbody>
+                    </table>
                 }
                 else
                 {
-                    <div class="no-data">
-                        <p>Ingen tilknyttede eksamener</p>
+                    <div class="empty-state">
+                        <span class="empty-icon">📝</span>
+                        <p>No associated exams found</p>
+                        <a asp-page="/Students/GetStudent" class="btn-toggle" role="menuitem">Back to Student List</a>
                     </div>
                 }
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* DETAILS CONTAINER STYLES */
+    .details-container {
+        padding: 1.5rem;
+    }
+
+    /* INFO CARD STYLES */
+    .info-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-card-header {
+        background: #f8fafc;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+        .info-card-header h3 {
+            margin: 0;
+            color: #374151;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+    .info-card-content {
+        padding: 1.5rem;
+    }
+
+    /* DETAILS GRID STYLES */
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+        .detail-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+
+    .detail-value {
+        color: #111827;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+        /* SPECIAL VALUE STYLES */
+        .detail-value.highlight {
+            color: #0066cc;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+    /* CLASS TAGS STYLES */
+    .class-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .class-tag {
+        display: inline-block;
+        padding: 0.375rem 0.75rem;
+        background-color: #f3e8ff;
+        color: #7c3aed;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: 1px solid #e9d5ff;
+    }
+
+    /* TABLE STYLES */
+    .table-container {
+        padding: 1.5rem;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+        .data-table th {
+            background-color: #f8fafc;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.875rem;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    /* TABLE BADGES AND VALUES */
+    .exam-id {
+        font-weight: 600;
+        color: #0066cc;
+    }
+
+    .date-value {
+        color: #059669;
+        font-weight: 500;
+    }
+
+    .format-badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        background-color: #f0fdf4;
+        color: #166534;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .type-badge {
+        display: inline-block;
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+
+        .type-badge.reexam {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .type-badge.final {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .type-badge.regular {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+    /* EMPTY STATE STYLES */
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        opacity: 0.5;
+    }
+
+    .empty-state p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 1rem;
+    }
+
+    .not-assigned {
+        color: #9ca3af;
+        font-style: italic;
+        font-size: 0.875rem;
+    }
+
+    /* HEADER ACTIONS */
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        background-color: #e7f1ff;
+        color: #0066cc;
+        border: 1px solid #b6d7e8;
+    }
+
+        .btn-toggle:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+    /* RESPONSIVE DESIGN */
+    @@media (max-width: 768px) {
+        .details-container {
+            padding: 1rem;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .class-tags {
+            justify-content: center;
+        }
+
+        .table-container {
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            min-width: 600px;
+        }
+
+        .header-actions {
+            justify-content: center;
+        }
+    }
+</style>
