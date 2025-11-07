@@ -44,7 +44,7 @@
                 <td>@(eksamen.Class?.ClassName ?? "Ikke tildelt")</td>
               
                 <td>@(eksamen.StudentsToExams.Count)</td>
-                <td>@(eksamen.ReExam?.ExamStartDate.ToString() ?? "Ikke givet")</td>
+                @* <td>@(eksamen.ReExam?.ExamStartDate.ToString() ?? "Ikke givet")</td> *@
                 <td>
                 <a asp-page="Edit_Exam" asp-route-id="@eksamen.ExamId">Edit</a> |
                 </td>
