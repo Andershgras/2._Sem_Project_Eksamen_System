@@ -127,8 +127,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 foreach (var key in ModelState.Keys.Where(k => k.Equals("Exam.Class") || k.Equals("ReExam.Class") || k.Equals("ReExam.ExamName"))) // Removes all Class related errors så Make sure it is vali
                 {
                     ModelState[key]?.Errors.Clear();
-                    if (ModelState[key] != null)
-                        ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+                    if (ModelState[key] != null) // nessesary null check to avoid the unvalidated warning
+                    ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
                 }
             
 
