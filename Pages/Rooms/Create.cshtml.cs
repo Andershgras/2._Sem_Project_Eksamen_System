@@ -7,17 +7,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Rooms
 {
     public class CreateModel : PageModel
     {
-        private readonly ICRUD<Room> _service;
+        private readonly ICRUDAsync<Room> _service;
         [BindProperty] public Room Room { get; set; } = new();
 
-        public CreateModel(ICRUD<Room> service) => _service = service;
+        public CreateModel(ICRUDAsync<Room> service) => _service = service;
 
-        public void OnGet() { }
+        public void OnGetAsync() { }
 
-        public IActionResult OnPost()
+        public IActionResult OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
-            _service.AddItem(Room);
+            _service.AddItemAsync(Room);
             return RedirectToPage("Index");
         }
     }

@@ -9,7 +9,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Rooms
 {
     public class IndexModel : PageModel
     {
-        private readonly ICRUD<Room> _service;
+        private readonly ICRUDAsync<Room> _service;
         private readonly EksamensDBContext _db;
 
         public IEnumerable<Room> Rooms { get; set; } = Enumerable.Empty<Room>();
@@ -17,22 +17,21 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Rooms
         [BindProperty(SupportsGet = true)]
         public GenericFilter? Filter { get; set; }
 
-        public IndexModel(ICRUD<Room> service, EksamensDBContext db)
+        public IndexModel(ICRUDAsync<Room> service, EksamensDBContext db)
         {
             _service = service;
             _db = db;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            if (Filter is not null && !string.IsNullOrWhiteSpace(Filter.FilterByName)
-                && _service is _2._Sem_Project_Eksamen_System.EFservices.EFRoomService rooms)
+            if (Filter is not null && !string.IsNullOrWhiteSpace(Filter.FilterByName))
             {
-                Rooms = rooms.Search(Filter!); 
+                Rooms = await _service.GetAllAsync(Filter);
             }
             else
             {
-                Rooms = _service.GetAll();
+                Rooms = await _service.GetAllAsync();
             }
         }
         public PartialViewResult OnGetUpcoming(int roomId)

@@ -5,53 +5,48 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    public class EFRoomService : ICRUD<Room>
+    public class EFRoomService : ICRUDAsync<Room>
     {
         private readonly EksamensDBContext _context;
 
         public EFRoomService(EksamensDBContext context) => _context = context;
 
-        public IEnumerable<Room> GetAll() =>
-            _context.Rooms.AsNoTracking().OrderBy(r => r.RoomId);
-
-        public IEnumerable<Room> GetAll(GenericFilter filter)
+        public async Task<IEnumerable<Room>> GetAllAsync()
         {
-            var name = (filter?.FilterByName ?? string.Empty).ToLower();
-            return _context.Rooms
-                .Where(r => r.Name.ToLower().StartsWith(name))
-                .AsNoTracking()
-                .ToList();
+            return await _context.Rooms.AsNoTracking().OrderBy(r => r.RoomId).ToListAsync();
         }
 
-        public Room? GetItemById(int id) => _context.Rooms.Find(id);
-
-        public void AddItem(Room item)
+        public async Task<Room?> GetItemByIdAsync(int id)
+        {
+            return await _context.Rooms.FindAsync(id);
+        }
+        public async Task AddItemAsync(Room item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             _context.Rooms.Add(item);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateItem(Room item)
+        public async Task UpdateItemAsync(Room item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            var existing = _context.Rooms.Find(item.RoomId);
+            var existing = await _context.Rooms.FindAsync(item.RoomId);
             if (existing == null) return;
 
             existing.Name = item.Name;
             existing.Capacity = item.Capacity;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItemAsync(int id)
         {
-            var room = _context.Rooms.Find(id);
+            var room = await _context.Rooms.FindAsync(id);
             if (room == null) return;
             _context.Rooms.Remove(room);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public IEnumerable<Room> Search(GenericFilter filter)
+        public async Task<IEnumerable<Room>> GetAllAsync(GenericFilter filter)
         {
             var term = (filter?.FilterByName ?? string.Empty).Trim().ToLower();
 
@@ -60,7 +55,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             if (!string.IsNullOrEmpty(term))
                 query = query.Where(r => r.Name.ToLower().Contains(term));
 
-            return query.OrderBy(r => r.RoomId).ToList();
+            return await query.OrderBy(r => r.RoomId).ToListAsync();
         }
     }
 }
