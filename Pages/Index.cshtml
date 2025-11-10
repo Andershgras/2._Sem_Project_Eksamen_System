@@ -157,7 +157,7 @@
                     <h2>Quick Actions</h2>
                 </div>
                 <div class="card-body">
-                    <div class="quick-actions">
+                    <div class="quick-actions-grid">
                         <a asp-page="/Eksamner/OpretEksamen" class="action-btn">
                             <span class="action-icon">➕</span>
                             <span class="action-text">Create Exam</span>
@@ -181,9 +181,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
 <style>
     /* ==============================================
@@ -353,46 +350,69 @@
         font-size: 0.9rem;
     }
 
-    /* ==============================================
-           QUICK ACTIONS STYLES
-        ============================================== */
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1rem;
-    }
+                /* ==============================================
+                   QUICK ACTIONS GRID STYLES (Horizontal Alignment)
+                ============================================== */
+                .quick-actions-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                    gap: 1rem;
+                }
 
-    .action-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1.5rem 1rem;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        text-decoration: none;
-        color: inherit;
-        transition: all 0.2s ease;
-        text-align: center;
-    }
+                .action-btn {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 1.5rem 1rem;
+                    background: #ffffff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    color: inherit;
+                    transition: all 0.2s ease;
+                    text-align: center;
+                    min-height: 100px;
+                    justify-content: center;
+                }
 
-        .action-btn:hover {
-            background: #e7f1ff;
-            border-color: #b6d7e8;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+                    .action-btn:hover {
+                        background: #e7f1ff;
+                        border-color: #b6d7e8;
+                        transform: translateY(-2px);
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    }
 
-    .action-icon {
-        font-size: 1.5rem;
-    }
+                .action-icon {
+                    font-size: 1.5rem;
+                }
 
-    .action-text {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #374151;
-    }
+                .action-text {
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    color: #374151;
+                }
+
+                /* ==============================================
+                   RESPONSIVE DESIGN
+                ============================================== */
+                @@media (max-width: 768px) {
+                    .quick-actions-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 0.75rem;
+                    }
+
+                    .action-btn {
+                        padding: 1.25rem 0.75rem;
+                        min-height: 90px;
+                    }
+                }
+
+                @@media (max-width: 480px) {
+                    .quick-actions-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
 
     /* ==============================================
            BADGE STYLES (Matches Your System)
