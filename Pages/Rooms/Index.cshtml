@@ -8,6 +8,10 @@
 <partial name="~/Pages/Shared/_PageHeader.cshtml"
          model='new PageHeaderModel("Room Overview", "View, edit and manage all rooms")' />
 
+<div class="mb-3">
+    <a asp-page="./Create" class="btn btn-primary">Create New Room</a>
+</div>
+
 <form method="get" class="mb-3">
     <div class="input-group" style="max-width:420px;">
         <input class="form-control" type="text" name="Filter.FilterByName" value="@Model.Filter?.FilterByName" placeholder="Search by name..." />
