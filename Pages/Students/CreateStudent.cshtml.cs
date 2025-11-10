@@ -82,7 +82,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         private async Task PopulateClassDropdown()
         {
-            // FETCH CLASSES FOR DROPDOWN Menu
+            // FETCH CLASSES FOR DROPDOWN MENUE
             var classes = await Task.Run(() => _classService.GetAll(new GenericFilter()));
 
             ClassList.Clear();
