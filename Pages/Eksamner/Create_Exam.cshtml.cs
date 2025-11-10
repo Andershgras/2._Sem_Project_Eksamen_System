@@ -12,7 +12,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         private readonly ICRUD<Class> _classService;
         //private readonly ICRUD<StudentsToExam> _studentsToExamService;
         private readonly IStudentsToExams _studentsToExamService;
-        private readonly ICRUDT<Room> _roomService;
+        private readonly ICRUD<Room> _roomService;
 
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
@@ -29,7 +29,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ICRUD<Exam> examService,
             ICRUD<Class> classService,
             IStudentsToExams studentsToExamService,
-            ICRUDT<Room> roomService
+            ICRUD<Room> roomService
 
         )
         {
