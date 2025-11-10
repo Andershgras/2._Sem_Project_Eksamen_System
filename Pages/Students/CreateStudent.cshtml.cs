@@ -14,7 +14,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
     {
         private readonly ICRUDT<Student> _studentService;
         private readonly ICRUD<Class> _classService;
-        private readonly EksamensDBContext _context; // Add this
+        private readonly EksamensDBContext _context;
 
         [BindProperty]
         public Student Student { get; set; } = new Student();
@@ -27,11 +27,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         public CreateStudentModel(
             ICRUDT<Student> studentService,
             ICRUD<Class> classService,
-            EksamensDBContext context) // Add this parameter
+            EksamensDBContext context)
         {
             _studentService = studentService;
             _classService = classService;
-            _context = context; // Add this
+            _context = context;
         }
 
         public async Task OnGetAsync()
@@ -47,7 +47,15 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
                 return Page();
             }
 
-            // First, create the student
+            // ? ADDED: Check for duplicate student before creating
+            if (await StudentAlreadyExists(Student))
+            {
+                ModelState.AddModelError(string.Empty, "A student with the same name or email already exists.");
+                await PopulateClassDropdown();
+                return Page();
+            }
+
+            // Create the student
             await _studentService.AddItem(Student);
 
             // If a class was selected, create the relationship
@@ -59,9 +67,21 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             return RedirectToPage("/Students/GetStudent");
         }
 
+        // ? ADDED: Duplicate checking method
+        private async Task<bool> StudentAlreadyExists(Student newStudent)
+        {
+            // Check if student with same name OR email already exists
+            var existingStudent = await _context.Students
+                .FirstOrDefaultAsync(s =>
+                    s.StudentName.ToLower() == newStudent.StudentName.ToLower() ||
+                    (!string.IsNullOrEmpty(newStudent.Email) &&
+                     s.Email.ToLower() == newStudent.Email.ToLower()));
+
+            return existingStudent != null;
+        }
+
         private async Task PopulateClassDropdown()
         {
-            //Needs Modification AND Place a filter for rentry
             // FETCH CLASSES FOR DROPDOWN Menu
             var classes = await Task.Run(() => _classService.GetAll(new GenericFilter()));
 
