@@ -7,55 +7,65 @@
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
-            <h1>Add Student</h1>
-            <p>Create a new student in the system</p>
+            <h1>Create Student</h1>
+            <p>Add a new student to the system</p>
         </div>
-        <!-- ✅ MINIMAL ERROR DISPLAY -->
-        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+        <!-- CREATE STUDENT FORM SECTION -->
         <div class="section-card">
             <div class="section-header">
-                <h2>New Student</h2>
-                <a asp-page="/Students/GetStudent" class="btn-toggle">Back to main page</a>
+                <h2>Student Information</h2>
+                <div class="header-actions">
+                    <a asp-page="/Students/GetStudent" class="btn-toggle">Back to Overview</a>
+                </div>
             </div>
 
-            <div class="form-card">
+            <div class="form-container">
+                <!-- ✅ ERROR DISPLAY -->
+                <div asp-validation-summary="All" class="alert alert-danger"></div>
+
                 <form method="post">
+                    <!-- FORM GRID LAYOUT -->
                     <div class="form-grid">
-                        <!-- Student Name -->
-                        <div class="form-group">
-                            <label asp-for="Student.StudentName" class="form-label">Full Name *</label>
-                            <input asp-for="Student.StudentName" class="form-control" placeholder="Enter students full name" />
-                            <span asp-validation-for="Student.StudentName" class="text-danger"></span>
+                        <!-- BASIC INFORMATION COLUMN -->
+                        <div class="form-column">
+                            <h3 class="form-section-title">Basic Information</h3>
+
+                            <!-- Student Name -->
+                            <div class="form-group">
+                                <label asp-for="Student.StudentName" class="form-label">Full Name *</label>
+                                <input asp-for="Student.StudentName" class="form-control compact-input" placeholder="Enter student's full name" />
+                                <span asp-validation-for="Student.StudentName" class="text-danger"></span>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label asp-for="Student.Email" class="form-label">Email *</label>
+                                <input asp-for="Student.Email" class="form-control compact-input" placeholder="student@email.com" />
+                                <span asp-validation-for="Student.Email" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <!-- Email -->
-                        <div class="form-group">
-                            <label asp-for="Student.Email" class="form-label">Email *</label>
-                            <input asp-for="Student.Email" class="form-control" placeholder="Enter@student.email" />
-                            <span asp-validation-for="Student.Email" class="text-danger"></span>
-                        </div>
+                        <!-- CLASS ASSIGNMENT COLUMN -->
+                        <div class="form-column">
+                            <h3 class="form-section-title">Class Assignment</h3>
 
-                        <!-- Class Dropdown -->
-                        <div class="form-group">
-                            <label asp-for="SelectedClassId" class="form-label">Allocated Class</label>
-                            <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control">
-                                <option value="">Select a class</option>
-                            </select>
-                            <span asp-validation-for="SelectedClassId" class="text-danger"></span>
-                            <small class="form-text text-muted">Select the students class</small>
+                            <!-- Class Dropdown -->
+                            <div class="form-group">
+                                <label asp-for="SelectedClassId" class="form-label">Assigned Class</label>
+                                <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control compact-input">
+                                    <option value="">Select a class</option>
+                                </select>
+                                <span asp-validation-for="SelectedClassId" class="text-danger"></span>
+                                <small class="form-help">Select which class the student should be assigned to</small>
+                            </div>
                         </div>
-
-                        @*@"<!--" Placeholder for additional fields -->
-                        <div class="form-group">
-                            <label class="form-label">Studieprogram</label>
-                            <input class="form-control" placeholder="Valgfrit studieprogram" />
-                        </div>
-                    </div>@*@
                     </div>
 
+                    <!-- FORM ACTIONS -->
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
-                            <span class="btn-icon">➕</span>
+                            <span class="btn-icon">💾</span>
                             Create Student
                         </button>
                         <a asp-page="/Students/GetStudent" class="btn btn-secondary">
@@ -72,32 +82,210 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-<!-- Student Name Error Message Styles -->
+
 <style>
-/* ERROR STYLES */
-.alert {
-    padding: 1rem;
-    border-radius: 6px;
-    margin-bottom: 1.5rem;
-}
+    /* ==============================================
+           FORM CONTAINER STYLES (Matches GetStudent)
+        ============================================== */
+    .form-container {
+        padding: 1.5rem;
+    }
 
-.alert-danger {
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #dc2626;
-}
+    /* ==============================================
+           FORM GRID LAYOUT (Matches GetStudent)
+        ============================================== */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
 
-.alert-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-}
+    .form-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
 
-.alert-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-}
+    /* ==============================================
+           FORM SECTION TITLES (Matches GetStudent)
+        ============================================== */
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    /* ==============================================
+           FORM GROUP STYLES (Matches GetStudent)
+        ============================================== */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .form-control {
+        height: 36px;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        transition: border-color 0.2s ease;
+    }
+
+        .form-control:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        }
+
+    .compact-input {
+        height: 36px;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    /* ==============================================
+           FORM HELP TEXT (Matches GetStudent)
+        ============================================== */
+    .form-help {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+        line-height: 1.4;
+    }
+
+    /* ==============================================
+           ERROR STYLES (Matches GetStudent)
+        ============================================== */
+    .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-danger {
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+    }
+
+    .text-danger {
+        font-size: 0.8rem;
+        color: #dc2626;
+        margin-top: 0.25rem;
+    }
+
+    /* ==============================================
+           FORM ACTIONS (Matches GetStudent)
+        ============================================== */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-start;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background-color: #0066cc;
+        color: white;
+        border-color: #0066cc;
+    }
+
+        .btn-primary:hover {
+            background-color: #0052a3;
+            border-color: #0052a3;
+            transform: translateY(-1px);
+        }
+
+    .btn-secondary {
+        background-color: #6b7280;
+        color: white;
+        border-color: #6b7280;
+    }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+            border-color: #4b5563;
+            transform: translateY(-1px);
+        }
+
+    .btn-icon {
+        font-size: 0.875rem;
+    }
+
+    /* ==============================================
+           HEADER ACTIONS (Matches GetStudent)
+        ============================================== */
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        background-color: #e7f1ff;
+        color: #0066cc;
+        border: 1px solid #b6d7e8;
+    }
+
+        .btn-toggle:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+    /* ==============================================
+           RESPONSIVE DESIGN (Matches GetStudent)
+        ============================================== */
+    @@media (max-width: 768px) {
+        .form-container {
+            padding: 1rem;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .header-actions {
+            justify-content: center;
+        }
+    }
 </style>
