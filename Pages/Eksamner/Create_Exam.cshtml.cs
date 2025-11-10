@@ -1,8 +1,9 @@
+using _2._Sem_Project_Eksamen_System.Interfaces;
+using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using _2._Sem_Project_Eksamen_System.Models1;
-using _2._Sem_Project_Eksamen_System.Interfaces;
+using System.Globalization;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
@@ -10,9 +11,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     {
         private readonly ICRUD<Exam> _examService;
         private readonly ICRUD<Class> _classService;
-        //private readonly ICRUD<StudentsToExam> _studentsToExamService;
         private readonly IStudentsToExams _studentsToExamService;
         private readonly ICRUD<Room> _roomService;
+        private readonly IRoomsToExams _roomsToExamService;
 
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
@@ -24,31 +25,39 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public Exam ReExam { get; set; } = new Exam();
 
         public SelectList ClassList { get; set; } = default!;
+        public SelectList RoomList { get; set; } = default!;
+
+        [BindProperty]
+        public int? SelectedRoomId { get; set; }
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
             ICRUD<Class> classService,
             IStudentsToExams studentsToExamService,
-            ICRUD<Room> roomService
-
+            ICRUD<Room> roomService,
+            IRoomsToExams roomsToExamService
         )
         {
             _examService = examService;
             _classService = classService;
-            //_studentsToExamService = studentsToExamService;
             _studentsToExamService = studentsToExamService;
+            
             _roomService = roomService;
+            _roomsToExamService = roomsToExamService;
         }
 
         public void OnGet()
         {
             ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
+            RoomList = new SelectList(_roomService.GetAll(), "RoomId", "Name");
         }
 
         public IActionResult OnPost()
         {
+            // repopulate lists (use correct property names)
             ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
-            
+            RoomList = new SelectList(_roomService.GetAll(), "RoomId", "Name");
+
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
             {
@@ -56,13 +65,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key]?.Errors.Clear();
             }
 
-            if(Exam.ExamName.Length > 30)
+            // Guard Exam.ExamName null and trim to max length
+            if (!string.IsNullOrWhiteSpace(Exam.ExamName) && Exam.ExamName.Length > 30)
                 Exam.ExamName = Exam.ExamName.Substring(0, 30);
 
-            // Validate Exam dates
-            if (Exam.ExamStartDate > Exam.ExamEndDate)
+            // Validate Exam dates (only when values present)
+            if (Exam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && Exam.ExamStartDate.Value > Exam.ExamEndDate.Value)
                 ModelState.AddModelError("Exam.ExamStartDate", "Exam start date must not be after end date.");
-            if (Exam.DeliveryDate > Exam.ExamStartDate)
+            if (Exam.DeliveryDate.HasValue && Exam.ExamStartDate.HasValue && Exam.DeliveryDate.Value > Exam.ExamStartDate.Value)
                 ModelState.AddModelError("Exam.DeliveryDate", "Delivery date must not be after start date.");
 
             // Handle ReExam logic if creating
@@ -71,23 +81,23 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 ReExam.ClassId = Exam.ClassId;
 
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
-                    ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
+                    ReExam.ExamName = $"ReEksamen-{Exam.ExamName ?? string.Empty}";
 
-                if(ReExam.ExamName.Length > 30)
+                if (!string.IsNullOrWhiteSpace(ReExam.ExamName) && ReExam.ExamName.Length > 30)
                     ReExam.ExamName = ReExam.ExamName.Substring(0, 30);
 
-                // Validate ReExam dates
-                if (ReExam.ExamStartDate > ReExam.ExamEndDate)
+                // Validate ReExam dates (only when values present)
+                if (ReExam.ExamStartDate.HasValue && ReExam.ExamEndDate.HasValue && ReExam.ExamStartDate.Value > ReExam.ExamEndDate.Value)
                     ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must not be after end date.");
-                if (ReExam.DeliveryDate > ReExam.ExamStartDate)
+                if (ReExam.DeliveryDate.HasValue && ReExam.ExamStartDate.HasValue && ReExam.DeliveryDate.Value > ReExam.ExamStartDate.Value)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery date must not be after start date.");
 
-                // Validate ReExam dates against Exam dates
-                if (ReExam.ExamStartDate <= Exam.ExamEndDate)
+                // Validate ReExam dates against Exam dates (only when values present)
+                if (ReExam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && ReExam.ExamStartDate.Value <= Exam.ExamEndDate.Value)
                     ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must be after main exam end date.");
-                if (ReExam.ExamEndDate <= Exam.ExamEndDate)
+                if (ReExam.ExamEndDate.HasValue && Exam.ExamEndDate.HasValue && ReExam.ExamEndDate.Value <= Exam.ExamEndDate.Value)
                     ModelState.AddModelError("ReExam.ExamEndDate", "ReExam end date must be after main exam end date.");
-                if (ReExam.DeliveryDate <= Exam.DeliveryDate)
+                if (ReExam.DeliveryDate.HasValue && Exam.DeliveryDate.HasValue && ReExam.DeliveryDate.Value <= Exam.DeliveryDate.Value)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
 
                 ReExam.IsReExam = true;
@@ -100,17 +110,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 Exam.ReExamId = null;
             }
 
-            // Optionally clear all Class or ExamName validation errors related to ReExam if not creating
-                foreach (var key in ModelState.Keys.Where(k =>
-                    k == "Exam.Class" || k == "ReExam.Class" || k == "ReExam.ExamName"))
-                {
-                    ModelState[key]?.Errors.Clear();
-                    if (ModelState[key] != null)
-                        ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
-                }
-            
+            // clear all Class or ExamName validation errors related to ReExam if not creating
+            foreach (var key in ModelState.Keys.Where(k =>
+                k == "Exam.Class" || k == "ReExam.Class" || k == "ReExam.ExamName"))
+            {
+                ModelState[key]?.Errors.Clear();
+                if (ModelState[key] != null)
+                    ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+            }
 
-            // (Optional Debug Logging, can comment out in production)
+            // Debug Logging)
             foreach (var entry in ModelState)
             {
                 var state = entry.Value.ValidationState;
@@ -125,6 +134,44 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (!ModelState.IsValid)
                 return Page();
 
+            // check room availability for the selected room and date range ---
+            if (SelectedRoomId.HasValue)
+            {
+                // Ensure the exam has valid start and end dates
+                if (!Exam.ExamStartDate.HasValue || !Exam.ExamEndDate.HasValue)
+                {
+                    ModelState.AddModelError("Exam.ExamStartDate", "Please provide both start and end dates for the exam to validate room availability.");
+                    return Page();
+                }
+
+                // Use inclusive overlap: existingStart <= newEnd && existingEnd >= newStart
+                var newStart = Exam.ExamStartDate.Value;
+                var newEnd = Exam.ExamEndDate.Value;
+
+                var conflicts = _roomsToExamService.GetAll()
+                    .Where(rte => rte != null && rte.RoomId == SelectedRoomId.Value && rte.Exam != null)
+                    .Where(rte =>
+                        rte.Exam.ExamStartDate.HasValue &&
+                        rte.Exam.ExamEndDate.HasValue &&
+                        rte.Exam.ExamStartDate.Value <= newEnd &&
+                        rte.Exam.ExamEndDate.Value >= newStart)
+                    .ToList();
+
+                if (conflicts.Any())
+                {
+                    // Build a helpful error message listing the first conflict (you can expand to list all)
+                    var c = conflicts.First();
+                    var existingStart = c.Exam.ExamStartDate.HasValue ? c.Exam.ExamStartDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "N/A";
+                    var existingEnd = c.Exam.ExamEndDate.HasValue ? c.Exam.ExamEndDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "N/A";
+                    var existingName = string.IsNullOrWhiteSpace(c.Exam.ExamName) ? $"Exam ID {c.Exam.ExamId}" : c.Exam.ExamName;
+
+                    ModelState.AddModelError("SelectedRoomId", $"Selected room is already booked for '{existingName}' ({existingStart} — {existingEnd}). Choose another room or change the dates.");
+                    return Page();
+                }
+            }
+            
+
+            // You may want to wrap the following in a transaction to avoid partial persistence on error.
             try
             {
                 if (CreateReExam)
@@ -134,6 +181,24 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
 
                 _examService.AddItem(Exam);
+
+                // Map selected Room to Exam (only if selected and exists)
+                if (SelectedRoomId.HasValue)
+                {
+                    // optional: check the selected id exists in rooms
+                    var roomExists = _roomService.GetAll().Any(r => r.RoomId == SelectedRoomId.Value);
+                    if (roomExists)
+                    {
+                        var mapping = new RoomsToExam
+                        {
+                            ExamId = Exam.ExamId,
+                            RoomId = SelectedRoomId.Value,
+                            Role = null
+                        };
+                    
+                        _roomsToExamService.AddItem(mapping);
+                    }
+                }
 
                 _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);
 

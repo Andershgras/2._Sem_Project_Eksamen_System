@@ -41,6 +41,16 @@
                                 <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
                             </div>
 
+                            <!-- Room selection -->
+                            <div class="form-group">
+                                <label for="SelectedRoomId" class="form-label">Room</label>
+                                <select asp-for="SelectedRoomId" class="form-control compact-input" asp-items="Model.RoomList">
+                                    <option value="">-- No room --</option>
+                                </select>
+                                <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
+                            </div>
+
+
                             <!-- Description -->
                             <div class="form-group">
                                 <label asp-for="Exam.Description" class="form-label"></label>

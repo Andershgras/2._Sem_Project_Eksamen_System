@@ -93,5 +93,32 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.RoomsToExams.AddRange(list);
             _context.SaveChanges();
         }
+
+        // Check availability: returns true if room is available for the entire requested range
+        public async Task<bool> IsRoomAvailableAsync(int roomId, DateOnly requestedStart, DateOnly requestedEnd, int? excludeExamId = null)
+        {
+            if (requestedEnd < requestedStart)
+                throw new ArgumentException("End date must be on or after start date.", nameof(requestedEnd));
+
+            // Find any RoomsToExam that reference the same room and have an Exam with overlapping dates
+            var query = _context.RoomsToExams
+                .Include(rte => rte.Exam)
+                .Where(rte => rte.RoomId == roomId);
+
+            if (excludeExamId.HasValue)
+                query = query.Where(rte => rte.ExamId != excludeExamId.Value);
+
+            // Overlap check: existingStart <= requestedEnd && existingEnd >= requestedStart
+            var overlaps = await query
+                .Where(rte =>
+                    rte.Exam.ExamStartDate.HasValue &&
+                    rte.Exam.ExamEndDate.HasValue &&
+                    rte.Exam.ExamStartDate.Value <= requestedEnd &&
+                    rte.Exam.ExamEndDate.Value >= requestedStart)
+                .AsNoTracking()
+                .AnyAsync();
+
+            return !overlaps;
+        }
     }
 }
