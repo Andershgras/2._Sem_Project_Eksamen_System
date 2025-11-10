@@ -38,7 +38,7 @@
                         <div class="stat-value">@Model.UpcomingExams</div>
                         <div class="stat-label">Upcoming Exams</div>
                     </div>
-                    <a asp-page="/Eksamner/GetEksamner" class="btn-toggle">View All</a>
+                    <a asp-page="/Eksamner/GetEksamner" class="btn-toggle">View</a>
                 </div>
 
                 <div class="stat-card">
@@ -117,7 +117,7 @@
             <div class="section-card">
                 <div class="section-header">
                     <h2>Next 7 Days</h2>
-                    <a asp-page="/Eksamner/GetEksamner" class="btn-toggle">View All</a>
+                    <a asp-page="/Eksamner/GetEksamner" class="btn-toggle">View</a>
                 </div>
                 <div class="card-body">
                     @if (Model.UpcomingExamsList.Any())
