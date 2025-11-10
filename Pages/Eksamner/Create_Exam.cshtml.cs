@@ -48,7 +48,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public IActionResult OnPost()
         {
             ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
-
+            Console.WriteLine("test");
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
             {
