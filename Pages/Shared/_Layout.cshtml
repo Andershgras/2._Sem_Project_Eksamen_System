@@ -25,15 +25,23 @@
             <div class="sidebar-flag" aria-hidden="true"></div>
 
             <div class="sidebar-content">
-                <!-- BRAND SECTION -->
+                <!-- BRAND SECTION WITH ZEALAND LOGO -->
                 <div class="brand" role="banner">
                     <div class="brand-logo" aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="24" height="24" rx="4" fill="#f4b942" />
-                            <path d="M6 16L10 9L14 16" stroke="#002b45" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                        <!-- Zealand Logo with Official Colors -->
+                        <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Yellow background circle (Zealand official color) -->
+                            <circle cx="50" cy="50" r="48" fill="#F4E87C" />
+
+                            <!-- Black "Z" for Zealand -->
+                            <path d="M28 32 L72 32 L72 38 L38 68 L72 68 L72 74 L28 74 L28 68 L62 38 L28 38 Z"
+                                  fill="#000000" />
                         </svg>
                     </div>
-                    <div class="brand-text">Eksamensplanlægning</div>
+                    <div class="brand-text">
+                        <div style="font-weight: 600; font-size: 0.95em;">Zealand</div>
+                        <div style="font-size: 0.75em; opacity: 0.8; margin-top: -2px;">Eksamensplanlægning</div>
+                    </div>
                 </div>
 
                 <!-- NAVIGATION MENU SECTION -->
@@ -148,6 +156,6 @@
             }
         });
     </script>
-    @await RenderSectionAsync("Scripts", required: false) 
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
