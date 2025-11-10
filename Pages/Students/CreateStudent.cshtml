@@ -10,7 +10,8 @@
             <h1>Add Student</h1>
             <p>Create a new student in the system</p>
         </div>
-
+        <!-- ✅ MINIMAL ERROR DISPLAY -->
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
         <div class="section-card">
             <div class="section-header">
                 <h2>New Student</h2>
@@ -70,4 +71,30 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+}
+/* ERROR STYLES */
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.alert-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.alert-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
 }
