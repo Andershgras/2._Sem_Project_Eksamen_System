@@ -37,7 +37,6 @@ namespace _2._Sem_Project_Eksamen_System
                 app.UseHsts();
             }
            
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

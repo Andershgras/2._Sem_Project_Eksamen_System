@@ -3,537 +3,500 @@
 @{
     ViewData["Title"] = "Dashboard";
 }
-<!--- Hero Section --->
-<div class="dashboard-hero">
-    <div class="hero-content">
-        <h1 class="hero-title">Zealand Exam Management</h1>
-        <p class="hero-subtitle">Streamline your exam scheduling and management</p>
-        <div class="hero-benefits">
-            <span class="benefit-tag">
-                <i class="bi bi-check-circle-fill"></i> Centralized Planning
-            </span>
-            <span class="benefit-tag">
-                <i class="bi bi-check-circle-fill"></i> Real-time Updates
-            </span>
-            <span class="benefit-tag">
-                <i class="bi bi-check-circle-fill"></i> Efficient Coordination
-            </span>
-        </div>
-    </div>
-</div>
-<!--- Statistics Cards --->
-<div class="stats-grid">
-    <div class="stat-card stat-card-primary">
-        <div class="stat-icon">
-            <i class="bi bi-calender-event"></i>
-        </div>
-        <div class="stat-content">
-            <div class="stat-value">@Model.UpcomingExams</div>
-            <div class="stat-label">Upcoming Exams</div>
-        </div>
-        <a asp-page="/Eksamner/GetEksamner" class="stat-link">View all -></a>
-    </div>
 
-    <div class="stat-card stat-card-success">
-        <div class="stat-icon">
-            <i class="bi bi-people"></i>
+<div class="page-body">
+    <div class="dashboard-container">
+        <!-- HERO SECTION -->
+        <div class="welcome-card hero-section">
+            <h1>Zealand Exam Management</h1>
+            <p>Streamline your exam scheduling and management</p>
+            <div class="hero-benefits">
+                <span class="benefit-tag">
+                    <span class="benefit-icon">✅</span>
+                    Centralized Planning
+                </span>
+                <span class="benefit-tag">
+                    <span class="benefit-icon">✅</span>
+                    Real-time Updates
+                </span>
+                <span class="benefit-tag">
+                    <span class="benefit-icon">✅</span>
+                    Efficient Coordination
+                </span>
+            </div>
         </div>
-        <div class="stat-content">
-            <div class="stat-value">@Model.TotalStudents</div>
-            <div class="stat-label">Total Students</div>
-        </div>
-        <a asp-page="/Students/GetStudent" class="stat-link">Manage -></a>
-    </div>
 
-    <div class="stat-card stat-card-info">
-        <div class="stat-icon">
-            <i class="bi bi-person-badge"></i>
-        </div>
-        <div class="stat-content">
-            <div class="stat-value">@Model.TotalTeachers</div>
-            <div class="stat-label">Teachers</div>
-        </div>
-        <a asp-page="/Teachers/Index" class="stat-link">View -></a>
-    </div>
+        <!-- STATISTICS SECTION -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2>Overview</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-content">
+                        <div class="stat-value">@Model.UpcomingExams</div>
+                        <div class="stat-label">Upcoming Exams</div>
+                    </div>
+                    <a asp-page="/Eksamner/GetEksamner" class="btn-toggle">View</a>
+                </div>
 
-    <div class="stat-card stat-card-warning">
-        <div class="stat-icon">
-            <i class="bi bi-box"></i>
-        </div>
-        <div class="stat-content">
-            <div class="stat-value">@Model.TotalClasses</div>
-            <div class="stat-label">Classes</div>
-        </div>
-        <a asp-page="/Hold/Index" class="stat-link">View →</a>
-    </div>
-</div>
-<!--- Quick actions and todays overview --->
-<div class="dashboard-sections">
-    <!-- Today's Exams -->
-    <div class="dashboard-card">
-        <div class="card-header">
-            <h2 class="card-title">
-                <i class="bi bi-calendar-check"></i>
-                Today's Exams
-            </h2>
-            <span class="badge">@Model.TodayExams</span>
-        </div>
-        <div class="card-body">
-            @if (Model.TodayExamsList.Any())
-            {
-                <div class="exam-list">
-                    @foreach (var exam in Model.TodayExamsList)
-                    {
-                        <a asp-page="/Eksamner/Details" asp-route-id="@exam.ExamId" class="exam-item">
-                            <div class="exam-info">
-                                <div class="exam-name">@exam.ExamName</div>
-                                <div class="exam-meta">
-                                    <span class="exam-class">@exam.Class?.ClassName</span>
-                                    @if (exam.RoomsToExams.Any())
-                                    {
-                                        <span class="exam-room">
-                                            <i class="bi bi-door-closed"></i>
-                                            @string.Join(", ", exam.RoomsToExams.Select(r => r.Room?.Name))
-                                        </span>
-                                    }
-                                </div>
-                            </div>
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    }
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-value">@Model.TotalStudents</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                    <a asp-page="/Students/GetStudent" class="btn-toggle">Manage</a>
                 </div>
-            }
-            else
-            {
-                <div class="empty-state">
-                    <i class="bi bi-calendar-x"></i>
-                    <p>No exams scheduled for today</p>
-                </div>
-            }
-        </div>
-    </div>
-<!--- Upcoming Exams (next 7 days) --->
-    <div class="dashboard-card">
-        <div class="card-header">
-            <h2 class="card-title">
-                <i class="bi bi-calendar3"></i>
-                Next 7 Days
-            </h2>
-            <a asp-page="/Eksamner/GetEksamner" class="view-all-link">View all</a>
-        </div>
-        <div class="card-body">
-            @if (Model.UpcomingExamsList.Any())
-            {
-                <div class="exam-list">
-                    @foreach (var exam in Model.UpcomingExamsList)
-                    {
-                        <a asp-page="/Eksamner/Details" asp-route-id="@exam.ExamId" class="exam-item">
-                            <div class="exam-info">
-                                <div class="exam-name">@exam.ExamName</div>
-                                <div class="exam-meta">
-                                    <span class="exam-date">
-                                        <i class="bi bi-calendar"></i>
-                                        @exam.ExamStartDate?.ToString("dd MMM yyyy")
-                                    </span>
-                                    <span class="exam-class">@exam.Class?.ClassName</span>
-                                </div>
-                            </div>
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="empty-state">
-                    <i class="bi bi-calendar-check"></i>
-                    <p>No exams scheduled in the next 7 days</p>
-                </div>
-            }
-        </div>
-    </div>
 
-    <!-- Quick Actions -->
-    <div class="dashboard-card">
-        <div class="card-header">
-            <h2 class="card-title">
-                <i class="bi bi-lightning"></i>
-                Quick Actions
-            </h2>
-        </div>
-        <div class="card-body">
-            <div class="quick-actions">
-                <a asp-page="/Eksamner/OpretEksamen" class="action-btn action-btn-primary">
-                    <i class="bi bi-plus-circle"></i>
-                    <span>Create Exam</span>
-                </a>
-                <a asp-page="/Students/CreateStudent" class="action-btn action-btn-success">
-                    <i class="bi bi-person-plus"></i>
-                    <span>Add Student</span>
-                </a>
-                <a asp-page="/Teachers/Create" class="action-btn action-btn-info">
-                    <i class="bi bi-person-badge"></i>
-                    <span>Add Teacher</span>
-                </a>
-                <a asp-page="/Rooms/Create" class="action-btn action-btn-warning">
-                    <i class="bi bi-door-open"></i>
-                    <span>Add Room</span>
-                </a>
-                <a asp-page="/Hold/Create" class="action-btn action-btn-secondary">
-                    <i class="bi bi-grid"></i>
-                    <span>Create Class</span>
-                </a>
+                <div class="stat-card">
+                    <div class="stat-icon">👨‍🏫</div>
+                    <div class="stat-content">
+                        <div class="stat-value">@Model.TotalTeachers</div>
+                        <div class="stat-label">Teachers</div>
+                    </div>
+                    <a asp-page="/Teachers/Index" class="btn-toggle">View</a>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <div class="stat-value">@Model.TotalClasses</div>
+                        <div class="stat-label">Classes</div>
+                    </div>
+                    <a asp-page="/Hold/Index" class="btn-toggle">View</a>
                 </div>
             </div>
-    </div>
-</div>
-<!--- Style section --->
-<style>
-    /* Hero Section */
-    .dashboard-hero {
-        background: linear-gradient(135deg, #f4e87c 0%, #f4d042 100%);
-        border-radius: 12px;
-        padding: 3rem 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
+        </div>
 
-    .hero-content {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: center;
-    }
+        <!-- DASHBOARD SECTIONS -->
+        <div class="dashboard-sections">
+            <!-- TODAY'S EXAMS -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>Today's Exams</h2>
+                    <span class="badge">@Model.TodayExams</span>
+                </div>
+                <div class="card-body">
+                    @if (Model.TodayExamsList.Any())
+                    {
+                        <div class="exam-list">
+                            @foreach (var exam in Model.TodayExamsList)
+                            {
+                                <a asp-page="/Eksamner/Exam_Details" asp-route-id="@exam.ExamId" class="exam-item">
+                                    <div class="exam-info">
+                                        <div class="exam-name">@exam.ExamName</div>
+                                        <div class="exam-meta">
+                                            <span class="exam-class">@exam.Class?.ClassName</span>
+                                            @if (exam.RoomsToExams.Any())
+                                            {
+                                                <span class="exam-room">
+                                                    <span class="meta-icon">🚪</span>
+                                                    @string.Join(", ", exam.RoomsToExams.Select(r => r.Room?.Name))
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <span class="arrow-icon">➡️</span>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <span class="empty-icon">📅</span>
+                            <p>No exams scheduled for today</p>
+                        </div>
+                    }
+                </div>
+            </div>
 
-    .hero-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #000;
-        margin-bottom: 0.5rem;
-    }
+            <!-- UPCOMING EXAMS -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>Next 7 Days</h2>
+                    <a asp-page="/Eksamner/GetEksamner" class="btn-toggle">View</a>
+                </div>
+                <div class="card-body">
+                    @if (Model.UpcomingExamsList.Any())
+                    {
+                        <div class="exam-list">
+                            @foreach (var exam in Model.UpcomingExamsList)
+                            {
+                                <a asp-page="/Eksamner/Exam_Details" asp-route-id="@exam.ExamId" class="exam-item">
+                                    <div class="exam-info">
+                                        <div class="exam-name">@exam.ExamName</div>
+                                        <div class="exam-meta">
+                                            <span class="exam-date">
+                                                <span class="meta-icon">📅</span>
+                                                @exam.ExamStartDate?.ToString("dd MMM yyyy")
+                                            </span>
+                                            <span class="exam-class">@exam.Class?.ClassName</span>
+                                        </div>
+                                    </div>
+                                    <span class="arrow-icon">➡️</span>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <span class="empty-icon">📅</span>
+                            <p>No exams scheduled in the next 7 days</p>
+                        </div>
+                    }
+                </div>
+            </div>
 
-    .hero-subtitle {
-        font-size: 1.25rem;
-        color: #333;
-        margin-bottom: 1.5rem;
-    }
+            <!-- QUICK ACTIONS -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions-grid">
+                        <a asp-page="/Eksamner/OpretEksamen" class="action-btn">
+                            <span class="action-icon">➕</span>
+                            <span class="action-text">Create Exam</span>
+                        </a>
+                        <a asp-page="/Students/CreateStudent" class="action-btn">
+                            <span class="action-icon">👤</span>
+                            <span class="action-text">Add Student</span>
+                        </a>
+                        <a asp-page="/Teachers/Create" class="action-btn">
+                            <span class="action-icon">👨‍🏫</span>
+                            <span class="action-text">Add Teacher</span>
+                        </a>
+                        <a asp-page="/Rooms/Create" class="action-btn">
+                            <span class="action-icon">🚪</span>
+                            <span class="action-text">Add Room</span>
+                        </a>
+                        <a asp-page="/Hold/Create" class="action-btn">
+                            <span class="action-icon">📚</span>
+                            <span class="action-text">Create Class</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    .hero-benefits {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
+            <style>
+                /* ==============================================
+                       HERO SECTION STYLES (Yellow Zealand Style)
+                    ============================================== */
+                .hero-section {
+                    background: linear-gradient(135deg, #f4e87c 0%, #f4d042 100%);
+                    color: #000;
+                    text-align: center;
+                }
 
-    .benefit-tag {
-        background: rgba(0,0,0,0.08);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        color: #000;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
+                    .hero-section h1 {
+                        color: #000;
+                        font-size: 2.5rem;
+                        margin-bottom: 0.5rem;
+                    }
 
-        .benefit-tag i {
-            color: #28a745;
-        }
+                    .hero-section p {
+                        color: #333;
+                        font-size: 1.2rem;
+                        margin-bottom: 1.5rem;
+                    }
 
-    /* Statistics Grid */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
+                .hero-benefits {
+                    display: flex;
+                    gap: 1rem;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
 
-    .stat-card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        transition: transform 0.2s, box-shadow 0.2s;
-        border-left: 4px solid;
-    }
+                .benefit-tag {
+                    background: rgba(0, 0, 0, 0.08);
+                    padding: 0.5rem 1rem;
+                    border-radius: 20px;
+                    font-size: 0.9rem;
+                    color: #000;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-        }
+                .benefit-icon {
+                    font-size: 0.8rem;
+                }
 
-    .stat-card-primary {
-        border-left-color: #007bff;
-    }
+                /* ==============================================
+                           STATISTICS GRID STYLES
+                        ============================================== */
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1.5rem;
+                    padding: 1.5rem;
+                }
 
-    .stat-card-success {
-        border-left-color: #28a745;
-    }
+                .stat-card {
+                    background: #ffffff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 8px;
+                    padding: 1.5rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                }
 
-    .stat-card-info {
-        border-left-color: #17a2b8;
-    }
+                    .stat-card:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    }
 
-    .stat-card-warning {
-        border-left-color: #ffc107;
-    }
+                .stat-icon {
+                    font-size: 2rem;
+                    flex-shrink: 0;
+                }
 
-    .stat-icon {
-        font-size: 2rem;
-        opacity: 0.8;
-    }
+                .stat-content {
+                    flex: 1;
+                }
 
-    .stat-card-primary .stat-icon {
-        color: #007bff;
-    }
+                .stat-value {
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: #111827;
+                    line-height: 1;
+                }
 
-    .stat-card-success .stat-icon {
-        color: #28a745;
-    }
+                .stat-label {
+                    font-size: 0.9rem;
+                    color: #6b7280;
+                    margin-top: 0.25rem;
+                }
 
-    .stat-card-info .stat-icon {
-        color: #17a2b8;
-    }
+                /* ==============================================
+                           DASHBOARD SECTIONS LAYOUT
+                        ============================================== */
+                .dashboard-sections {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                    gap: 1.5rem;
+                }
 
-    .stat-card-warning .stat-icon {
-        color: #ffc107;
-    }
+                /* ==============================================
+                           EXAM LIST STYLES
+                        ============================================== */
+                .card-body {
+                    padding: 1.5rem;
+                }
 
-    .stat-content {
-        flex: 1;
-    }
+                .exam-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.75rem;
+                }
 
-    .stat-value {
-        font-size: 2.5rem;
-        font-weight: 700;
-        line-height: 1;
-        color: #333;
-    }
+                .exam-item {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 1rem;
+                    background: #f8fafc;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 6px;
+                    text-decoration: none;
+                    color: inherit;
+                    transition: all 0.2s ease;
+                }
 
-    .stat-label {
-        font-size: 0.9rem;
-        color: #666;
-        margin-top: 0.5rem;
-    }
+                    .exam-item:hover {
+                        background: #e7f1ff;
+                        border-color: #b6d7e8;
+                        transform: translateX(4px);
+                    }
 
-    .stat-link {
-        font-size: 0.85rem;
-        color: #007bff;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
+                .exam-info {
+                    flex: 1;
+                }
 
-        .stat-link:hover {
-            color: #0056b3;
-        }
+                .exam-name {
+                    font-weight: 600;
+                    color: #374151;
+                    margin-bottom: 0.25rem;
+                    font-size: 0.95rem;
+                }
 
-    /* Dashboard Sections */
-    .dashboard-sections {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1.5rem;
-    }
+                .exam-meta {
+                    display: flex;
+                    gap: 1rem;
+                    font-size: 0.8rem;
+                    color: #6b7280;
+                    flex-wrap: wrap;
+                }
 
-    .dashboard-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        overflow: hidden;
-    }
+                .exam-class, .exam-date, .exam-room {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                }
 
-    .card-header {
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+                .meta-icon {
+                    font-size: 0.8rem;
+                }
 
-    .card-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #333;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
+                .arrow-icon {
+                    color: #9ca3af;
+                    font-size: 0.9rem;
+                }
 
-    .badge {
-        background: #f4e87c;
-        color: #000;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
+                /* ==============================================
+                       QUICK ACTIONS GRID STYLES (FIXED - Centered Alignment)
+                    ============================================== */
+                .quick-actions-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                    gap: 1rem;
+                    justify-items: center;
+                    align-items: center;
+                    max-width: 100%;
+                    margin: 0 auto;
+                }
 
-    .view-all-link {
-        font-size: 0.9rem;
-        color: #007bff;
-        text-decoration: none;
-        font-weight: 500;
-    }
+                .action-btn {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 1.5rem 1rem;
+                    background: #ffffff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    color: inherit;
+                    transition: all 0.2s ease;
+                    text-align: center;
+                    min-height: 100px;
+                    justify-content: center;
+                    width: 100%;
+                    max-width: 180px;
+                }
 
-    .card-body {
-        padding: 1.5rem;
-    }
+                    .action-btn:hover {
+                        background: #e7f1ff;
+                        border-color: #b6d7e8;
+                        transform: translateY(-2px);
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    }
 
-    /* Exam Lists */
-    .exam-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
+                .action-icon {
+                    font-size: 1.5rem;
+                }
 
-    .exam-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-        text-decoration: none;
-        color: inherit;
-        transition: background 0.2s;
-    }
+                .action-text {
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    color: #374151;
+                }
 
-        .exam-item:hover {
-            background: #e9ecef;
-        }
+                /* ==============================================
+                       BADGE STYLES (Matches Your System)
+                    ============================================== */
+                .badge {
+                    background: #e7f1ff;
+                    color: #0066cc;
+                    padding: 0.25rem 0.75rem;
+                    border-radius: 9999px;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                }
 
-    .exam-info {
-        flex: 1;
-    }
+                /* ==============================================
+                       EMPTY STATE STYLES (Matches Your System)
+                    ============================================== */
+                .empty-state {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 2rem;
+                    text-align: center;
+                }
 
-    .exam-name {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 0.25rem;
-    }
+                .empty-icon {
+                    font-size: 3rem;
+                    opacity: 0.5;
+                }
 
-    .exam-meta {
-        display: flex;
-        gap: 1rem;
-        font-size: 0.85rem;
-        color: #666;
-        flex-wrap: wrap;
-    }
+                .empty-state p {
+                    margin: 0;
+                    color: #6b7280;
+                    font-size: 1rem;
+                }
 
-    .exam-class, .exam-date, .exam-room {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
+                /* ==============================================
+                       BUTTON TOGGLE STYLES (Matches Your System)
+                    ============================================== */
+                .btn-toggle {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    padding: 0.375rem 0.75rem;
+                    border-radius: 4px;
+                    text-decoration: none;
+                    font-size: 0.875rem;
+                    transition: all 0.2s;
+                    background-color: #e7f1ff;
+                    color: #0066cc;
+                    border: 1px solid #b6d7e8;
+                }
 
-    .exam-item > i {
-        color: #999;
-    }
+                    .btn-toggle:hover {
+                        opacity: 0.9;
+                        transform: translateY(-1px);
+                    }
 
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 2rem 1rem;
-        color: #999;
-    }
+                /* ==============================================
+                       RESPONSIVE DESIGN (Matches Your System)
+                    ============================================== */
+                @@media (max-width: 768px) {
+                    .dashboard-sections {
+                        grid-template-columns: 1fr;
+                    }
 
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
+                    .stats-grid {
+                        grid-template-columns: 1fr;
+                        padding: 1rem;
+                    }
 
-        .empty-state p {
-            margin: 0;
-            font-size: 0.95rem;
-        }
+                    .quick-actions-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 0.75rem;
+                    }
 
-    /* Quick Actions */
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 1rem;
-    }
+                    .action-btn {
+                        padding: 1.25rem 0.75rem;
+                        min-height: 90px;
+                        max-width: none;
+                    }
 
-    .action-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 1.25rem 1rem;
-        border-radius: 8px;
-        text-decoration: none;
-        transition: transform 0.2s, box-shadow 0.2s;
-        border: 2px solid;
-    }
+                    .hero-benefits {
+                        flex-direction: column;
+                        align-items: center;
+                    }
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+                    .hero-section h1 {
+                        font-size: 2rem;
+                    }
+                }
 
-        .action-btn i {
-            font-size: 1.75rem;
-        }
+                @@media (max-width: 480px) {
+                    .quick-actions-grid {
+                        grid-template-columns: 1fr;
+                    }
 
-        .action-btn span {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-    .action-btn-primary {
-        background: #e7f3ff;
-        border-color: #007bff;
-        color: #007bff;
-    }
-
-    .action-btn-success {
-        background: #e8f5e9;
-        border-color: #28a745;
-        color: #28a745;
-    }
-
-    .action-btn-info {
-        background: #e1f5f8;
-        border-color: #17a2b8;
-        color: #17a2b8;
-    }
-
-    .action-btn-warning {
-        background: #fff8e1;
-        border-color: #ffc107;
-        color: #f57c00;
-    }
-
-    .action-btn-secondary {
-        background: #f5f5f5;
-        border-color: #6c757d;
-        color: #6c757d;
-    }
-
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .hero-title {
-            font-size: 2rem;
-        }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .dashboard-sections {
-        grid-template-columns: 1fr;
-    }
-
-    .quick-actions {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    }
-</style>
-
-
+                    .action-btn {
+                        max-width: none;
+                    }
+                }
+            </style>
