@@ -25,7 +25,6 @@ namespace _2._Sem_Project_Eksamen_System
             // In Program.cs or Startup.cs
             builder.Services.AddScoped<ICRUDT<Student>, EFStudentService>();
            
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
