@@ -84,7 +84,8 @@
                 <div class="exam-list">
                     @foreach (var exam in Model.TodayExamsList)
                     {
-                        <a asp-page="/Eksamner/Details" asp-route-id="@exam.ExamId" class="exam-item">
+                        <!-- ✅ CORRECTED: Changed to Exam_Details -->
+                        <a asp-page="/Eksamner/Exam_Details" asp-route-id="@exam.ExamId" class="exam-item">
                             <div class="exam-info">
                                 <div class="exam-name">@exam.ExamName</div>
                                 <div class="exam-meta">
@@ -112,7 +113,8 @@
             }
         </div>
     </div>
-<!--- Upcoming Exams (next 7 days) --->
+
+    <!--- Upcoming Exams (next 7 days) --->
     <div class="dashboard-card">
         <div class="card-header">
             <h2 class="card-title">
@@ -127,7 +129,8 @@
                 <div class="exam-list">
                     @foreach (var exam in Model.UpcomingExamsList)
                     {
-                        <a asp-page="/Eksamner/Details" asp-route-id="@exam.ExamId" class="exam-item">
+                        <!-- ✅ CORRECTED: Changed to Exam_Details -->
+                        <a asp-page="/Eksamner/Exam_Details" asp-route-id="@exam.ExamId" class="exam-item">
                             <div class="exam-info">
                                 <div class="exam-name">@exam.ExamName</div>
                                 <div class="exam-meta">
@@ -152,6 +155,7 @@
             }
         </div>
     </div>
+</div>
 
     <!-- Quick Actions -->
     <div class="dashboard-card">
