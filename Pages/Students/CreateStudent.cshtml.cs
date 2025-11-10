@@ -12,7 +12,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class CreateStudentModel : PageModel
     {
-        private readonly ICRUDT<Student> _studentService;
+        private readonly ICRUDAsync<Student> _studentService;
         private readonly ICRUD<Class> _classService;
         private readonly EksamensDBContext _context;
 
@@ -25,7 +25,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         public List<SelectListItem> ClassList { get; set; } = new List<SelectListItem>();
 
         public CreateStudentModel(
-            ICRUDT<Student> studentService,
+            ICRUDAsync<Student> studentService,
             ICRUD<Class> classService,
             EksamensDBContext context)
         {
@@ -55,8 +55,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
                 return Page();
             }
 
-            // Create the student
-            await _studentService.AddItem(Student);
+            // First, create the student
+            await _studentService.AddItemAsync(Student);
 
             // If a class was selected, create the relationship
             if (SelectedClassId.HasValue && SelectedClassId > 0)

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    public class EFStudentService : ICRUDT<Student>
+    public class EFStudentService : ICRUDAsync<Student>
     {
         private readonly EksamensDBContext _context;
 
@@ -18,7 +18,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context = dBContext;
         }
 
-        public async Task<IEnumerable<Student>> GetAll()
+        public async Task<IEnumerable<Student>> GetAllAsync()
         {
             return await _context.Students
                 .Include(s => s.StudentsToClasses)  // JOIN StudentsToClasses
@@ -30,7 +30,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Student>> GetAll(GenericFilter Filter)
+        public async Task<IEnumerable<Student>> GetAllAsync(GenericFilter Filter)
         {
             if (Filter is ExtendedStudentFilter extendedFilter)
             {
@@ -72,7 +72,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
             else if (Filter == null || string.IsNullOrWhiteSpace(Filter.FilterByName))
             {
-                return await GetAll();
+                return await GetAllAsync();
             }
             else
             {
@@ -89,14 +89,14 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
         }
 
-        public async Task AddItem(Student item)
+        public async Task AddItemAsync(Student item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
 
             await _context.AddAsync(item);
             await _context.SaveChangesAsync();
         }
-        public async Task<Student?> GetItemById(int id)
+        public async Task<Student?> GetItemByIdAsync(int id)
         {
             // Use tracking because caller might update the returned entity;
             // if caller only needs read-only, consider AsNoTracking with FirstOrDefaultAsync
@@ -108,7 +108,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .FirstOrDefaultAsync(s => s.StudentId == id);
         }
 
-        public async Task DeleteItem(int id)
+        public async Task DeleteItemAsync(int id)
         {
             var studentToDelete = await _context.Students.FindAsync(id);
             if (studentToDelete != null)
@@ -118,7 +118,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
         }
 
-        public async Task UpdateItem(Student item)
+        public async Task UpdateItemAsync(Student item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
 

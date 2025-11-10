@@ -8,18 +8,18 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class DetailStudentModel : PageModel
     {
-        private readonly ICRUDT<Student> _studentService;
+        private readonly ICRUDAsync<Student> _studentService;
 
         public Student Student { get; set; } = new Student();
 
-        public DetailStudentModel(ICRUDT<Student> studentService)
+        public DetailStudentModel(ICRUDAsync<Student> studentService)
         {
             _studentService = studentService;
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var student = await _studentService.GetItemById(id);
+            var student = await _studentService.GetItemByIdAsync(id);
 
             if (student == null)
             {

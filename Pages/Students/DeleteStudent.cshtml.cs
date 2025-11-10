@@ -8,19 +8,19 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class DeleteStudentModel : PageModel
     {
-        private readonly ICRUDT<Student> _studentService;
+        private readonly ICRUDAsync<Student> _studentService;
 
         [BindProperty]
         public Student Student { get; set; } = new Student();
 
-        public DeleteStudentModel(ICRUDT<Student> studentService)
+        public DeleteStudentModel(ICRUDAsync<Student> studentService)
         {
             _studentService = studentService;
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var student = await _studentService.GetItemById(id);
+            var student = await _studentService.GetItemByIdAsync(id);
 
             if (student == null)
             {
@@ -35,7 +35,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         {
             try
             {
-                await _studentService.DeleteItem(Student.StudentId);
+                await _studentService.DeleteItemAsync(Student.StudentId);
                 return RedirectToPage("/Students/GetStudent");
             }
             catch

@@ -10,7 +10,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class GetStudentModel : PageModel
     {
-        private readonly ICRUDT<Student> _service;
+        private readonly ICRUDAsync<Student> _service;
 
         public IEnumerable<Student> Students { get; private set; } = Enumerable.Empty<Student>();
         public List<string> AvailableClasses { get; private set; } = new List<string>();
@@ -18,11 +18,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         [BindProperty(SupportsGet = true)]
         public ExtendedStudentFilter Filter { get; set; } = new ExtendedStudentFilter();
 
-        public GetStudentModel(ICRUDT<Student> service) => _service = service;
+        public GetStudentModel(ICRUDAsync<Student> service) => _service = service;
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Students = await _service.GetAll(Filter) ?? Enumerable.Empty<Student>();
+            Students = await _service.GetAllAsync(Filter) ?? Enumerable.Empty<Student>();
 
             // Populate available classes for dropdown
             await PopulateAvailableClasses();
@@ -33,7 +33,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         private async Task PopulateAvailableClasses()
         //Filles the AvailableClasses list with distinct class names from all students
         {
-            var allStudents = await _service.GetAll(new ExtendedStudentFilter());
+            var allStudents = await _service.GetAllAsync(new ExtendedStudentFilter());
             AvailableClasses = allStudents
                 .Where(s => s.StudentsToClasses != null && s.StudentsToClasses.Any())
                 .SelectMany(s => s.StudentsToClasses.Select(sc => sc.Class?.ClassName))

@@ -7,21 +7,22 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Teachers
 {
     public class DeleteModel : PageModel
     {
-        private readonly ICRUD<Teacher> _service;
+        private readonly ICRUDAsync<Teacher> _service;
         public Teacher? Teacher { get; set; }
 
-        public DeleteModel(ICRUD<Teacher> service) => _service = service;
+        public DeleteModel(ICRUDAsync<Teacher> service) => _service = service;
 
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            Teacher = _service.GetItemById(id);
+            Teacher = await _service.GetItemByIdAsync(id);
             if (Teacher == null) return RedirectToPage("Index");
+
             return Page();
         }
 
-        public IActionResult OnPost(int id)
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            _service.DeleteItem(id);
+            await _service.DeleteItemAsync(id);
             return RedirectToPage("Index");
         }
     }

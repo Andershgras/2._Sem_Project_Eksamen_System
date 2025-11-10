@@ -12,7 +12,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class EditStudentModel : PageModel
     {
-        private readonly ICRUDT<Student> _studentService;
+        private readonly ICRUDAsync<Student> _studentService;
         private readonly ICRUD<Class> _classService;
         private readonly EksamensDBContext _context;
 
@@ -25,7 +25,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         public List<SelectListItem> ClassList { get; set; } = new List<SelectListItem>();
 
         public EditStudentModel(
-            ICRUDT<Student> studentService,
+            ICRUDAsync<Student> studentService,
             ICRUD<Class> classService,
             EksamensDBContext context)
         {
@@ -37,7 +37,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         public async Task<IActionResult> OnGetAsync(int id)
         // id is the StudentId
         {
-            var student = await _studentService.GetItemById(id);
+            var student = await _studentService.GetItemByIdAsync(id);
 
             if (student == null)
             {
@@ -68,7 +68,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             }
 
             // Update the student
-            await _studentService.UpdateItem(Student);
+            await _studentService.UpdateItemAsync(Student);
 
             // Update class relationship
             await UpdateStudentClassRelationship(Student.StudentId, SelectedClassId);

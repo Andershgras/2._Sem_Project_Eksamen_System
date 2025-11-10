@@ -7,23 +7,25 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Teachers
 {
     public class EditModel : PageModel
     {
-        private readonly ICRUD<Teacher> _service;
+        private readonly ICRUDAsync<Teacher> _service;
         [BindProperty] public Teacher Teacher { get; set; } = new();
 
-        public EditModel(ICRUD<Teacher> service) => _service = service;
+        public EditModel(ICRUDAsync<Teacher> service) => _service = service;
 
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            var t = _service.GetItemById(id);
-            if (t == null) return RedirectToPage("Index");
-            Teacher = t;
+            var teacher = await _service.GetItemByIdAsync(id);
+            if (teacher == null) return RedirectToPage("Index");
+
+            Teacher = teacher;
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
-            _service.UpdateItem(Teacher);
+
+            await _service.UpdateItemAsync(Teacher);
             return RedirectToPage("Index");
         }
     }
