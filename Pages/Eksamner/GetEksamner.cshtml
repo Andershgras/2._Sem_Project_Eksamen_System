@@ -271,4 +271,54 @@
             flex-direction: column;
         }
     }
+    /* ==============================================
+       BUTTON STYLES FOR ADD NEW EXAM
+    ============================================== */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #0066cc;
+        color: white;
+        border: 1px solid #0052a3;
+    }
+
+        .btn-primary:hover {
+            background-color: #0052a3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
+        }
+
+    .btn-add {
+        background-color: #10b981;
+        color: white;
+        border: 1px solid #0da271;
+    }
+
+        .btn-add:hover {
+            background-color: #0da271;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+        }
+
+    .btn-icon {
+        font-size: 0.9rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
 </style>
