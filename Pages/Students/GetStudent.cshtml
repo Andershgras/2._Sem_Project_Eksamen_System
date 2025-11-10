@@ -6,6 +6,7 @@
 
 <div class="page-body">
     <div class="dashboard-container">
+        <!-- WELCOME SECTION -->
         <div class="welcome-card">
             <h1>Student Overview</h1>
             <p>View and manage all students in the system</p>
@@ -71,7 +72,8 @@
                 </form>
             </div>
         </div>
-        <!-- TABLE DISPLAY SECTION NEW-->
+
+        <!-- TABLE DISPLAY SECTION -->
         <div class="section-card">
             <div class="section-header">
                 <h2>All Students</h2>
@@ -83,6 +85,7 @@
                 </div>
             </div>
 
+            <!-- ACTIVE FILTERS DISPLAY -->
             @{
                 var activeFilters = new List<string>();
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
@@ -102,11 +105,13 @@
                 </div>
             }
 
+            <!-- STUDENTS DATA TABLE -->
             <div class="table-container">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Student ID</th>
+                            <!-- STUDENT ID COLUMN (HIDDEN VISUALLY) -->
+                            <th class="hidden-column">Student ID</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Class/Hold</th>
@@ -119,7 +124,8 @@
                             foreach (var student in Model.Students)
                             {
                                 <tr>
-                                    <td>@student.StudentId</td>
+                                    <!-- STUDENT ID CELL (HIDDEN VISUALLY) -->
+                                    <td class="hidden-column">@student.StudentId</td>
                                     <td>@student.StudentName</td>
                                     <td>
                                         @if (!string.IsNullOrEmpty(student.Email))
@@ -142,6 +148,7 @@
                                         }
                                     </td>
                                     <td class="action-buttons">
+                                        <!-- Action links still have access to StudentId for routing -->
                                         <a asp-page="./EditStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-edit">Edit</a>
                                         <a asp-page="./DetailStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">Details</a>
                                         <a asp-page="./DeleteStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-delete">Delete</a>
@@ -183,6 +190,9 @@
 </div>
 
 <style>
+    /* ==============================================
+           SECTION 1: LAYOUT & CONTAINER STYLES
+        ============================================== */
     .search-container {
         padding: 1.5rem;
     }
@@ -211,6 +221,9 @@
         font-size: 0.875rem;
     }
 
+    /* ==============================================
+           SECTION 2: HEADER & FILTER STYLES
+        ============================================== */
     .header-actions {
         display: flex;
         gap: 1rem;
@@ -238,7 +251,26 @@
         border-top: 1px solid #eee;
     }
 
-    /* PROMINENT ADD BUTTON STYLES */
+    /* ==============================================
+           SECTION 3: HIDDEN COLUMN STYLES
+           ⭐⭐ THIS IS THE KEY SOLUTION SECTION ⭐⭐
+        ============================================== */
+    .hidden-column {
+        display: none !important;
+        /*
+            WHY THIS SOLUTION IS BEST:
+            - Uses CSS class for clear intent
+            - !important ensures it overrides other styles
+            - Works for both header and data cells
+            - Zero impact on backend logic
+            - Easy to toggle later by removing class
+            - Student ID still available for actions (Edit/Delete links)
+            */
+    }
+
+    /* ==============================================
+           SECTION 4: BUTTON & ACTION STYLES
+        ============================================== */
     .btn-add {
         display: inline-flex;
         align-items: center;
@@ -273,7 +305,6 @@
         font-size: 0.875rem;
     }
 
-    /* BUTTON BASE STYLES */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -305,7 +336,6 @@
         transform: translateY(-1px);
     }
 
-    /* ACTION BUTTONS IN TABLE */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
@@ -345,7 +375,9 @@
         transform: translateY(-1px);
     }
 
-    /* EMPTY STATE STYLES */
+    /* ==============================================
+           SECTION 5: TABLE & EMPTY STATE STYLES
+        ============================================== */
     .no-data {
         text-align: center;
         padding: 2rem;
@@ -368,6 +400,9 @@
         font-style: italic;
     }
 
+    /* ==============================================
+           SECTION 6: RESPONSIVE DESIGN
+        ============================================== */
     @@media (max-width: 768px) {
         .search-form {
             grid-template-columns: 1fr;
