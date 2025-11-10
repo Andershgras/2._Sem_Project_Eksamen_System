@@ -23,7 +23,6 @@
     <thead>
         <tr>
             <th></th>
-            <th>Class ID</th>
             <th>Class Name</th>
             <th>No. Students</th>
         </tr>
@@ -33,7 +32,6 @@
     {
         <tr>
             <td><a asp-page="StudentsToClasses" class="btn btn-icon" asp-route-id="@hold.ClassId"><i class="bi bi-list"></i></a></td>
-            <td>@hold.ClassId</td>
             <td>@hold.ClassName</td>
             <td>@hold.StudentsToClasses.Count</td>
             <td>
