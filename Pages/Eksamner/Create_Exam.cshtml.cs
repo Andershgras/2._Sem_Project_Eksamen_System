@@ -153,7 +153,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 // ====================================================================
                 // CHANGE #3: ENHANCED ERROR MESSAGES WITH SPECIFIC ROOM CONFLICTS
                 // ====================================================================
-                // OLD: Generic error message for room conflicts
+                // OLD: Generic error message for room conflicts For single room only
                 // NEW: Collects specific conflict details for each room and provides detailed error messages
                 // This helps users understand exactly which rooms are unavailable and why
                 // ====================================================================
