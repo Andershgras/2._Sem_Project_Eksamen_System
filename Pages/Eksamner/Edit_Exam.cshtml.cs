@@ -10,7 +10,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     public class Edit_ExamModel : PageModel
     {
         private readonly ICRUD<Exam> _service;
-        private readonly ICRUDAsync<Class> _classService;
+        private readonly ICRUDAsync<Class> _classService;//Changed to Async
         private readonly IStudentsToExams _studentsToExamService;
 
         public SelectList ClassList { get; set; } = default!;
