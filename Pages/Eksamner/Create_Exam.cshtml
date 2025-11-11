@@ -41,15 +41,15 @@
                                 <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
                             </div>
 
-                            <!-- Room selection - UPDATED FOR MULTIPLE SELECTION -->
+                            <!-- Room selection -->
                             <div class="form-group">
-                                <label for="SelectedRoomIds" class="form-label">Rooms</label>
-                                <select asp-for="SelectedRoomIds" class="form-control compact-input" asp-items="Model.RoomList" multiple>
+                                <label for="SelectedRoomId" class="form-label">Room</label>
+                                <select asp-for="SelectedRoomId" class="form-control compact-input" asp-items="Model.RoomList">
                                     <option value="">-- No room --</option>
                                 </select>
-                                <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple rooms</small>
-                                <span asp-validation-for="SelectedRoomIds" class="text-danger"></span>
+                                <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
                             </div>
+
 
                             <!-- Description -->
                             <div class="form-group">
@@ -59,7 +59,6 @@
                             </div>
                         </div>
 
-                        <!-- Rest of your form remains the same -->
                         <!-- EXAM DETAILS COLUMN -->
                         <div class="form-column">
                             <h3 class="form-section-title">Exam Details</h3>
@@ -79,6 +78,7 @@
                             <div class="form-group">
                                 <label asp-for="Exam.Format" class="form-label">Format</label>
                                 <input asp-for="Exam.Format" class="form-control compact-input" placeholder="e.g., Oral, Written" />
+                                @* <span asp-validation-for="Exam.Format" class="text-danger"></span> *@
                             </div>
 
                             <!-- CHECKBOX GROUP -->
@@ -190,34 +190,13 @@
     </div>
 </div>
 
-<!-- Add this CSS for better multiple select styling -->
 <style>
-    /* MULTIPLE SELECT STYLING */
-    select[multiple] {
-        min-height: 100px;
-        padding: 0.5rem;
-    }
-
-        select[multiple] option {
-            padding: 0.5rem;
-            border-bottom: 1px solid #f3f4f6;
-        }
-
-            select[multiple] option:hover {
-                background-color: #e7f1ff;
-            }
-
-    .form-text {
-        font-size: 0.8rem;
-        color: #6b7280;
-        margin-top: 0.25rem;
-    }
-
-    /* Rest of your existing CSS remains the same */
+    /* FORM CONTAINER STYLES  */
     .form-container {
         padding: 1.5rem;
     }
 
+    /* FORM GRID LAYOUT */
     .form-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -236,6 +215,7 @@
         gap: 1rem;
     }
 
+    /* FORM SECTION TITLES */
     .form-section-title {
         font-size: 1.1rem;
         font-weight: 600;
@@ -245,6 +225,7 @@
         border-bottom: 2px solid #e5e7eb;
     }
 
+    /* FORM GROUP STYLES */
     .form-group {
         display: flex;
         flex-direction: column;
@@ -446,13 +427,10 @@
             align-items: flex-start;
             gap: 0.5rem;
         }
-
-        select[multiple] {
-            min-height: 80px;
-        }
     }
 </style>
 
+<!-- Lavet ved hjælp a Copilot-->
 @section Scripts {
     <script>
         // Update ReExam Name Preview based on Exam Name
@@ -464,7 +442,7 @@
         function updatePreview() {
             if (checkbox.checked) {
                 const examName = examNameInput.value || '';
-                reExamPreview.textContent = `ReEksamen-${examName}`;
+                reExamPreview.textContent = `ReEksamen-${examName}`; // You can change formatting here
             } else {
                 reExamPreview.textContent = '';
             }

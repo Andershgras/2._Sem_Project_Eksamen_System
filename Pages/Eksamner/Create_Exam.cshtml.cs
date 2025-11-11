@@ -30,15 +30,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public SelectList ClassList { get; set; } = default!;
         public SelectList RoomList { get; set; } = default!;
 
-        // ====================================================================
-        // CHANGE #1: CHANGED FROM SINGLE ROOM TO MULTIPLE ROOMS SUPPORT
-        // ====================================================================
-        // OLD: public int? SelectedRoomId { get; set; } - Only supported one room
-        // NEW: Supports multiple room selection by changing to List<int>
-        // This allows users to assign multiple rooms to a single exam
-        // ====================================================================
         [BindProperty]
-        public List<int> SelectedRoomIds { get; set; } = new List<int>();
+        public int? SelectedRoomId { get; set; }
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
@@ -53,6 +46,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _examService = examService;
             _classService = classService;
             _studentsToExamService = studentsToExamService;
+            
             _roomService = roomService;
             _roomsToExamService = roomsToExamService;
             _teacherService = teacherService;
@@ -63,7 +57,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
         }
-
+        
         public async Task<IActionResult> OnPost()
         {
             // repopulate lists (use correct property names)
@@ -131,14 +125,23 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
             }
 
-            // ====================================================================
-            // CHANGE #2: UPDATED ROOM AVAILABILITY CHECK FOR MULTIPLE ROOMS
-            // ====================================================================
-            // OLD: Checked availability for single room only
-            // NEW: Now iterates through ALL selected rooms and checks each one individually
-            // This ensures no room conflicts across all selected rooms for the exam dates
-            // ====================================================================
-            if (SelectedRoomIds != null && SelectedRoomIds.Any())
+            // Debug Logging)
+            foreach (var entry in ModelState)
+            {
+                var state = entry.Value.ValidationState;
+                var errorCount = entry.Value.Errors.Count;
+                Console.WriteLine($"Key: {entry.Key} - State: {state} - Errors: {errorCount}");
+                foreach (var error in entry.Value.Errors)
+                {
+                    Console.WriteLine($"  Error: {error.ErrorMessage}");
+                }
+            }
+
+            if (!ModelState.IsValid)
+                return Page();
+
+            // check room availability for the selected room and date range ---
+            if (SelectedRoomId.HasValue)
             {
                 // Ensure the exam has valid start and end dates
                 if (!Exam.ExamStartDate.HasValue || !Exam.ExamEndDate.HasValue)
@@ -147,55 +150,32 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     return Page();
                 }
 
+                // Use inclusive overlap: existingStart <= newEnd && existingEnd >= newStart
                 var newStart = Exam.ExamStartDate.Value;
                 var newEnd = Exam.ExamEndDate.Value;
 
-                // ====================================================================
-                // CHANGE #3: ENHANCED ERROR MESSAGES WITH SPECIFIC ROOM CONFLICTS
-                // ====================================================================
-                // OLD: Generic error message for room conflicts For single room only
-                // NEW: Collects specific conflict details for each room and provides detailed error messages
-                // This helps users understand exactly which rooms are unavailable and why
-                // ====================================================================
-                var conflictingRooms = new List<string>();
+                var conflicts = _roomsToExamService.GetAll()
+                    .Where(rte => rte != null && rte.RoomId == SelectedRoomId.Value && rte.Exam != null)
+                    .Where(rte =>
+                        rte.Exam.ExamStartDate.HasValue &&
+                        rte.Exam.ExamEndDate.HasValue &&
+                        rte.Exam.ExamStartDate.Value <= newEnd &&
+                        rte.Exam.ExamEndDate.Value >= newStart)
+                    .ToList();
 
-                // Check each selected room for scheduling conflicts
-                foreach (var roomId in SelectedRoomIds)
+                if (conflicts.Any())
                 {
-                    var conflicts = _roomsToExamService.GetAll()
-                        .Where(rte => rte != null && rte.RoomId == roomId && rte.Exam != null)
-                        .Where(rte =>
-                            rte.Exam.ExamStartDate.HasValue &&
-                            rte.Exam.ExamEndDate.HasValue &&
-                            rte.Exam.ExamStartDate.Value <= newEnd &&
-                            rte.Exam.ExamEndDate.Value >= newStart)
-                        .ToList();
+                    // Build a helpful error message listing the first conflict (you can expand to list all)
+                    var c = conflicts.First();
+                    var existingStart = c.Exam.ExamStartDate.HasValue ? c.Exam.ExamStartDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "N/A";
+                    var existingEnd = c.Exam.ExamEndDate.HasValue ? c.Exam.ExamEndDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "N/A";
+                    var existingName = string.IsNullOrWhiteSpace(c.Exam.ExamName) ? $"Exam ID {c.Exam.ExamId}" : c.Exam.ExamName;
 
-                    if (conflicts.Any())
-                    {
-                        var c = conflicts.First();
-                        var existingStart = c.Exam.ExamStartDate.HasValue ? c.Exam.ExamStartDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "N/A";
-                        var existingEnd = c.Exam.ExamEndDate.HasValue ? c.Exam.ExamEndDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "N/A";
-                        var existingName = string.IsNullOrWhiteSpace(c.Exam.ExamName) ? $"Exam ID {c.Exam.ExamId}" : c.Exam.ExamName;
-
-                        // Get room name for better error message
-                        var rooms = await _roomService.GetAllAsync();
-                        var roomName = rooms.FirstOrDefault(r => r.RoomId == roomId)?.Name ?? $"Room ID {roomId}";
-
-                        // Build detailed conflict information for each problematic room
-                        conflictingRooms.Add($"{roomName} (booked for '{existingName}' from {existingStart} to {existingEnd})");
-                    }
-                }
-
-                if (conflictingRooms.Any())
-                {
-                    ModelState.AddModelError("SelectedRoomIds", $"The following rooms are already booked for the selected dates: {string.Join("; ", conflictingRooms)}. Please choose different rooms or change the dates.");
+                    ModelState.AddModelError("SelectedRoomId", $"Selected room is already booked for '{existingName}' ({existingStart} — {existingEnd}). Choose another room or change the dates.");
                     return Page();
                 }
             }
-
-            if (!ModelState.IsValid)
-                return Page();
+            
 
             // You may want to wrap the following in a transaction to avoid partial persistence on error.
             try
@@ -208,31 +188,25 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
                 _examService.AddItem(Exam);
 
-                // ====================================================================
-                // CHANGE #4: UPDATED ROOM ASSIGNMENT LOGIC FOR MULTIPLE ROOMS
-                // ====================================================================
-                // OLD: Assigned only one room to the exam
-                // NEW: Now iterates through ALL selected rooms and creates room-to-exam mappings for each
-                // This creates multiple entries in the RoomsToExam junction table
-                // ====================================================================
-                if (SelectedRoomIds != null && SelectedRoomIds.Any())
+                // Map selected Room to Exam (only if selected and exists)
+                if (SelectedRoomId.HasValue)
                 {
-                    var rooms = await _roomService.GetAllAsync();
 
-                    // Create room assignment for each selected room
-                    foreach (var roomId in SelectedRoomIds)
+                    // inefefficient but simple existence check loading all rooms the first time
+                    // Consider optimizing with a dedicated existence check method in ICRUDAsync<Room> if needed
+                    var rooms = await _roomService.GetAllAsync();
+                    var roomExists = rooms.Any(r => r.RoomId == SelectedRoomId.Value);
+
+                    if (roomExists)
                     {
-                        var roomExists = rooms.Any(r => r.RoomId == roomId);
-                        if (roomExists)
+                        var mapping = new RoomsToExam
                         {
-                            var mapping = new RoomsToExam
-                            {
-                                ExamId = Exam.ExamId,
-                                RoomId = roomId,
-                                Role = null
-                            };
-                            _roomsToExamService.AddItem(mapping);
-                        }
+                            ExamId = Exam.ExamId,
+                            RoomId = SelectedRoomId.Value,
+                            Role = null
+                        };
+                    
+                        _roomsToExamService.AddItem(mapping);
                     }
                 }
 
