@@ -78,7 +78,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         private async Task PopulateClassDropdown()
         {
-            var classes = await Task.Run(() => _classService.GetAllAsync(new GenericFilter()));
+            var classes = await Task.Run(() => _classService.GetAllAsync(new GenericFilter()));//Method is async now
 
             ClassList.Clear();
             ClassList.Add(new SelectListItem
