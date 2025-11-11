@@ -7,21 +7,176 @@
 <h1>Create Class</h1>
 
 <form method="post">
-    <div class="mb-2">
-        <label asp-for="ClassItem.ClassName" class="form-label"></label>
-        <input asp-for="ClassItem.ClassName"
-               class="form-control"
-               placeholder="Education-LA-F/V-SeasonYearLetter-nsem"
-               pattern="^[A-Za-z]+-[A-Za-z]{2}-[FfVv]-[VvSs]\d{2}[A-Za-z]-([1-9][0-9]?|100)sem$"
-               title="Format: Education-CITY-F/V-SeasonYearLetter-nsem (fx: Data-RO-F-V25B-2sem)" />
-        <span asp-validation-for="ClassItem.ClassName" class="text-danger"></span>
-        <small class="text-muted d-block mt-1">
-            Example: Data-RO-F-V25B-2sem, SW-KE-V-S26A-1sem.
-            Tip: Capitalization is corrected automatically (fx Ke → KE).
-        </small>
+    <div class="row">
+        <!-- Education Field -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="Education" class="form-label">Education</label>
+            <input asp-for="Education"
+                   class="form-control"
+                   placeholder="e.g., Data, Multimediedesigner"
+                   required />
+            <span asp-validation-for="Education" class="text-danger"></span>
+            <small class="text-muted">Name of the education program</small>
+        </div>
+
+        <!-- City Field -->
+        <div class="col-md-6 mb-3">
+            <label asp-for="City" class="form-label">City</label>
+            <input asp-for="City"
+                   class="form-control"
+                   placeholder="e.g., Roskilde, Køge"
+                   required />
+            <span asp-validation-for="City" class="text-danger"></span>
+            <small class="text-muted">First 2 letters will be used (e.g., Roskilde → RO)</small>
+        </div>
     </div>
+
+    <div class="row">
+        <!-- Physical/Virtual Dropdown -->
+        <div class="col-md-3 mb-3">
+            <label asp-for="PhysicalOrVirtual" class="form-label">Type</label>
+            <select asp-for="PhysicalOrVirtual" class="form-select" required>
+                <option value="">-- Select --</option>
+                <option value="F">F - Fysisk (Physical)</option>
+                <option value="V">V - Virtuel (Virtual)</option>
+            </select>
+            <span asp-validation-for="PhysicalOrVirtual" class="text-danger"></span>
+        </div>
+
+        <!-- Season Dropdown -->
+        <div class="col-md-3 mb-3">
+            <label asp-for="Season" class="form-label">Season</label>
+            <select asp-for="Season" class="form-select" required>
+                <option value="">-- Select --</option>
+                <option value="V">V - Vinter (Winter)</option>
+                <option value="S">S - Sommer (Summer)</option>
+            </select>
+            <span asp-validation-for="Season" class="text-danger"></span>
+        </div>
+
+        <!-- Year Dropdown -->
+        <div class="col-md-2 mb-3">
+            <label asp-for="Year" class="form-label">Year</label>
+            <select asp-for="Year" class="form-select" required>
+                <option value="">-- Select --</option>
+                <option value="24">2024</option>
+                <option value="25">2025</option>
+                <option value="26">2026</option>
+                <option value="27">2027</option>
+                <option value="28">2028</option>
+            </select>
+            <span asp-validation-for="Year" class="text-danger"></span>
+        </div>
+
+        <!-- Letter Field -->
+        <div class="col-md-2 mb-3">
+            <label asp-for="Letter" class="form-label">Letter</label>
+            <input asp-for="Letter"
+                   class="form-control text-uppercase"
+                   placeholder="A"
+                   maxlength="1"
+                   pattern="[A-Za-z]"
+                   required />
+            <span asp-validation-for="Letter" class="text-danger"></span>
+            <small class="text-muted">A, B, C, etc.</small>
+        </div>
+
+        <!-- Semester Dropdown -->
+        <div class="col-md-2 mb-3">
+            <label asp-for="Semester" class="form-label">Semester</label>
+            <select asp-for="Semester" class="form-select" required>
+                <option value="">-- Select --</option>
+                <option value="1">1. semester</option>
+                <option value="2">2. semester</option>
+                <option value="3">3. semester</option>
+                <option value="4">4. semester</option>
+                <option value="5">5. semester</option>
+                <option value="6">6. semester</option>
+                <option value="7">7. semester</option>
+                <option value="8">8. semester</option>
+            </select>
+            <span asp-validation-for="Semester" class="text-danger"></span>
+        </div>
+    </div>
+
+    <!-- Preview of Generated Class Name -->
+    <div class="alert alert-info mb-3">
+        <strong>Generated Class Name Preview:</strong>
+        <div id="classNamePreview" class="mt-2 fs-5 font-monospace">
+            <em class="text-muted">Fill in the fields above to see preview...</em>
+        </div>
+    </div>
+
+    <!-- Hidden field to store the actual ClassName -->
+    <input type="hidden" asp-for="ClassItem.ClassName" id="hiddenClassName" />
+
     <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <button type="submit" class="btn btn-primary">Create Class</button>
         <a asp-page="Index" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        // Auto-generate class name preview
+        function updateClassNamePreview() {
+            const education = document.getElementById('Education')?.value?.trim() || '';
+            const city = document.getElementById('City')?.value?.trim() || '';
+            const physicalOrVirtual = document.getElementById('PhysicalOrVirtual')?.value || '';
+            const season = document.getElementById('Season')?.value || '';
+            const year = document.getElementById('Year')?.value || '';
+            const letter = document.getElementById('Letter')?.value?.trim().toUpperCase() || '';
+            const semester = document.getElementById('Semester')?.value || '';
+
+            // Extract first 2 letters from city and convert to uppercase
+            const cityCode = city.substring(0, 2).toUpperCase();
+
+            // Build the class name
+            let className = '';
+            if (education && cityCode && physicalOrVirtual && season && year && letter && semester) {
+                className = `${education}-${cityCode}-${physicalOrVirtual}-${season}${year}${letter}-${semester}sem`;
+                document.getElementById('classNamePreview').innerHTML =
+                    `<span class="text-success">${className}</span>`;
+            } else {
+                document.getElementById('classNamePreview').innerHTML =
+                    '<em class="text-muted">Fill in all fields to see preview...</em>';
+            }
+
+            // Update hidden field
+            document.getElementById('hiddenClassName').value = className;
+        }
+
+        // Add event listeners to all input fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const fields = ['Education', 'City', 'PhysicalOrVirtual', 'Season', 'Year', 'Letter', 'Semester'];
+            fields.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    element.addEventListener('input', updateClassNamePreview);
+                    element.addEventListener('change', updateClassNamePreview);
+                }
+            });
+
+            // Auto-uppercase letter field
+            const letterField = document.getElementById('Letter');
+            if (letterField) {
+                letterField.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+            }
+        });
+
+        // Validate before submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const className = document.getElementById('hiddenClassName').value;
+            if (!className) {
+                e.preventDefault();
+                alert('Please fill in all fields to generate a valid class name.');
+            }
+        });
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
