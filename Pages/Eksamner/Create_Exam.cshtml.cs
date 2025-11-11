@@ -1,3 +1,4 @@
+using _2._Sem_Project_Eksamen_System.EFservices;
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         private readonly ICRUDAsync<Room> _roomService;
         private readonly IRoomsToExams _roomsToExamService;
         private readonly ICRUDAsync<Teacher> _teacherService;
-        //private readonly ITeachersToExams _teachersToExamsService;
+        private readonly ITeachersToExam _teachersToExamsService;
 
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
@@ -29,9 +30,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public SelectList ClassList { get; set; } = default!;
         public SelectList RoomList { get; set; } = default!;
+        public SelectList TeacherList { get; set; } = default!;
+
 
         [BindProperty]
         public int? SelectedRoomId { get; set; }
+
+        [BindProperty]
+        public List<int> SelectedTeacherIds { get; set; } = new List<int>();    
+
+
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
@@ -39,23 +47,26 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             IStudentsToExams studentsToExamService,
             ICRUDAsync<Room> roomService,
             IRoomsToExams roomsToExamService,
-            ICRUDAsync<Teacher> teacherService
-            
+            ICRUDAsync<Teacher> teacherService,
+            ITeachersToExam teachersToExamService
+
+
         )
         {
             _examService = examService;
             _classService = classService;
             _studentsToExamService = studentsToExamService;
-            
             _roomService = roomService;
             _roomsToExamService = roomsToExamService;
             _teacherService = teacherService;
+            _teachersToExamsService = teachersToExamService;
         }
 
         public async Task OnGet()
         {
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
+            TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
         }
         
         public async Task<IActionResult> OnPost()
@@ -63,6 +74,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // repopulate lists (use correct property names)
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
+            TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
 
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
@@ -105,6 +117,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState.AddModelError("ReExam.ExamEndDate", "ReExam end date must be after main exam end date.");
                 if (ReExam.DeliveryDate.HasValue && Exam.DeliveryDate.HasValue && ReExam.DeliveryDate.Value <= Exam.DeliveryDate.Value)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
+
+                if()
 
                 ReExam.IsReExam = true;
                 if (Exam.IsFinalExam)
@@ -210,6 +224,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     }
                 }
 
+                // Persist selected examiners (SelectedTeacherIds)
+                if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
+                {
+                    foreach (var teacherId in SelectedTeacherIds.Distinct())
+                    {
+                        _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
+                    }
+                }
+
+                // Add all students from the selected class to the exam
                 _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);
 
                 TempData["SuccessMessage"] = "Exam created successfully!";
