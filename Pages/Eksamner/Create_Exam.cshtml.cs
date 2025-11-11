@@ -15,6 +15,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         private readonly IStudentsToExams _studentsToExamService;
         private readonly ICRUDAsync<Room> _roomService;
         private readonly IRoomsToExams _roomsToExamService;
+        private readonly ICRUDAsync<Teacher> _teacherService;
+        //private readonly ITeachersToExams _teachersToExamsService;
 
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
@@ -36,15 +38,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ICRUD<Class> classService,
             IStudentsToExams studentsToExamService,
             ICRUDAsync<Room> roomService,
-            IRoomsToExams roomsToExamService
+            IRoomsToExams roomsToExamService,
+            ICRUDAsync<Teacher> teacherService
+            
         )
         {
             _examService = examService;
             _classService = classService;
             _studentsToExamService = studentsToExamService;
-            
             _roomService = roomService;
             _roomsToExamService = roomsToExamService;
+            _teacherService = teacherService;
         }
 
         public async Task OnGet()
@@ -187,7 +191,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (SelectedRoomId.HasValue)
                 {
 
-                    // inefefficient but simple existence check loading all rooms the first time
+                    // inefficient but simple existence check loading all rooms the first time
                     // Consider optimizing with a dedicated existence check method in ICRUDAsync<Room> if needed
                     var rooms = await _roomService.GetAllAsync();
                     var roomExists = rooms.Any(r => r.RoomId == SelectedRoomId.Value);
