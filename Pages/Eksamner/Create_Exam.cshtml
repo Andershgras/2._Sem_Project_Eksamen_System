@@ -166,6 +166,13 @@
                                 <div id="reExamNamePreview" class="reexam-preview"></div>
                             </div>
 
+                            <!-- ReExam Examiners multi-select -->
+                            <div class="form-group" id="reExamExaminersBlock">
+                                <label asp-for="SelectedReExamTeacherIds" class="form-label">ReExam Examiners (leave empty to inherit main exam examiners)</label>
+                                <select asp-for="SelectedReExamTeacherIds" asp-items="Model.TeacherList" multiple id="SelectedReExamTeacherIds" class="form-control"></select>
+                                <span asp-validation-for="SelectedReExamTeacherIds" class="text-danger"></span>
+                            </div>
+
                             <!-- ReExam Dates -->
                             <div class="form-grid compact-grid">
                                 <div class="form-group">
@@ -450,18 +457,33 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.default.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
-    <script> // multiselect teachers
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize Tom Select for the examiners multi-select
-            new TomSelect('#SelectedTeacherIds', {
-                plugins: ['remove_button'],
-                maxItems: null,
-                placeholder: 'Select examiners...',
-                allowEmptyOption: true,
-                persist: false,
-                hideSelected: true
-            });
-        });
+    <script>
+        // multiselect teachers
+               document.addEventListener('DOMContentLoaded', function () {
+                   // Initialize Tom Select for the examiners multi-select (main exam)
+                   if (document.querySelector('#SelectedTeacherIds')) {
+                       new TomSelect('#SelectedTeacherIds', {
+                           plugins: ['remove_button'],
+                           maxItems: null,
+                           placeholder: 'Select examiners...',
+                           allowEmptyOption: true,
+                           persist: false,
+                           hideSelected: true
+                       });
+                   }
+
+                   // Initialize Tom Select for the reexam examiners multi-select
+                   if (document.querySelector('#SelectedReExamTeacherIds')) {
+                       new TomSelect('#SelectedReExamTeacherIds', {
+                           plugins: ['remove_button'],
+                           maxItems: null,
+                           placeholder: 'Select reexam examiners (leave empty to inherit from main exam)...',
+                           allowEmptyOption: true,
+                           persist: false,
+                           hideSelected: true
+                       });
+                   }
+               });
     </script>
 
     <script>

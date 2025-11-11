@@ -31,15 +31,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public SelectList ClassList { get; set; } = default!;
         public SelectList RoomList { get; set; } = default!;
         public SelectList TeacherList { get; set; } = default!;
-
+        public SelectList TeacherListReExam { get; set; } = default!;
 
         [BindProperty]
         public int? SelectedRoomId { get; set; }
 
         [BindProperty]
-        public List<int> SelectedTeacherIds { get; set; } = new List<int>();    
+        public List<int> SelectedTeacherIds { get; set; } = new List<int>();
 
-
+        [BindProperty]
+        public List<int> SelectedReExamTeacherIds { get; set; } = new List<int>();
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
@@ -67,6 +68,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
+            
         }
         
         public async Task<IActionResult> OnPost()
@@ -75,6 +77,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
+
+         
 
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
@@ -118,8 +122,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (ReExam.DeliveryDate.HasValue && Exam.DeliveryDate.HasValue && ReExam.DeliveryDate.Value <= Exam.DeliveryDate.Value)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
 
-               
-
+                // if no teachers selected for ReExam, copy from main Exam
+                if (SelectedReExamTeacherIds == null)
+                    SelectedReExamTeacherIds = SelectedTeacherIds;
+                
+                         
+                
                 ReExam.IsReExam = true;
                 if (Exam.IsFinalExam)
                     ReExam.IsFinalExam = true;
@@ -228,6 +236,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
                 {
                     foreach (var teacherId in SelectedTeacherIds.Distinct())
+                    {
+                        _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
+                    }
+                    foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
                     {
                         _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
                     }
