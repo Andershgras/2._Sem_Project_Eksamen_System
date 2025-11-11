@@ -127,6 +127,54 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- ROOMS CARD - UPDATED TO WORK WITH ACTUAL ROOM MODEL -->
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <h3>Assigned Rooms</h3>
+                            </div>
+                            <div class="info-card-content">
+                                @if (exam.RoomsToExams == null || !exam.RoomsToExams.Any())
+                                {
+                                    <div class="empty-state-small">
+                                        <span class="empty-icon">🚪</span>
+                                        <p>No rooms assigned to this exam</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="rooms-list">
+                                        @foreach (var roomExam in exam.RoomsToExams)
+                                        {
+                                            <div class="room-item">
+                                                <div class="room-header">
+                                                    <span class="room-name">@roomExam.Room?.Name</span>
+                                                    <!-- RoomType removed since it doesn't exist in your model -->
+                                                </div>
+                                                <div class="room-details">
+                                                    @if (roomExam.Room?.Capacity > 0)
+                                                    {
+                                                        <div class="room-capacity">
+                                                            <span class="capacity-icon">👥</span>
+                                                            <span>Capacity: @roomExam.Room.Capacity</span>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="room-capacity">
+                                                            <span class="capacity-icon">👥</span>
+                                                            <span>Capacity: Not specified</span>
+                                                        </div>
+                                                    }
+                                                    <!-- Location and Facilities sections removed since they don't exist in your Room model -->
+                                                    <!-- Only showing Room Name and Capacity which are the properties you have -->
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -392,6 +440,78 @@
         opacity: 0.5;
     }
 
+    /* ROOMS CARD STYLES - UPDATED */
+    .rooms-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .room-item {
+        padding: 1rem;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+        .room-item:hover {
+            background: #f0f9ff;
+            border-color: #b6d7e8;
+        }
+
+    .room-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .room-name {
+        font-weight: 600;
+        color: #374151;
+        font-size: 1rem;
+    }
+
+    .room-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .room-capacity {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .capacity-icon {
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+
+    .empty-state-small {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+        .empty-state-small .empty-icon {
+            font-size: 2rem;
+            opacity: 0.5;
+        }
+
+        .empty-state-small p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
     /* ACTION BUTTONS STYLES */
     .form-actions {
         display: flex;
@@ -463,6 +583,16 @@
 
         .header-actions {
             justify-content: center;
+        }
+
+        .room-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .room-details {
+            gap: 0.75rem;
         }
     }
 </style>

@@ -10,7 +10,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     public class Edit_ExamModel : PageModel
     {
         private readonly ICRUD<Exam> _service;
-        private readonly ICRUD<Class> _classService;
+        private readonly ICRUDAsync<Class> _classService;
         private readonly IStudentsToExams _studentsToExamService;
 
         public SelectList ClassList { get; set; } = default!;
@@ -28,7 +28,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public Edit_ExamModel(
             ICRUD<Exam> service,
-            ICRUD<Class> classService,
+            ICRUDAsync<Class> classService,
             IStudentsToExams studentsToExamService)
         {
             _service = service;
@@ -36,9 +36,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _studentsToExamService = studentsToExamService;
         }
 
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGet(int id) // Changed to async
         {
-            ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
+            var classes = await _classService.GetAllAsync(); // Use async method
+            ClassList = new SelectList(classes, "ClassId", "ClassName");
 
             Exam = _service.GetItemById(id);
             if (Exam == null)
@@ -57,9 +58,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
-            ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
+            var classes = await _classService.GetAllAsync(); // Use async method
+            ClassList = new SelectList(classes, "ClassId", "ClassName");
 
             // Clear validation for all ReExam fields when not editing/creating a ReExam
             if (!EditReExam)
