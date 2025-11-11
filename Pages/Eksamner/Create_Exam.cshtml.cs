@@ -46,6 +46,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _examService = examService;
             _classService = classService;
             _studentsToExamService = studentsToExamService;
+            
             _roomService = roomService;
             _roomsToExamService = roomsToExamService;
             _teacherService = teacherService;
@@ -191,7 +192,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (SelectedRoomId.HasValue)
                 {
 
-                    // inefficient but simple existence check loading all rooms the first time
+                    // inefefficient but simple existence check loading all rooms the first time
                     // Consider optimizing with a dedicated existence check method in ICRUDAsync<Room> if needed
                     var rooms = await _roomService.GetAllAsync();
                     var roomExists = rooms.Any(r => r.RoomId == SelectedRoomId.Value);
