@@ -13,7 +13,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
     public class CreateStudentModel : PageModel
     {
         private readonly ICRUDAsync<Student> _studentService;
-        private readonly ICRUD<Class> _classService;
+        private readonly ICRUDAsync<Class> _classService;
         private readonly EksamensDBContext _context;
 
         [BindProperty]
@@ -26,7 +26,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         public CreateStudentModel(
             ICRUDAsync<Student> studentService,
-            ICRUD<Class> classService,
+            ICRUDAsync<Class> classService,
             EksamensDBContext context)
         {
             _studentService = studentService;
@@ -83,7 +83,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         private async Task PopulateClassDropdown()
         {
             // FETCH CLASSES FOR DROPDOWN MENUE
-            var classes = await Task.Run(() => _classService.GetAll(new GenericFilter()));
+            var classes = await Task.Run(() => _classService.GetAllAsync(new GenericFilter()));
 
             ClassList.Clear();
             ClassList.Add(new SelectListItem

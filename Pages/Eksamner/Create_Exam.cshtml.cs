@@ -11,7 +11,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     public class Create_ExamModel : PageModel
     {
         private readonly ICRUD<Exam> _examService;
-        private readonly ICRUD<Class> _classService;
+        private readonly ICRUDAsync<Class> _classService;
         private readonly IStudentsToExams _studentsToExamService;
         private readonly ICRUDAsync<Room> _roomService;
         private readonly IRoomsToExams _roomsToExamService;
@@ -35,7 +35,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
-            ICRUD<Class> classService,
+            ICRUDAsync<Class> classService,
             IStudentsToExams studentsToExamService,
             ICRUDAsync<Room> roomService,
             IRoomsToExams roomsToExamService,
@@ -54,14 +54,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public async Task OnGet()
         {
-            ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
+            ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
         }
         
         public async Task<IActionResult> OnPost()
         {
             // repopulate lists (use correct property names)
-            ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
+            ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
 
             // Clear validation for all ReExam fields when not creating a ReExam
