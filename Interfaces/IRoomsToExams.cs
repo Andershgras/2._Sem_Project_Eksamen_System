@@ -27,5 +27,11 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
         /// <returns><see langword="true"/> if the room is available for the specified date range; otherwise, <see
         /// langword="false"/>.</returns>
         Task<bool> IsRoomAvailableAsync(int roomId, DateOnly requestedStart, DateOnly requestedEnd, int? excludeExamId = null);
+
+        /// <summary>
+        /// Remove all room assignments from a specific exam
+        /// </summary>
+        /// <param name="examId">Target exam id</param>
+        void RemoveAllRoomsFromExam(int examId);
     }    
 }

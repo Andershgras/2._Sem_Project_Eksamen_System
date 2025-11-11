@@ -185,13 +185,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             // Update the exam
             _service.UpdateItem(Exam);
-
-            // Update student assignments
-            _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
-
-            // Update teacher assignments - USING THE SAME METHOD AS CREATE_EXAM
-            // First remove all existing teacher assignments (you might need to implement this)
-            // For now, we'll just add new ones (this might create duplicates)
+           
+            
+            // UPDATE TEACHER ASSIGNMENTS - CLEAN APPROACH
+            _teachersToExamService.RemoveAllFromExam(Exam.ExamId); // Clear all existing teacher assignments first
             if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
             {
                 foreach (var teacherId in SelectedTeacherIds.Distinct())
@@ -200,6 +197,31 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
             }
 
+            // Update room assignment - USING THE SAME CLEAN APPROACH AS TEACHERS
+            // First remove existing room assignments
+            _roomsToExamService.RemoveAllRoomsFromExam(Exam.ExamId);
+
+            if (SelectedRoomId.HasValue)
+            {
+                var availableRooms = await _roomService.GetAllAsync();
+                var roomExists = availableRooms.Any(r => r.RoomId == SelectedRoomId.Value);
+
+                if (roomExists)
+                {
+                    var mapping = new RoomsToExam
+                    {
+                        ExamId = Exam.ExamId,
+                        RoomId = SelectedRoomId.Value,
+                        Role = null
+                    };
+                    _roomsToExamService.AddItem(mapping);
+                }
+            }
+
+            // Update student assignments
+            _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
+
+          
             // Update room assignment - USING THE SAME APPROACH AS CREATE_EXAM
             // First remove existing room assignment (you might need to implement this)
             // For now, we'll just add new one (this might create duplicates)

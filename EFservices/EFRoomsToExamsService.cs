@@ -120,5 +120,17 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
             return !overlaps;
         }
+        public void RemoveAllRoomsFromExam(int examId)//Added This method to remove all room assignments from a specific exam
+        {
+            var existingAssignments = _context.RoomsToExams
+                .Where(rte => rte.ExamId == examId)
+                .ToList();
+
+            if (existingAssignments.Any())
+            {
+                _context.RoomsToExams.RemoveRange(existingAssignments);
+                _context.SaveChanges();
+            }
+        }
     }
 }
