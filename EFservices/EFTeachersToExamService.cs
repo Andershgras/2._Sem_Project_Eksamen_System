@@ -68,206 +68,49 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 _context.SaveChanges();
             }
         }
-        /// <summary>
-        /// Add all teachers that belong to the given class to the specified exam.
-        /// This implements the interface method AddTeachersToExams(int classId, int examId).
-        /// Behavior:
-        ///  - Prefers Teacher.ClassId if present in the EF model (efficient DB query).
-        ///  - Otherwise searches for a join entity with ClassId & TeacherId (fallback).
-        /// Existing mappings are skipped (no duplicates).
-        /// </summary>
-        public void AddTeachersToExams(int classId, int examId)
+
+        public void AddTeachersToExams(int teacherId, int examId)
         {
-            if (classId <= 0) throw new ArgumentException("classId must be > 0", nameof(classId));
-            if (examId <= 0) throw new ArgumentException("examId must be > 0", nameof(examId));
+            if (teacherId <= 0) throw new ArgumentException("teacherId must be greater than zero", nameof(teacherId));
+            if (examId <= 0) throw new ArgumentException("examId must be greater than zero", nameof(examId));
 
-            // already assigned teacher ids for this exam -> skip duplicates
-            var existingTeacherIds = _context.TeachersToExams
-                .Where(t => t.ExamId == examId)
-                .Select(t => t.TeacherId)
-                .ToHashSet();
+            // ensure teacher exists (defensive)
+            var teacherExists = _context.Teachers.AsNoTracking().Any(t => t.TeacherId == teacherId);
+            if (!teacherExists)
+                return; // silently return; caller may validate beforehand as needed
 
-            var teacherIdsInClass = new List<int>();
+            // skip if mapping already exists
+            var alreadyAssigned = _context.TeachersToExams
+                .AsNoTracking()
+                .Any(tte => tte.TeacherId == teacherId && tte.ExamId == examId);
 
-            // Preferred: Teacher entity has ClassId property (direct FK)
-            var teacherEntity = _context.Model.FindEntityType(typeof(Teacher));
-            if (teacherEntity != null && teacherEntity.FindProperty("ClassId") != null)
+            if (alreadyAssigned) return;
+
+            var mapping = new TeachersToExam
             {
-                teacherIdsInClass = _context.Teachers
-                    .AsNoTracking()
-                    .Where(t => EF.Property<int?>(t, "ClassId") == classId)
-                    .Select(t => t.TeacherId)
-                    .Distinct()
-                    .ToList();
-            }
-            else
-            {
-                // Fallback: find a join entity with ClassId & TeacherId (e.g., ClassTeachers)
-                var joinEntity = _context.Model.GetEntityTypes()
-                    .FirstOrDefault(et =>
-                        et.ClrType != typeof(Teacher) &&
-                        et.ClrType != typeof(TeachersToExam) &&
-                        et.FindProperty("ClassId") != null &&
-                        et.FindProperty("TeacherId") != null);
+                TeacherId = teacherId,
+                ExamId = examId,
+                Role = null
+            };
 
-                if (joinEntity != null)
-                {
-                    try
-                    {
-                        var clr = joinEntity.ClrType;
-                        var set = _context.Set(clr).AsNoTracking().AsQueryable();
-
-                        // Materialize and reflect -- safe fallback when no direct mapping exists.
-                        var rows = set.ToList();
-
-                        var classProp = clr.GetProperty("ClassId");
-                        var teacherProp = clr.GetProperty("TeacherId");
-
-                        if (classProp != null && teacherProp != null)
-                        {
-                            foreach (var row in rows)
-                            {
-                                var cVal = classProp.GetValue(row);
-                                if (cVal == null) continue;
-                                if (Convert.ToInt32(cVal) != classId) continue;
-
-                                var tVal = teacherProp.GetValue(row);
-                                if (tVal == null) continue;
-
-                                teacherIdsInClass.Add(Convert.ToInt32(tVal));
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        // swallow fallback errors, treat as no teachers found
-                        teacherIdsInClass = new List<int>();
-                    }
-                }
-            }
-
-            if (!teacherIdsInClass.Any()) return;
-
-            var toAdd = teacherIdsInClass
-                .Distinct()
-                .Where(id => !existingTeacherIds.Contains(id))
-                .Select(id => new TeachersToExam
-                {
-                    ExamId = examId,
-                    TeacherId = id,
-                    Role = null
-                })
-                .ToList();
-
-            if (!toAdd.Any()) return;
-
-            _context.TeachersToExams.AddRange(toAdd);
+            _context.TeachersToExams.Add(mapping);
             _context.SaveChanges();
         }
 
         /// <summary>
-        /// Remove all teacher mappings for the given exam.
-        /// Implements RemoveAllFromExam(int examId).
+        /// Remove all teacher->exam mappings for the specified exam.
         /// </summary>
+        /// <param name="examId">Exam id</param>
         public void RemoveAllFromExam(int examId)
         {
-            if (examId <= 0) throw new ArgumentException("examId must be > 0", nameof(examId));
+            if (examId <= 0) return;
 
-            var existing = _context.TeachersToExams.Where(t => t.ExamId == examId).ToList();
-            if (!existing.Any()) return;
+            var items = _context.TeachersToExams.Where(t => t.ExamId == examId).ToList();
+            if (!items.Any()) return;
 
-            _context.TeachersToExams.RemoveRange(existing);
-            _context.SaveChanges();
-        }
-
-        /// <summary>
-        /// Sync teacher mappings for an exam to those of a new class.
-        /// Implements SyncTeacherToExam(int examId, int newClassId).
-        /// Behavior:
-        ///  - Removes all existing teachers for the exam.
-        ///  - Adds teachers from the new class (using the same discovery logic as AddTeachersToExams).
-        /// </summary>
-        public void SyncTeacherToExam(int examId, int newClassId)
-        {
-            if (examId <= 0) throw new ArgumentException("examId must be > 0", nameof(examId));
-            if (newClassId <= 0) throw new ArgumentException("newClassId must be > 0", nameof(newClassId));
-
-            // Remove existing mappings
-            var existing = _context.TeachersToExams.Where(t => t.ExamId == examId).ToList();
-            if (existing.Any())
-                _context.TeachersToExams.RemoveRange(existing);
-
-            // Discover teachers for newClassId using same logic as AddTeachersToExams
-            var teacherIdsInClass = new List<int>();
-            var teacherEntity = _context.Model.FindEntityType(typeof(Teacher));
-            if (teacherEntity != null && teacherEntity.FindProperty("ClassId") != null)
-            {
-                teacherIdsInClass = _context.Teachers
-                    .AsNoTracking()
-                    .Where(t => EF.Property<int?>(t, "ClassId") == newClassId)
-                    .Select(t => t.TeacherId)
-                    .Distinct()
-                    .ToList();
-            }
-            else
-            {
-                var joinEntity = _context.Model.GetEntityTypes()
-                    .FirstOrDefault(et =>
-                        et.ClrType != typeof(Teacher) &&
-                        et.ClrType != typeof(TeachersToExam) &&
-                        et.FindProperty("ClassId") != null &&
-                        et.FindProperty("TeacherId") != null);
-
-                if (joinEntity != null)
-                {
-                    try
-                    {
-                        var clr = joinEntity.ClrType;
-                        var set = _context.Set(clr).AsNoTracking().AsQueryable();
-                        var rows = set.ToList();
-
-                        var classProp = clr.GetProperty("ClassId");
-                        var teacherProp = clr.GetProperty("TeacherId");
-
-                        if (classProp != null && teacherProp != null)
-                        {
-                            foreach (var row in rows)
-                            {
-                                var cVal = classProp.GetValue(row);
-                                if (cVal == null) continue;
-                                if (Convert.ToInt32(cVal) != newClassId) continue;
-
-                                var tVal = teacherProp.GetValue(row);
-                                if (tVal == null) continue;
-
-                                teacherIdsInClass.Add(Convert.ToInt32(tVal));
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        teacherIdsInClass = new List<int>();
-                    }
-                }
-            }
-
-            // Add new mappings
-            var toAdd = teacherIdsInClass
-                .Distinct()
-                .Select(id => new TeachersToExam
-                {
-                    ExamId = examId,
-                    TeacherId = id,
-                    Role = null
-                })
-                .ToList();
-
-            if (toAdd.Any())
-                _context.TeachersToExams.AddRange(toAdd);
-
+            _context.TeachersToExams.RemoveRange(items);
             _context.SaveChanges();
         }
     }
 
-}
 }
