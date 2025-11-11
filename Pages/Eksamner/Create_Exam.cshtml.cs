@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
@@ -12,7 +13,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         private readonly ICRUD<Exam> _examService;
         private readonly ICRUD<Class> _classService;
         private readonly IStudentsToExams _studentsToExamService;
-        private readonly ICRUD<Room> _roomService;
+        private readonly ICRUDAsync<Room> _roomService;
         private readonly IRoomsToExams _roomsToExamService;
 
         [BindProperty]
@@ -34,7 +35,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ICRUD<Exam> examService,
             ICRUD<Class> classService,
             IStudentsToExams studentsToExamService,
-            ICRUD<Room> roomService,
+            ICRUDAsync<Room> roomService,
             IRoomsToExams roomsToExamService
         )
         {
@@ -46,17 +47,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _roomsToExamService = roomsToExamService;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
             ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
-            RoomList = new SelectList(_roomService.GetAll(), "RoomId", "Name");
+            RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
         }
-
-        public IActionResult OnPost()
+        
+        public async Task<IActionResult> OnPost()
         {
             // repopulate lists (use correct property names)
             ClassList = new SelectList(_classService.GetAll(), "ClassId", "ClassName");
-            RoomList = new SelectList(_roomService.GetAll(), "RoomId", "Name");
+            RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
 
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
@@ -185,8 +186,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 // Map selected Room to Exam (only if selected and exists)
                 if (SelectedRoomId.HasValue)
                 {
-                    // optional: check the selected id exists in rooms
-                    var roomExists = _roomService.GetAll().Any(r => r.RoomId == SelectedRoomId.Value);
+
+                    // inefefficient but simple existence check loading all rooms the first time
+                    // Consider optimizing with a dedicated existence check method in ICRUDAsync<Room> if needed
+                    var rooms = await _roomService.GetAllAsync();
+                    var roomExists = rooms.Any(r => r.RoomId == SelectedRoomId.Value);
+
                     if (roomExists)
                     {
                         var mapping = new RoomsToExam
