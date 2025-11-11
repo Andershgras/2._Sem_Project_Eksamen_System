@@ -121,13 +121,6 @@
                                 <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
                             </div>
 
-                            <!-- Teachers (multi-select) -->
-                            <div class="form-group">
-                                <label asp-for="SelectedTeacherIds" class="form-label">Examiners</label>
-                                <select asp-for="SelectedTeacherIds" asp-items="Model.TeacherList" multiple id="SelectedTeacherIds" class="form-control"></select>
-                                <span asp-validation-for="SelectedTeacherIds" class="text-danger"></span>
-                            </div>
-
                             <!-- ExamEndDate -->
                             <div class="form-group">
                                 <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
