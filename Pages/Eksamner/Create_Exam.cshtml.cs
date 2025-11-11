@@ -118,7 +118,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (ReExam.DeliveryDate.HasValue && Exam.DeliveryDate.HasValue && ReExam.DeliveryDate.Value <= Exam.DeliveryDate.Value)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
 
-                if()
+               
 
                 ReExam.IsReExam = true;
                 if (Exam.IsFinalExam)
