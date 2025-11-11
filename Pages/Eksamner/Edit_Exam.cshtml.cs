@@ -199,7 +199,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             // Update room assignment - USING THE SAME CLEAN APPROACH AS TEACHERS
             // First remove existing room assignments
-            _roomsToExamService.RemoveAllRoomsFromExam(Exam.ExamId);
+            _roomsToExamService.RemoveAllRoomsFromExam(Exam.ExamId);//Added This line to remove all existing room assignments
 
             if (SelectedRoomId.HasValue)
             {
