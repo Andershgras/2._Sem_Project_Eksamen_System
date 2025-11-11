@@ -7,27 +7,27 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
 {
     public class StudentsToClassesModel : PageModel
     {
-        private readonly ICRUD<Class> _Class_service;
+        private readonly ICRUDAsync<Class> _service;
         public IEnumerable<Student> Students { get; set; }
 
         [BindProperty]
         public Class ClassItem { get; set; }
 
-        public StudentsToClassesModel(ICRUD<Class> service)
+        public StudentsToClassesModel(ICRUDAsync<Class> service)
         {
-            _Class_service = service;
+            _service = service;
             Students = new List<Student>();
         }
-
-        
-
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            var _class = _Class_service.GetItemById(id);
-            if (_class == null) return RedirectToPage("Index");
-            ClassItem = _class;
+            var classItem = await _service.GetItemByIdAsync(id);
+            if (classItem == null) return RedirectToPage("Index");
 
-            Students = ClassItem.StudentsToClasses.Select(sc => sc.Student).ToList();
+            ClassItem = classItem;
+            Students = ClassItem.StudentsToClasses
+                .Select(sc => sc.Student)
+                .Where(s => s != null)
+                .ToList()!;
 
             return Page();
         }

@@ -7,23 +7,24 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
 {
     public class CreateModel : PageModel
     {
-        private readonly ICRUD<Class> _Class_service;
+        private readonly ICRUDAsync<Class> _service;
 
         [BindProperty]
         public Class ClassItem { get; set; }
 
-        public CreateModel(ICRUD<Class> service)
+        public CreateModel(ICRUDAsync<Class> service)
         {
-            _Class_service = service;
+            _service = service;
             ClassItem = new Class();
         }
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            _Class_service.AddItem(ClassItem);
+
+            await _service.AddItemAsync(ClassItem);
             return RedirectToPage("/Hold/Index");
         }
 

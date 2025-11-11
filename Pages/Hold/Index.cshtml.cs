@@ -8,7 +8,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.NewFolder
 {
     public class IndexModel : PageModel
     {
-        private readonly ICRUD<Class> _service;
+        private readonly ICRUDAsync<Class> _service;
         public IEnumerable<Class> HoldList { get; set; }
 
         [BindProperty(SupportsGet = true)]
@@ -17,21 +17,21 @@ namespace _2._Sem_Project_Eksamen_System.Pages.NewFolder
         [BindProperty(SupportsGet = true)]
         public GenericFilter Filter1 { get; set; }
 
-        public IndexModel(ICRUD<Class> service)
+        public IndexModel(ICRUDAsync<Class> service)
         {
             _service = service;
             Filter = new GenericFilter();
             HoldList = new List<Class>();
         }
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            if (!string.IsNullOrEmpty(Filter.FilterByName))
+            if (!string.IsNullOrEmpty(Filter?.FilterByName))
             {
-                HoldList = _service.GetAll(Filter);
+                HoldList = await _service.GetAllAsync(Filter);
             }
             else
             {
-                HoldList = _service.GetAll();
+                HoldList = await _service.GetAllAsync();
             }
         }
     }

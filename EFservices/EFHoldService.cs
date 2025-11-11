@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    public class EFHoldService : ICRUD<Class>
+    public class EFHoldService : ICRUDAsync<Class>
     {
         EksamensDBContext _context;
 
@@ -14,54 +14,55 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context = context;
         }
 
-        public IEnumerable<Class> GetAll()
+        public async Task<IEnumerable<Class>> GetAllAsync()
         {
-            var items = _context.Classes
+            return await _context.Classes
                 .Include(c => c.StudentsToClasses)
                     .ThenInclude(sc => sc.Student)
                 .AsNoTracking()
                 .OrderBy(c => c.ClassId)
-                .ToList();
-
-            return items;
+                .ToListAsync();
         }
-
-        public IEnumerable<Class> GetAll(GenericFilter Filter)
+        public async Task<IEnumerable<Class>> GetAllAsync(GenericFilter filter)
         {
-            var items = _context.Classes
-                .Where(c => c.ClassName.ToLower().StartsWith(Filter.FilterByName))
+            var filterName = filter?.FilterByName?.ToLower() ?? string.Empty;
+
+            return await _context.Classes
+                .Where(c => string.IsNullOrEmpty(filterName) || c.ClassName.ToLower().StartsWith(filterName))
                 .AsNoTracking()
-                .ToList();
-           return items;
+                .OrderBy(c => c.ClassId)
+                .ToListAsync();
         }
-      
-        public void AddItem(Class item)
+        public async Task AddItemAsync(Class item)
         {
-            _context.Add(item);
-            _context.SaveChanges();
-        }
+            if (item == null) throw new ArgumentNullException(nameof(item));
 
-     
-        public Class? GetItemById(int id)
+            await _context.Classes.AddAsync(item);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<Class?> GetItemByIdAsync(int id)
         {
-            return _context.Classes
+            return await _context.Classes
                 .Include(c => c.StudentsToClasses)
                     .ThenInclude(stc => stc.Student)
-                .Include(c => c.Exams) 
-                .FirstOrDefault(c => c.ClassId == id);
+                .Include(c => c.Exams)
+                .FirstOrDefaultAsync(c => c.ClassId == id);
         }
-       
-        public void DeleteItem(int id)
+        public async Task DeleteItemAsync(int id)
         {
-            var item = GetItemById(id);
-            if (item != null)_context.Classes.Remove(item);
-            _context.SaveChanges();
+            var item = await GetItemByIdAsync(id);
+            if (item != null)
+            {
+                _context.Classes.Remove(item);
+                await _context.SaveChangesAsync();
+            }
         }
-     
-        public void UpdateItem(Class item)
+        public async Task UpdateItemAsync(Class item)
         {
-            _context.Update(item);
-            _context.SaveChanges();
+            if (item == null) throw new ArgumentNullException(nameof(item));
+
+            _context.Classes.Update(item);
+            await _context.SaveChangesAsync();
         }
     }
 }
