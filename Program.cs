@@ -14,19 +14,22 @@ namespace _2._Sem_Project_Eksamen_System
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<EksamensDBContext>();
             // Muliggør dependency injection for ICRUD interface, hvor funktionaliteten referers til EFEksamenService
+            // Non -Async Services
             builder.Services.AddTransient<ICRUD<Exam>, EFEksamenService>();
-            builder.Services.AddScoped<ICRUDAsync<Room>, EFRoomService>();
-            builder.Services.AddScoped<ICRUDAsync<Student>, EFStudentService>();
+
             builder.Services.AddScoped<ICRUD<Class>, EFHoldService>();
             builder.Services.AddScoped<ICRUD<TeachersToExam>, EFTeachersToExamService>();
             builder.Services.AddScoped<ICRUD<Teacher>, EFUnderviserService>();
-            builder.Services.AddScoped<ICRUDAsync<Teacher>, EFUnderviserService>();
             builder.Services.AddScoped<IStudentsToExams, EFStudentsToExamService>();
             builder.Services.AddScoped<IRoomsToExams, EFRoomsToExamService>();
 
-            // In Program.cs or Startup.cs
+            // All Async Services
             builder.Services.AddScoped<ICRUDAsync<Student>, EFStudentService>();
-           
+            builder.Services.AddScoped<ICRUDAsync<Room>, EFRoomService>();
+            builder.Services.AddScoped<ICRUDAsync<Student>, EFStudentService>();
+            builder.Services.AddScoped<ICRUDAsync<Teacher>, EFUnderviserService>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
