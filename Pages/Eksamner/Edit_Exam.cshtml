@@ -129,15 +129,14 @@
                             <div class="form-group">
                                 <label asp-for="SelectedTeacherIds" class="form-label">Examiners</label>
                                 <select asp-for="SelectedTeacherIds" asp-items="Model.TeacherList" multiple
-                                        class="form-control compact-input"
+                                        class="form-control compact-input multi-select"
                                         id="SelectedTeacherIds"
-                                        size="5">
-                                    <!-- ADD THIS LINE -->
-                                    <option value="">-- Select Examiners --</option>
+                                        size="4">
                                 </select>
                                 <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple examiners</small>
                                 <span asp-validation-for="SelectedTeacherIds" class="text-danger"></span>
                             </div>
+
                             <!-- Room selection - ADDED -->
                             <div class="form-group">
                                 <label asp-for="SelectedRoomId" class="form-label">Room</label>
@@ -216,6 +215,7 @@
     </div>
 </div>
 
+<!-- ADD THE SAME STYLES AS CREATE EXAM -->
 <!-- ADD THE SAME STYLES AS CREATE EXAM -->
 <style>
     /* FORM CONTAINER STYLES  */
@@ -306,6 +306,18 @@
             select[multiple] option:hover {
                 background-color: #e7f1ff;
             }
+
+    /* MULTI-SELECT PLACEHOLDER STYLING */
+    .multi-select {
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+    }
+
+        .multi-select:focus {
+            background-color: white;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        }
 
     .form-text {
         font-size: 0.8rem;
