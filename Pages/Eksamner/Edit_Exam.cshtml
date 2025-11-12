@@ -128,13 +128,16 @@
                             <!-- Teachers (multi-select) - ADDED -->
                             <div class="form-group">
                                 <label asp-for="SelectedTeacherIds" class="form-label">Examiners</label>
-                                <select asp-for="SelectedTeacherIds" asp-items="Model.TeacherList" multiple class="form-control compact-input" id="SelectedTeacherIds">
+                                <select asp-for="SelectedTeacherIds" asp-items="Model.TeacherList" multiple
+                                        class="form-control compact-input"
+                                        id="SelectedTeacherIds"
+                                        size="5">
+                                    <!-- ADD THIS LINE -->
                                     <option value="">-- Select Examiners --</option>
                                 </select>
                                 <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple examiners</small>
                                 <span asp-validation-for="SelectedTeacherIds" class="text-danger"></span>
                             </div>
-
                             <!-- Room selection - ADDED -->
                             <div class="form-group">
                                 <label asp-for="SelectedRoomId" class="form-label">Room</label>
