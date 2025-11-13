@@ -97,6 +97,26 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             return Page();
         }
+        /// <summary>
+        /// ///////////Helper method to handle Post request for editing an exam
+        /// </summary>
+        /// <returns></returns>
+        private void AddTeacherWithDefaultRole(int teacherId, int examId)
+        {
+            // Use your existing service but ensure role is set
+            var teachersToExam = new TeachersToExam
+            {
+                TeacherId = teacherId,
+                ExamId = examId,
+                Role = "Examinator" // Simple default role
+            };
+
+            // Use your existing DbContext to save
+            using var scope = HttpContext.RequestServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<EksamensDBContext>();
+            context.TeachersToExams.Add(teachersToExam);
+            context.SaveChanges();
+        }
 
         public async Task<IActionResult> OnPost()
         {
@@ -195,8 +215,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 {
                     _teachersToExamService.AddTeachersToExams(teacherId, Exam.ExamId);
                 }
+               
             }
-
+           
+           
             // Update room assignment - USING THE SAME CLEAN APPROACH AS TEACHERS
             // First remove existing room assignments
             _roomsToExamService.RemoveAllRoomsFromExam(Exam.ExamId);//Added This line to remove all existing room assignments

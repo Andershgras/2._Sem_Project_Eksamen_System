@@ -21,7 +21,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public IActionResult OnGet(int id)
         {
-            // Use the same pattern as your Delete page, but add Teacher inclusion
+            //I  Used the same pattern as our Delete page, but add Teacher inclusion
             Exam = _context.Exams
                 .Include(e => e.Class)
                 .Include(e => e.ReExam)

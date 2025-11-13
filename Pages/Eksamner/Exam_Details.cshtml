@@ -275,6 +275,35 @@
         }
     </div>
 </div>
+<!-- EXTENDED DEBUG - Check ALL properties -->
+<div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border: 2px solid red;">
+    <h4>EXTENDED DEBUG - TeachersToExam Properties:</h4>
+    @if (exam.TeachersToExams != null)
+    {
+        var firstTeacher = exam.TeachersToExams.First();
+        <p><strong>Properties available:</strong></p>
+        <ul>
+            <li>TeacherId: @firstTeacher.TeacherId</li>
+            <li>ExamId: @firstTeacher.ExamId</li>
+            <li>Role: '@firstTeacher.Role'</li>
+            <li>Teacher: @(firstTeacher.Teacher != null ? "Loaded" : "Null")</li>
+            <li>TeacherName: '@firstTeacher.Teacher?.TeacherName'</li>
+        </ul>
+
+        <p><strong>All Teachers and Roles:</strong></p>
+        @foreach (var tte in exam.TeachersToExams)
+        {
+            <p>
+                TeacherId: @tte.TeacherId |
+                Teacher: '@tte.Teacher?.TeacherName' |
+                Role: '@tte.Role' |
+                Role == null: @(tte.Role == null) |
+                Role == "": @(tte.Role == "") |
+                Role length: @(tte.Role?.Length ?? -1)
+            </p>
+        }
+    }
+</div>
 
 <style>
     /* DETAILS CONTAINER STYLES */
