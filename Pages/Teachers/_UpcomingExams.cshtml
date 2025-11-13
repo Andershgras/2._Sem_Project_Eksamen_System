@@ -1,0 +1,31 @@
+﻿@model IEnumerable<_2._Sem_Project_Eksamen_System.Models1.Exam>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="text-muted small">No upcoming exams scheduled for this teacher.</div>
+}
+else
+{
+    <ul class="list-unstyled mb-0">
+        @foreach (var e in Model)
+        {
+            <li class="py-1">
+                <strong>@e.ExamName</strong>
+                @if (e.ExamStartDate.HasValue)
+                {
+                    <span> — @e.ExamStartDate.Value.ToString("yyyy-MM-dd")</span>
+                    @if (e.ExamEndDate.HasValue && e.ExamEndDate != e.ExamStartDate)
+                    {
+                        <span> to @e.ExamEndDate.Value.ToString("yyyy-MM-dd")</span>
+                    }
+                }
+                @* Class kan være null hvis ikke sat *@
+                @if (e.Class != null)
+                {
+                    <span class="text-muted"> (Class: @e.Class.ClassName)</span>
+                }
+                <a asp-page="/Eksamner/Exam_Details" asp-route-id="@e.ExamId" class="ms-2">Details</a>
+            </li>
+        }
+    </ul>
+}

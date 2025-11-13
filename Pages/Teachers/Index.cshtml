@@ -25,6 +25,7 @@
         <tr>
             <th>Navn</th>
             <th>Email</th>
+            <th style="width:150px;">Upcoming Exams</th>
             <th style="width:90px;">Edit</th>
             <th style="width:110px;">Delete</th>
         </tr>
@@ -36,6 +37,13 @@
                 <td>@t.TeacherName</td>
                 <td>@t.Email</td>
                 <td>
+                    <button type="button"
+                            class="btn btn-sm btn-outline-info"
+                            onclick="toggleExams(@t.TeacherId)">
+                        View Exams
+                    </button>
+                </td>
+                <td>
                     <a asp-page="./Edit" asp-route-id="@t.TeacherId" class="btn-toggle btn-edit">Edit</a>
                 </td>
                 <td>
@@ -43,6 +51,26 @@
                              model="@(("./Delete", t.TeacherId))" />
                 </td>
             </tr>
+            <tr class="exam-row" id="exams-@t.TeacherId" style="display: none;">
+                <td colspan="5" class="bg-light p-3">
+                    <h6 class="mb-2">Upcoming Exams for @t.TeacherName:</h6>
+                    @{
+                        var upcomingExams = await Model.GetUpcomingExamsForTeacher(t.TeacherId);
+                    }
+                    <partial name="_UpcomingExams" model="upcomingExams" />
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+
+<script>
+    function toggleExams(teacherId) {
+        var examRow = document.getElementById('exams-' + teacherId);
+        if (examRow.style.display === 'none') {
+            examRow.style.display = 'table-row';
+        } else {
+            examRow.style.display = 'none';
+        }
+    }
+</script>

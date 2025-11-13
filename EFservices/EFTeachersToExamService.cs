@@ -45,12 +45,24 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
         public void AddItem(TeachersToExam item)
         {
+            // Ensure role has a default value if not provided
+            if (string.IsNullOrEmpty(item.Role))
+            {
+                item.Role = "Examiner";
+            }
+
             _context.TeachersToExams.Add(item);
             _context.SaveChanges();
         }
 
         public void UpdateItem(TeachersToExam item)
         {
+            // Ensure role has a default value if not provided
+            if (string.IsNullOrEmpty(item.Role))
+            {
+                item.Role = "Examiner";
+            }
+
             var existing = _context.TeachersToExams.Find(item.TeacherExamId);
             if (existing != null)
             {
@@ -69,28 +81,44 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
         }
 
+        /// <summary>
+        /// Add or update teacher-to-exam assignment with proper role handling
+        /// </summary>
+        /// <param name="teacherId"></param>
+        /// <param name="examId"></param>
+        /// <exception cref="ArgumentException"></exception>
         public void AddTeachersToExams(int teacherId, int examId)
         {
             if (teacherId <= 0) throw new ArgumentException("teacherId must be greater than zero", nameof(teacherId));
             if (examId <= 0) throw new ArgumentException("examId must be greater than zero", nameof(examId));
 
-            // ensure teacher exists (defensive)
+            // Ensure teacher exists (defensive)
             var teacherExists = _context.Teachers.AsNoTracking().Any(t => t.TeacherId == teacherId);
             if (!teacherExists)
-                return; // silently return; caller may validate beforehand as needed
+                return;
 
-            // skip if mapping already exists
-            var alreadyAssigned = _context.TeachersToExams
-                .AsNoTracking()
-                .Any(tte => tte.TeacherId == teacherId && tte.ExamId == examId);
+            // Check if mapping already exists
+            var existingMapping = _context.TeachersToExams
+                .FirstOrDefault(tte => tte.TeacherId == teacherId && tte.ExamId == examId);
 
-            if (alreadyAssigned) return;
+            if (existingMapping != null)
+            {
+                // UPDATE EXISTING: Always ensure role has a value
+                if (string.IsNullOrEmpty(existingMapping.Role))
+                {
+                    existingMapping.Role = "Examiner";
+                    // No need for explicit Update() - Entity Framework tracks changes
+                    _context.SaveChanges();
+                }
+                return;
+            }
 
+            // CREATE NEW: Only create new mapping if it doesn't exist like above
             var mapping = new TeachersToExam
             {
                 TeacherId = teacherId,
                 ExamId = examId,
-                Role = null
+                Role = "Examiner" // Default role
             };
 
             _context.TeachersToExams.Add(mapping);
@@ -111,6 +139,25 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.TeachersToExams.RemoveRange(items);
             _context.SaveChanges();
         }
-    }
 
+        /// <summary>
+        /// NEW METHOD: Bulk update roles for existing records
+        /// Call this once to fix all existing null/empty roles
+        /// </summary>
+        public void FixMissingRoles()
+        {
+            var recordsWithMissingRoles = _context.TeachersToExams
+                .Where(tte => string.IsNullOrEmpty(tte.Role))
+                .ToList();
+
+            if (recordsWithMissingRoles.Any())
+            {
+                foreach (var record in recordsWithMissingRoles)
+                {
+                    record.Role = "Censor";
+                }
+                _context.SaveChanges();
+            }
+        }
+    }
 }

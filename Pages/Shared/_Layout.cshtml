@@ -108,13 +108,6 @@
             <!-- HEADER SECTION -->
             <header class="app-header">
                 <div class="header-left">
-                    <button id="sidebarToggle" class="btn-toggle" aria-label="Skift navigation" aria-expanded="true">
-                        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect y="1" width="20" height="2" rx="1" fill="currentColor" />
-                            <rect y="6" width="20" height="2" rx="1" fill="currentColor" />
-                            <rect y="11" width="20" height="2" rx="1" fill="currentColor" />
-                        </svg>
-                    </button>
                     <h1 class="page-title">@ViewData["Title"]</h1>
                 </div>
                 <div class="header-right">
@@ -137,25 +130,6 @@
         </div>
     </div>
 
-    <!-- SIDEBAR TOGGLE SCRIPT SECTION -->
-    <script>
-        // Enhanced responsive sidebar toggle with accessibility improvements
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const appShell = document.querySelector('.app-shell');
-
-            if (sidebarToggle && appShell) {
-                sidebarToggle.addEventListener('click', function() {
-                    const isCollapsed = appShell.classList.toggle('collapsed');
-                    this.setAttribute('aria-expanded', !isCollapsed);
-
-                    // Update toggle button label for screen readers
-                    this.setAttribute('aria-label',
-                        isCollapsed ? 'Vis navigation' : 'Skjul navigation');
-                });
-            }
-        });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
