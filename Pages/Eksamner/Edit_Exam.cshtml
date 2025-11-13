@@ -145,6 +145,17 @@
                                 </select>
                                 <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
                             </div>
+
+                            @if (Model.Exam.IsReExam) // Only show number of students if it's a re-exam
+                            {
+                                <!-- number of stud -->
+                                <div class="form-group">
+                                    <label asp-for="Exam.NumOfStud" class="form-label"> Number of Students</label>
+                                    <input asp-for="Exam.NumOfStud" type="number" class="form-control compact-input" />
+                                    <span asp-validation-for="Exam.NumOfStud" class="text-danger"></span>
+                                </div>
+                            }
+                            
                         </div>
                     </div>
 
@@ -175,6 +186,13 @@
                                 <label asp-for="ReExam.ExamName" class="form-label">ReExam Name</label>
                                 <input asp-for="ReExam.ExamName" class="form-control compact-input" placeholder="ReExam name" />
                                 <span asp-validation-for="ReExam.ExamName" class="text-danger"></span>
+                            </div>
+
+                            <!-- number of stud -->
+                            <div class="form-group">
+                                <label asp-for="ReExam.NumOfStud" class="form-label"> Number of Students</label>
+                                <input asp-for="ReExam.NumOfStud" type="number" class="form-control compact-input" />
+                                <span asp-validation-for="ReExam.NumOfStud" class="text-danger"></span>
                             </div>
 
                             <!-- ReExam Dates -->
