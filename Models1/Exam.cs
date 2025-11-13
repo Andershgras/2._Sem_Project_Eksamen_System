@@ -48,7 +48,7 @@ public partial class Exam
     public string? Description { get; set; }
 
     [Column("NumOfStud")]
-    public int NumOfStud { get; set; }
+    public int? NumOfStud { get; set; }
 
     [ForeignKey("ClassId")]
     [InverseProperty("Exams")]
