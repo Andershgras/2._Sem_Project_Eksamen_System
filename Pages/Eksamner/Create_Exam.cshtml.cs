@@ -70,23 +70,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
             
         }
-        private void AddTeacherWithDefaultRole(int teacherId, int examId)
-        {
-            // Use your existing service but ensure role is set
-            var teachersToExam = new TeachersToExam
-            {
-                TeacherId = teacherId,
-                ExamId = examId,
-                Role = "Examinator" // Simple default role
-            };
-
-            // Use your existing DbContext to save
-            using var scope = HttpContext.RequestServices.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<EksamensDBContext>();
-            context.TeachersToExams.Add(teachersToExam);
-            context.SaveChanges();
-        }
-
+        
         public async Task<IActionResult> OnPost()
         {
             // repopulate lists (use correct property names)
@@ -253,17 +237,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 {
                     foreach (var teacherId in SelectedTeacherIds.Distinct())
                     {
-                        //////////////77
-                        AddTeacherWithDefaultRole(teacherId, Exam.ExamId);
+                        _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
                     }
                     foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
                     {
-                        ///////////
-                        AddTeacherWithDefaultRole(teacherId, Exam.ExamId);
+                        _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
                     }
-                                 
-                
                 }
+
                 // Add all students from the selected class to the exam
                 _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);
 
