@@ -33,7 +33,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public SelectList RoomList { get; set; } = default!;
         public SelectList TeacherList { get; set; } = default!;
         public SelectList TeacherListReExam { get; set; } = default!;
-        public SelectList StudentListReExam { get; set; } = default!;
+        public SelectList StudentList { get; set; } = default!;
 
         [BindProperty]
         public int? SelectedRoomId { get; set; }
@@ -46,6 +46,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         [BindProperty]
         public List<int> SelectedReExamStudentIds { get; set; } = new List<int>();
+
+        [BindProperty]
+        public int NumberOfStudents { get; set; }
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
@@ -77,26 +80,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
-            
+
         }
         // Handles The student menu population based on selected class
-        public async Task<IActionResult> OnGetStudents(int classId)
-        {
-            if (classId <= 0) return new JsonResult(new { results = new object[0] });
-            var filtered = await _studentsToClassesService.GetStudentsFromClass(classId);
-            
-            if (filtered.Any())
-                return new JsonResult(new { results = filtered });
-
-            return new JsonResult(new { results = new object[0] });
-        }
+    
         public async Task<IActionResult> OnPost()
         {
             // repopulate lists (use correct property names)
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
-            StudentListReExam = new SelectList(await _studentService.GetAllAsync(), "StudentId", "StudentName");
 
 
             // Clear validation for all ReExam fields when not creating a ReExam
@@ -155,8 +148,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
                 if (Exam.IsFinalExam)
                     ReExam.IsFinalExam = true;
-
-                _studentsToExamService.AddStudentsToExam(SelectedReExamStudentIds, ReExam.ExamId);
             }
             else
             {
@@ -232,6 +223,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 {
                     _examService.AddItem(ReExam);
                     Exam.ReExamId = ReExam.ExamId;
+
+                    if (NumberOfStudents > 0 && NumberOfStudents != null) // set number of students for re-exam if specified
+                        ReExam.NumOfStud = NumberOfStudents;
                 }
 
                 _examService.AddItem(Exam);

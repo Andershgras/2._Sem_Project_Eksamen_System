@@ -102,7 +102,17 @@
                                             <span class="not-assigned">Not Assigned</span>
                                         }
                                     </td>
-                                    <td>@(eksamen.StudentsToExams.Count)</td>
+                                    <td>
+                                        @if(eksamen.NumOfStud == 0 || eksamen.NumOfStud == null)
+                                        {
+                                            <p>@(eksamen.StudentsToExams.Count)</p>
+                                        }
+                                        else 
+                                        {
+                                            <p>@eksamen.NumOfStud</p>
+                                        }
+                                    
+                                    </td>
                                     <td class="action-buttons">
                                         <a asp-page="./Edit_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-edit">Edit</a>
                                         <a asp-page="./Delete_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-delete">Delete</a>
