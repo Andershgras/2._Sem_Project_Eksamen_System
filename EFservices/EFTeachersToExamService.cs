@@ -113,7 +113,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 return;
             }
 
-            // CREATE NEW: Only create new mapping if it doesn't exist
+            // CREATE NEW: Only create new mapping if it doesn't exist like above
             var mapping = new TeachersToExam
             {
                 TeacherId = teacherId,
