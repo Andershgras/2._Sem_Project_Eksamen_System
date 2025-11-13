@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Globalization;
-using System.Threading.Tasks;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
@@ -13,7 +12,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     {
         private readonly ICRUD<Exam> _examService;
         private readonly ICRUDAsync<Class> _classService;
+        private readonly ICRUDAsync<Student> _studentService;
         private readonly IStudentsToExams _studentsToExamService;
+        private readonly IStudentsToClasses _studentsToClassesService;
         private readonly ICRUDAsync<Room> _roomService;
         private readonly IRoomsToExams _roomsToExamService;
         private readonly ICRUDAsync<Teacher> _teacherService;
@@ -32,6 +33,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public SelectList RoomList { get; set; } = default!;
         public SelectList TeacherList { get; set; } = default!;
         public SelectList TeacherListReExam { get; set; } = default!;
+        public SelectList StudentListReExam { get; set; } = default!;
 
         [BindProperty]
         public int? SelectedRoomId { get; set; }
@@ -42,6 +44,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public List<int> SelectedReExamTeacherIds { get; set; } = new List<int>();
 
+        [BindProperty]
+        public List<int> SelectedReExamStudentIds { get; set; } = new List<int>();
+
         public Create_ExamModel(
             ICRUD<Exam> examService,
             ICRUDAsync<Class> classService,
@@ -49,7 +54,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ICRUDAsync<Room> roomService,
             IRoomsToExams roomsToExamService,
             ICRUDAsync<Teacher> teacherService,
-            ITeachersToExam teachersToExamService
+            ITeachersToExam teachersToExamService,
+            ICRUDAsync<Student> studentService,
+            IStudentsToClasses studentsToClassesService
 
 
         )
@@ -61,6 +68,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _roomsToExamService = roomsToExamService;
             _teacherService = teacherService;
             _teachersToExamsService = teachersToExamService;
+            _studentService = studentService;
+            _studentsToClassesService = studentsToClassesService;
         }
 
         public async Task OnGet()
@@ -70,15 +79,25 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
             
         }
-        
+        // Handles The student menu population based on selected class
+        public async Task<IActionResult> OnGetStudents(int classId)
+        {
+            if (classId <= 0) return new JsonResult(new { results = new object[0] });
+            var filtered = await _studentsToClassesService.GetStudentsFromClass(classId);
+            
+            if (filtered.Any())
+                return new JsonResult(new { results = filtered });
+
+            return new JsonResult(new { results = new object[0] });
+        }
         public async Task<IActionResult> OnPost()
         {
             // repopulate lists (use correct property names)
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
+            StudentListReExam = new SelectList(await _studentService.GetAllAsync(), "StudentId", "StudentName");
 
-         
 
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
@@ -86,6 +105,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
                     ModelState[key]?.Errors.Clear();
             }
+
+            Exam.NumOfStud = ClassList.Count();
 
             // Guard Exam.ExamName null and trim to max length
             if (!string.IsNullOrWhiteSpace(Exam.ExamName) && Exam.ExamName.Length > 30)
@@ -101,6 +122,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (CreateReExam)
             {
                 ReExam.ClassId = Exam.ClassId;
+
+
 
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName ?? string.Empty}";
@@ -129,8 +152,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                          
                 
                 ReExam.IsReExam = true;
+
                 if (Exam.IsFinalExam)
                     ReExam.IsFinalExam = true;
+
+                _studentsToExamService.AddStudentsToExam(SelectedReExamStudentIds, ReExam.ExamId);
             }
             else
             {
@@ -147,7 +173,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
             }
 
-            // Debug Logging)
+            // Debug Logging
             foreach (var entry in ModelState)
             {
                 var state = entry.Value.ValidationState;
@@ -199,7 +225,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
             
 
-            // You may want to wrap the following in a transaction to avoid partial persistence on error.
+           
             try
             {
                 if (CreateReExam)

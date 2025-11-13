@@ -104,5 +104,17 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             RemoveAllFromExam(examId);
             AddStudentsFromClassToExam(newClassId, examId);
         }
+
+        public void AddStudentsToExam(IEnumerable<int> studIds, int examId)
+        {
+            foreach (var studentId in studIds)
+            {
+                AddItem(new StudentsToExam
+                {
+                    StudentId = studentId,
+                    ExamId = examId
+                });
+            }
+        }
     }
 }

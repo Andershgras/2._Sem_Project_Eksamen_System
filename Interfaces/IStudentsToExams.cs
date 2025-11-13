@@ -21,6 +21,7 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
         // Update students on an exam if Class changes
         public void SyncStudentsForExamAndClass(int examId, int newClassId);
         
+        public void AddStudentsToExam(IEnumerable<int> studIds, int examId);
         #endregion
     }
 }
