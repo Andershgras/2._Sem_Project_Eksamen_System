@@ -94,7 +94,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 return OverlapResult.Ok();
 
             var existing = conflicts.First().Exam!;
-            return CreateConflictResult(existing, $"Room (ID {roomId})", conflictingRoomId: roomId);
+            return CreateConflictResult(existing, $"Room", conflictingRoomId: roomId);
         }
 
         // Helper to create a conflict result message
@@ -104,11 +104,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 return OverlapResult.Ok();
 
             var start = existingExam.ExamStartDate.HasValue
-                ? existingExam.ExamStartDate.Value.ToString("dd-MM-YYYY", CultureInfo.InvariantCulture)
+                ? existingExam.ExamStartDate.Value.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)
                 : "N/A";
 
             var end = existingExam.ExamEndDate.HasValue
-                ? existingExam.ExamEndDate.Value.ToString("dd-MM-YYYY", CultureInfo.InvariantCulture)
+                ? existingExam.ExamEndDate.Value.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)
                 : "N/A";
 
             var name = string.IsNullOrWhiteSpace(existingExam.ExamName) ? $"Exam ID {existingExam.ExamId}" : existingExam.ExamName;
@@ -116,7 +116,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             // Construct the message
             // actorPart is either "The resource" or the contextLabel provided
             var actorPart = string.IsNullOrWhiteSpace(contextLabel) ? "The resource" : contextLabel;
-            var msg = $"{actorPart} conflicts with existing exam '{name}' ({start} — {end}). Choose another {actorPart.ToLower()} or change the dates.";
+            var msg = $"{actorPart} is allready asigned to an existing exam '{name}' ({start} —> {end}). Choose another {actorPart.ToLower()} or change the dates.";
 
             return new OverlapResult
             {

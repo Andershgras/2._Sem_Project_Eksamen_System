@@ -199,29 +199,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     return Page();
                 }
 
-                // Use inclusive overlap: existingStart <= newEnd && existingEnd >= newStart
-                //var newStart = Exam.ExamStartDate.Value;
-                //var newEnd = Exam.ExamEndDate.Value;
-
-                //var conflicts = _roomsToExamService.GetAll()
-                //    .Where(rte => rte != null && rte.RoomId == SelectedRoomId.Value && rte.Exam != null)
-                //    .Where(rte =>
-                //        rte.Exam.ExamStartDate.HasValue &&
-                //        rte.Exam.ExamEndDate.HasValue &&
-                //        rte.Exam.ExamStartDate.Value <= newEnd &&
-                //        rte.Exam.ExamEndDate.Value >= newStart)
-                //    .ToList();
-
                 var result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate);
 
                 if (result != null && result.HasConflict)
                 {
-                    //// Build a helpful error message listing the first conflict (you can expand to list all)
-                    //var c = conflicts.First();
-                    //var existingStart = c.Exam.ExamStartDate.HasValue ? c.Exam.ExamStartDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "N/A";
-                    //var existingEnd = c.Exam.ExamEndDate.HasValue ? c.Exam.ExamEndDate.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "N/A";
-                    //var existingName = string.IsNullOrWhiteSpace(c.Exam.ExamName) ? $"Exam ID {c.Exam.ExamId}" : c.Exam.ExamName;
-
                     ModelState.AddModelError("SelectedRoomId", result.Message);
                     return Page();
                 }
