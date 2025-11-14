@@ -70,9 +70,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ITeachersToExam teachersToExamService,
             ICRUDAsync<Student> studentService,
             IStudentsToClasses studentsToClassesService
-
-
-            ITeachersToExam teachersToExamService
         )
         {
             _examService = examService;
