@@ -41,10 +41,25 @@
             </div>
         </div>
 
-        <!-- TABLE DISPLAY SECTION Used CardDesign-->
+        @{
+            var activeFilters = new List<string>();
+            if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
+                activeFilters.Add($"Name: {Model.Filter.FilterByName}");
+        }
+
+        @if (activeFilters.Any())
+        {
+            <div class="section-card">
+                <div class="filter-info">
+                    <p>Showing results for: <strong>@string.Join(", ", activeFilters)</strong></p>
+                </div>
+            </div>
+        }
+
+        <!-- UPCOMING EXAMS TABLE -->
         <div class="section-card">
             <div class="section-header">
-                <h2>All Exams</h2>
+                <h2>Upcoming Exams</h2>
                 <div class="header-actions">
                     <a asp-page="/Eksamner/Create_Exam" class="btn btn-primary">
                         <span class="btn-icon">➕</span>
@@ -52,19 +67,6 @@
                     </a>
                 </div>
             </div>
-
-            @{
-                var activeFilters = new List<string>();
-                if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
-                    activeFilters.Add($"Name: {Model.Filter.FilterByName}");
-            }
-
-            @if (activeFilters.Any())
-            {
-                <div class="filter-info">
-                    <p>Showing results for: <strong>@string.Join(", ", activeFilters)</strong></p>
-                </div>
-            }
 
             <div class="table-container">
                 <table class="data-table">
@@ -79,9 +81,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model.Eksamner != null && Model.Eksamner.Any())
+                        @if (Model.UpcomingExams != null && Model.UpcomingExams.Any())
                         {
-                            foreach (var eksamen in Model.Eksamner)
+                            foreach (var eksamen in Model.UpcomingExams)
                             {
                                 <tr>
                                     <td>
@@ -103,15 +105,15 @@
                                         }
                                     </td>
                                     <td>
-                                        @if(eksamen.NumOfStud == 0 || eksamen.NumOfStud == null)
+                                        @if (eksamen.NumOfStud == 0 || eksamen.NumOfStud == null)
                                         {
                                             <p>@(eksamen.StudentsToExams.Count)</p>
                                         }
-                                        else 
+                                        else
                                         {
                                             <p>@eksamen.NumOfStud</p>
                                         }
-                                    
+
                                     </td>
                                     <td class="action-buttons">
                                         <a asp-page="./Edit_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-edit">Edit</a>
@@ -125,16 +127,14 @@
                             <tr>
                                 <td colspan="6" class="no-data">
                                     <div class="empty-state">
-                                        <span class="empty-icon">📝</span>
+                                        <span class="empty-icon">📅</span>
                                         @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
                                         {
-                                            <p>No exams found matching your search criteria</p>
-                                            <a asp-page="/Eksamner/GetEksamner" class="btn-toggle" role="menuitem">Show All Exams</a>
+                                            <p>No upcoming exams found matching your search criteria</p>
                                         }
                                         else
                                         {
-                                            <p>No exams found in the system</p>
-                                            <a asp-page="/Eksamner/Create_Exam" class="btn-toggle" role="menuitem">Add First Exam</a>
+                                            <p>No upcoming exams scheduled</p>
                                         }
                                     </div>
                                 </td>
@@ -144,6 +144,71 @@
                 </table>
             </div>
         </div>
+
+        <!-- PAST EXAMS TABLE -->
+        @if (Model.PastExams != null && Model.PastExams.Any())
+        {
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>Past Exams</h2>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table past-exams-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>Class</th>
+                                <th>Number of Students</th>
+                                <th class="actions-header">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var eksamen in Model.PastExams)
+                            {
+                                <tr class="past-exam-row">
+                                    <td>
+                                        <a asp-page="Exam_Details" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-details">
+                                            <span class="btn-icon">📋</span>
+                                            Details
+                                        </a>
+                                    </td>
+                                    <td>@(eksamen.ExamStartDate?.ToString("dd-MM-yyyy") ?? "")</td>
+                                    <td>@eksamen.ExamName</td>
+                                    <td>
+                                        @if (eksamen.Class != null)
+                                        {
+                                            @eksamen.Class.ClassName
+                                        }
+                                        else
+                                        {
+                                            <span class="not-assigned">Not Assigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (eksamen.NumOfStud == 0 || eksamen.NumOfStud == null)
+                                        {
+                                            <p>@(eksamen.StudentsToExams.Count)</p>
+                                        }
+                                        else
+                                        {
+                                            <p>@eksamen.NumOfStud</p>
+                                        }
+
+                                    </td>
+                                    <td class="action-buttons">
+                                        <a asp-page="./Edit_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-edit">Edit</a>
+                                        <a asp-page="./Delete_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-delete">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
     </div>
 </div>
 <!-- Style Section-->
@@ -268,22 +333,34 @@
         opacity: 0.5;
     }
 
+    /* Past exams styling - slightly muted to differentiate */
+    .past-exams-table tbody tr {
+        opacity: 0.75;
+    }
+
+    .past-exam-row:hover {
+        opacity: 1;
+    }
+
     @@media (max-width: 768px) {
-        .search-form {
-            grid-template-columns: 1fr;
-        }
+        .search-form
 
-        .form-actions {
-            flex-direction: column;
-        }
+    {
+        grid-template-columns: 1fr;
+    }
 
-        .action-buttons {
-            flex-direction: column;
-        }
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
     }
     /* ==============================================
-       BUTTON STYLES FOR ADD NEW EXAM
-    ============================================== */
+           BUTTON STYLES FOR ADD NEW EXAM
+        ============================================== */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -308,6 +385,17 @@
             background-color: #0052a3;
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
+        }
+
+    .btn-secondary {
+        background-color: #6b7280;
+        color: white;
+        border: 1px solid #4b5563;
+    }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+            transform: translateY(-1px);
         }
 
     .btn-icon {
