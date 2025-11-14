@@ -19,9 +19,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _context = context;
         }
 
+        // In Exam_Details.cshtml.cs - REPLACE the current OnGet method with this:
+        // In Exam_Details.cshtml.cs - REPLACE the current OnGet method with this:
         public IActionResult OnGet(int id)
         {
-            //I  Used the same pattern as our Delete page, but add Teacher inclusion
             Exam = _context.Exams
                 .Include(e => e.Class)
                 .Include(e => e.ReExam)
@@ -32,6 +33,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 .Include(e => e.RoomsToExams)
                     .ThenInclude(rte => rte.Room)
                 .Include(e => e.InverseReExam)
+                .AsSplitQuery() // Prevents Cartesian product issues
                 .FirstOrDefault(e => e.ExamId == id);
 
             if (Exam == null)

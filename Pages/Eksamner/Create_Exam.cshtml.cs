@@ -61,16 +61,15 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 };
 
         public Create_ExamModel(
-            ICRUD<Exam> examService,
-            ICRUDAsync<Class> classService,
-            IStudentsToExams studentsToExamService,
-            ICRUDAsync<Room> roomService,
-            IRoomsToExams roomsToExamService,
-            ICRUDAsync<Teacher> teacherService,
-            ITeachersToExam teachersToExamService,
-            ICRUDAsync<Student> studentService,
-            IStudentsToClasses studentsToClassesService
-        )
+     ICRUD<Exam> examService,
+     ICRUDAsync<Class> classService,
+     IStudentsToExams studentsToExamService,
+     ICRUDAsync<Room> roomService,
+     IRoomsToExams roomsToExamService,
+     ICRUDAsync<Teacher> teacherService,
+     ITeachersToExam teachersToExamsService, // Changed to match field name
+     ICRUDAsync<Student> studentService,
+     IStudentsToClasses studentsToClassesService)
         {
             _examService = examService;
             _classService = classService;
@@ -78,11 +77,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _roomService = roomService;
             _roomsToExamService = roomsToExamService;
             _teacherService = teacherService;
-            _teachersToExamsService = teachersToExamService;
+            _teachersToExamsService = teachersToExamsService; // Now they match
             _studentService = studentService;
             _studentsToClassesService = studentsToClassesService;
         }
-
         public async Task OnGet()
         {
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");

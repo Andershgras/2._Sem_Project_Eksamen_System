@@ -23,7 +23,7 @@ namespace _2._Sem_Project_Eksamen_System
             builder.Services.AddScoped<IRoomsToExams, EFRoomsToExamService>();
             builder.Services.AddScoped<ITeachersToExam, EFTeachersToExamService>();
             // All Async Services
-            builder.Services.AddScoped<ICRUDAsync<Student>, EFStudentService>();
+          
             builder.Services.AddScoped<ICRUDAsync<Room>, EFRoomService>();
             builder.Services.AddScoped<ICRUDAsync<Student>, EFStudentService>();
             builder.Services.AddScoped<ICRUDAsync<Teacher>, EFUnderviserService>();
