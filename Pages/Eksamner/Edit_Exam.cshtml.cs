@@ -39,7 +39,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public bool EditReExam { get; set; }
 
-        ////////////TEST ROLE OPTIONS///////////
+        ////////////TEST ROLE///////////
         // ADD THIS MISSING PROPERTY:
         [BindProperty]
         public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
@@ -198,7 +198,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _service.UpdateItem(Exam);
 
 
-            // ///////////TEST ROLE OPTIONS///////////
+            // ///////////TEST ROLE ///////////
             // UPDATE TEACHER ASSIGNMENTS - CLEAN APPROACH
             _teachersToExamService.RemoveAllFromExam(Exam.ExamId); // Clear all existing teacher assignments first
             if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)

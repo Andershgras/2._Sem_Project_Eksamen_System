@@ -159,7 +159,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 _context.SaveChanges();
             }
         }
-        //////////////////////////////////////// TESTING PURPOSES ONLY FOR ROLL LOGIC////////////////////////////////////////
+        ////////////// TESTING PURPOSES ONLY FOR ROLL LOGIC///////////////
         /// <summary>
         /// Add or update teacher-to-exam assignment with flexible role handling
         /// </summary>
@@ -192,7 +192,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 return;
             }
 
-            // CREATE NEW: Only create new mapping if it doesn't exist
+           /// // CREATEd NEW:ONLY FOR ROLE/////////
             var mapping = new TeachersToExam
             {
                 TeacherId = teacherId,
