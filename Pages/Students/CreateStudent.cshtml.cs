@@ -47,7 +47,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
                 return Page();
             }
 
-            // ? ADDED: Check for duplicate student before creating
+            // Very important part checking for duplicates before creating new student
+
             if (await StudentAlreadyExists(Student))
             {
                 ModelState.AddModelError(string.Empty, "A student with the same name or email already exists.");
@@ -55,7 +56,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
                 return Page();
             }
 
-            // First, create the student
+            // wait First, create the student
             await _studentService.AddItemAsync(Student);
 
             // If a class was selected, create the relationship
@@ -67,12 +68,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             return RedirectToPage("/Students/GetStudent");
         }
 
-        // ? ADDED: Duplicate checking method
+        // here i added duplicate check
         private async Task<bool> StudentAlreadyExists(Student newStudent)
         {
-            // Check if student with same name OR email already exists
-            var existingStudent = await _context.Students
-                .FirstOrDefaultAsync(s =>
+            // Check if student with same name OR email already exists in the database
+                    var existingStudent = await _context.Students
+                    .FirstOrDefaultAsync(s =>
                     s.StudentName.ToLower() == newStudent.StudentName.ToLower() ||
                     (!string.IsNullOrEmpty(newStudent.Email) &&
                      s.Email.ToLower() == newStudent.Email.ToLower()));
@@ -82,7 +83,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         private async Task PopulateClassDropdown()
         {
-            // FETCH CLASSES FOR DROPDOWN MENUE
+            // it is used to populate the ClassList for the dropdown
             var classes = await Task.Run(() => _classService.GetAllAsync(new GenericFilter()));
 
             ClassList.Clear();
@@ -108,7 +109,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
         private async Task CreateStudentClassRelationship(int studentId, int classId)
         {
-            // ACTUALLY CREATE THE RELATIONSHIP
+            //this methods creates a student class relationship
             var studentClass = new StudentsToClass
             {
                 StudentId = studentId,

@@ -51,11 +51,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         [BindProperty]
         public int NumberOfStudents { get; set; }
-
+        /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
         [BindProperty]
         public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
 
-        // /////////////////TESTING ROLES ///////////////////////
+        /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
         public List<SelectListItem> RoleOptions { get; } = new List<SelectListItem>
         {
             new SelectListItem { Value = "Examiner", Text = "Examiner" },
@@ -282,7 +282,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                         _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
                     }
                 }
-                /////////////////////TESTING ROLES  ///////////////////////
+                /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
                 // Persist selected examiners (SelectedTeacherIds) with roles
                 if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
                 {

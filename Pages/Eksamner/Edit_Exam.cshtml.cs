@@ -39,8 +39,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public bool EditReExam { get; set; }
 
-        ////////////TEST ROLE///////////
-        // ADD THIS MISSING PROPERTY:
+        /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
         [BindProperty]
         public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
         public List<SelectListItem> RoleOptions { get; } = new List<SelectListItem>
@@ -48,7 +47,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     new SelectListItem { Value = "Examiner", Text = "Examiner" },
     new SelectListItem { Value = "Censor", Text = "Censor" }
 };
-
+        ///////////////  ////////////////////////////////////////
         public Edit_ExamModel(
             ICRUD<Exam> service,
             ICRUDAsync<Class> classService,
@@ -197,9 +196,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Update the exam
             _service.UpdateItem(Exam);
 
-
-            // ///////////TEST ROLE ///////////
-            // UPDATE TEACHER ASSIGNMENTS - CLEAN APPROACH
+            /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
+ 
             _teachersToExamService.RemoveAllFromExam(Exam.ExamId); // Clear all existing teacher assignments first
             if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
             {
