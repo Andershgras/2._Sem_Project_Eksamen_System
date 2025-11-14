@@ -1,4 +1,5 @@
 ﻿@page "{id:int}"
+@using System.Linq
 @model _2._Sem_Project_Eksamen_System.Pages.Eksamner.Exam_DetailsModel
 @{
     ViewData["Title"] = "Exam Details";
@@ -128,7 +129,7 @@
                             </div>
                         </div>
 
-                        <!-- ROOMS CARD - UPDATED TO WORK WITH ACTUAL ROOM MODEL Change -->
+                        <!-- ROOMS CARD - FIXED: DUPLICATE ROOMS ISSUE RESOLVED -->
                         <div class="info-card">
                             <div class="info-card-header">
                                 <h3>Assigned Rooms</h3>
@@ -144,12 +145,13 @@
                                 else
                                 {
                                     <div class="rooms-list">
-                                        @foreach (var roomExam in exam.RoomsToExams)
+                                        <!-- FIX APPLIED: Group by RoomId and select first occurrence to remove duplicates -->
+                                        <!-- This ensures each room appears only once even if there are multiple room-to-exam mappings -->
+                                        @foreach (var roomExam in exam.RoomsToExams.GroupBy(r => r.RoomId).Select(g => g.First()))
                                         {
                                             <div class="room-item">
                                                 <div class="room-header">
                                                     <span class="room-name">@roomExam.Room?.Name</span>
-                                                    <!-- RoomType removed since it doesn't exist in your model -->
                                                 </div>
                                                 <div class="room-details">
                                                     @if (roomExam.Room?.Capacity > 0)
@@ -166,8 +168,6 @@
                                                             <span>Capacity: Not specified</span>
                                                         </div>
                                                     }
-                                                    <!-- Location and Facilities sections removed since they don't exist in your Room model -->
-                                                    <!-- Only showing Room Name and Capacity which are the properties you have -->
                                                 </div>
                                             </div>
                                         }
@@ -261,7 +261,7 @@
                 </div>
             </div>
 
-            <!-- ACTION BUTTONS Style -->
+            <!-- ACTION BUTTONS -->
             <div class="form-actions">
                 <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">
                     <span class="btn-icon">←</span>
@@ -289,7 +289,7 @@
         gap: 1.5rem;
     }
 
-    /* INDIVIDUAL INFO CARD STYLING No*/
+    /* INDIVIDUAL INFO CARD STYLING */
     .info-card {
         background: #ffffff;
         border: 1px solid #e5e7eb;
