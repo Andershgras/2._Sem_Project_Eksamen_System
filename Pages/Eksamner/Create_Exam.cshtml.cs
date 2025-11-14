@@ -73,15 +73,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             IStudentsToClasses studentsToClassesService,
             ICheckOverlap overlapService
         )
-     ICRUD<Exam> examService,
-     ICRUDAsync<Class> classService,
-     IStudentsToExams studentsToExamService,
-     ICRUDAsync<Room> roomService,
-     IRoomsToExams roomsToExamService,
-     ICRUDAsync<Teacher> teacherService,
-     ITeachersToExam teachersToExamsService, // Changed to match field name
-     ICRUDAsync<Student> studentService,
-     IStudentsToClasses studentsToClassesService)
         {
             _examService = examService;
             _classService = classService;
@@ -89,7 +80,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _roomService = roomService;
             _roomsToExamService = roomsToExamService;
             _teacherService = teacherService;
-            _teachersToExamsService = teachersToExamsService; // Now they match
+            _teachersToExamsService = teachersToExamService; // Now they match
             _studentService = studentService;
             _studentsToClassesService = studentsToClassesService;
             _overlapService = overlapService;
