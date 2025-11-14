@@ -4,6 +4,7 @@ using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
@@ -186,30 +187,54 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
             }
 
+            // ModelState validation checks -----------------------------------
+
             if (!ModelState.IsValid)
                 return Page();
 
-            // check room availability for the selected room and date range ---
-            if (SelectedRoomId.HasValue)
+            if (SelectedRoomId.HasValue)// check room availability for the selected room and date range ---
             {
-                // Ensure the exam has valid start and end dates
-                if (!Exam.ExamStartDate.HasValue || !Exam.ExamEndDate.HasValue)
-                {
-                    ModelState.AddModelError("Exam.ExamStartDate", "Please provide both start and end dates for the exam to validate room availability.");
-                    return Page();
-                }
-
-                var result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate);
-
+                OverlapResult result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate);
                 if (result != null && result.HasConflict)
-                {
+                    ModelState.AddModelError("SelectedRoomId", result.Message);
+                    return Page();  
+            }
+
+            if(CreateReExam && SelectedRoomId.HasValue) // check room availability for ReExam if creating
+            {
+                OverlapResult result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, ReExam.ExamStartDate, ReExam.ExamEndDate);
+                if (result != null && result.HasConflict)
                     ModelState.AddModelError("SelectedRoomId", result.Message);
                     return Page();
-                }
             }
-            
 
-           
+            if (Exam.ClassId > 0) // check class availability for Exam
+            {
+                OverlapResult result = _overlapService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate);
+                if (result != null && result.HasConflict)
+                    ModelState.AddModelError("Exam.ClassId", result.Message);
+                    return Page();
+            }
+
+            if (CreateReExam && ReExam.ClassId > 0) // check class availability for ReExam if creating
+            {
+                OverlapResult result = _overlapService.ClassHasOverlap(ReExam.ClassId, ReExam.ExamStartDate, ReExam.ExamEndDate);
+                if (result != null && result.HasConflict)
+                    ModelState.AddModelError("ReExam.ClassId", result.Message);
+                    return Page();
+            }
+
+            if (!SelectedTeacherIds.IsNullOrEmpty()) // check teacher availability for exam
+            {
+                OverlapResult result = _overlapService.TeacherHasOverlap(SelectedTeacherIds.First(), 
+                    Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
+                if (result != null && result.HasConflict)
+                    ModelState.AddModelError("SelectedTeacherIds", result.Message);
+                    return Page();
+            }
+            // validatetions end -------------------------------------------------
+
+            // Create Exam and related entities -------------------------------
             try
             {
                 if (CreateReExam)
@@ -286,5 +311,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 return Page();
             }
         }
+
     }
 }

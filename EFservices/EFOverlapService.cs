@@ -21,6 +21,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             return aStart.Value <= bEnd.Value && aEnd.Value >= bStart.Value;
         }
 
+        //excludeExamId bruges til at undgå at sammenligne med sig selv ved opdatering
         public OverlapResult TeacherHasOverlap(int teacherId, DateOnly? newStart, DateOnly? newEnd, bool newIsFinal, bool newIsReExam, int? excludeExamId = null)
         {
             if (teacherId <= 0) return OverlapResult.Ok();
@@ -40,7 +41,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             foreach (var a in assignments)
             {
                 var existing = a.Exam!;
-                if (excludeExamId.HasValue && existing.ExamId == excludeExamId.Value) continue;
+                if (excludeExamId.HasValue && existing.ExamId == excludeExamId.Value) continue; // skips the current exam if excluding is requested
 
                 // allow overlap if either existing OR new is final or reexam
                 var existingAllowsOverlap = existing.IsFinalExam || existing.IsReExam;

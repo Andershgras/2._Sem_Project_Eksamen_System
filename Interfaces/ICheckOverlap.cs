@@ -4,24 +4,20 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
 {
     public interface ICheckOverlap
     {
-        /// <summary>
-        /// Determines whether a teacher has a scheduling overlap with an existing exam.
-        /// </summary>
-        /// <remarks>An overlap occurs when the specified teacher is already assigned to an exam that
-        /// conflicts with the  date range or type of the new exam. The optional <paramref name="excludeExamId"/>
-        /// parameter allows  excluding a specific exam from the overlap check, which is useful when updating an
-        /// existing exam.</remarks>
-        /// <param name="teacherId">The unique identifier of the teacher to check for scheduling conflicts.</param>
-        /// <param name="newStart">The start date of the new exam. Can be <see langword="null"/> if no start date is specified.</param>
-        /// <param name="newEnd">The end date of the new exam. Can be <see langword="null"/> if no end date is specified.</param>
-        /// <param name="newIsFinal">A value indicating whether the new exam is a final exam. <see langword="true"/> if it is a final exam;
-        /// otherwise, <see langword="false"/>.</param>
-        /// <param name="newIsReExam">A value indicating whether the new exam is a re-exam. <see langword="true"/> if it is a re-exam; otherwise,
-        /// <see langword="false"/>.</param>
-        /// <param name="excludeExamId">The unique identifier of an exam to exclude from the overlap check. Can be <see langword="null"/> if no exam
-        /// should be excluded.</param>
-        /// <returns><see langword="true"/> if the teacher has a scheduling overlap with an existing exam; otherwise, <see
-        /// langword="false"/>.</returns>
+      /// <summary>
+      /// Determines whether a teacher has any overlapping exams within the specified date range and conditions.
+      /// </summary>
+      /// <param name="teacherId">The unique identifier of the teacher to check for overlaps.</param>
+      /// <param name="newStart">The start date of the new exam. Can be <see langword="null"/> if no specific start date is provided.</param>
+      /// <param name="newEnd">The end date of the new exam. Can be <see langword="null"/> if no specific end date is provided.</param>
+      /// <param name="newIsFinal">A value indicating whether the new exam is a final exam. <see langword="true"/> if it is a final exam;
+      /// otherwise, <see langword="false"/>.</param>
+      /// <param name="newIsReExam">A value indicating whether the new exam is a re-exam. <see langword="true"/> if it is a re-exam; otherwise,
+      /// <see langword="false"/>.</param>
+      /// <param name="excludeExamId">The unique identifier of an exam to exclude from the overlap check. Can be <see langword="null"/> if no exam
+      /// should be excluded.</param>
+      /// <returns>An <see cref="OverlapResult"/> indicating whether an overlap exists and providing details about the overlap,
+      /// if any.</returns>
         OverlapResult TeacherHasOverlap(int teacherId, DateOnly? newStart, DateOnly? newEnd, bool newIsFinal, bool newIsReExam, int? excludeExamId = null);
 
         /// <summary>
