@@ -42,10 +42,19 @@
                             </div>
 
                             <!-- Teachers (multi-select) -->
+                            <!-- Teachers (multi-select) TEST FOR ROLL LOGIC-->
                             <div class="form-group">
                                 <label asp-for="SelectedTeacherIds" class="form-label">Examiners</label>
                                 <select asp-for="SelectedTeacherIds" asp-items="Model.TeacherList" multiple id="SelectedTeacherIds" class="form-control"></select>
                                 <span asp-validation-for="SelectedTeacherIds" class="text-danger"></span>
+                            </div>
+
+                            <!-- NEW: Teacher Roles Section -->
+                            <div class="form-group" id="teacherRolesSection" style="display: none;">
+                                <label class="form-label">Assign Roles to Examiners</label>
+                                <div id="teacherRolesContainer">
+                                    <!-- Dynamic content will be inserted here by JavaScript -->
+                                </div>
                             </div>
 
                             <!-- Room selection -->
@@ -453,76 +462,106 @@
     }
 </style>
 
-<!-- Lavet ved hjælp a Copilot-->
 @section Scripts {
-
     <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.default.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
     <script>
-        // multiselect teachers
-               document.addEventListener('DOMContentLoaded', function () {
-                   // Initialize Tom Select for the examiners multi-select (main exam)
-                   if (document.querySelector('#SelectedTeacherIds')) {
-                       new TomSelect('#SelectedTeacherIds', {
-                           plugins: ['remove_button'],
-                           maxItems: null,
-                           placeholder: 'Select examiners...',
-                           allowEmptyOption: true,
-                           persist: false,
-                           hideSelected: true
-                       });
-                   }
-
-                   // Initialize Tom Select for the reexam examiners multi-select
-                   if (document.querySelector('#SelectedReExamTeacherIds')) {
-                       new TomSelect('#SelectedReExamTeacherIds', {
-                           plugins: ['remove_button'],
-                           maxItems: null,
-                           placeholder: 'Select reexam examiners (leave empty to inherit from main exam)...',
-                           allowEmptyOption: true,
-                           persist: false,
-                           hideSelected: true
-                       });
-                   }
-               });
-    </script>
-
-    <script>
-        // Update ReExam Name Preview based on Exam Name
-        const examNameInput = document.getElementById('Exam_ExamName');
-        const reExamPreview = document.getElementById('reExamNamePreview');
-        const checkbox = document.getElementById('createReExamBox');
-        const reExamFields = document.getElementById('reExamFields');
-
-        function updatePreview() {
-            if (checkbox.checked) {
-                const examName = examNameInput.value || '';
-                reExamPreview.textContent = `ReEksamen-${examName}`; // You can change formatting here
-            } else {
-                reExamPreview.textContent = '';
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Tom Select for the examiners multi-select (main exam)
+            if (document.querySelector('#SelectedTeacherIds')) {
+                new TomSelect('#SelectedTeacherIds', {
+                    plugins: ['remove_button'],
+                    maxItems: null,
+                    placeholder: 'Select examiners...',
+                    allowEmptyOption: true,
+                    persist: false,
+                    hideSelected: true
+                });
             }
-        }
 
-        if (examNameInput && reExamPreview) {
-            examNameInput.addEventListener('input', updatePreview);
-            checkbox.addEventListener('change', function () {
-                reExamFields.style.display = this.checked ? '' : 'none';
-                updatePreview();
-            });
-            updatePreview(); // initial value
-        }
-    </script>
-    <script>
-        // Toggle ReExam fields visibility
-        const checkbox = document.getElementById('createReExamBox');
-        const reExamFields = document.getElementById('reExamFields');
-        if (checkbox && reExamFields) {
-            checkbox.addEventListener('change', function () {
-                reExamFields.style.display = this.checked ? '' : 'none';
-            });
-            // Ensure hidden by default on page load
-            reExamFields.style.display = checkbox.checked ? '' : 'none';
-        }
+            // Initialize Tom Select for the reexam examiners multi-select
+            if (document.querySelector('#SelectedReExamTeacherIds')) {
+                new TomSelect('#SelectedReExamTeacherIds', {
+                    plugins: ['remove_button'],
+                    maxItems: null,
+                    placeholder: 'Select reexam examiners (leave empty to inherit from main exam)...',
+                    allowEmptyOption: true,
+                    persist: false,
+                    hideSelected: true
+                });
+            }
+
+            // Teacher role assignment functionality
+            const teacherSelect = document.getElementById('SelectedTeacherIds');
+            const teacherRolesSection = document.getElementById('teacherRolesSection');
+            const teacherRolesContainer = document.getElementById('teacherRolesContainer');
+
+            function updateTeacherRolesSection() {
+                const selectedTeachers = Array.from(teacherSelect.selectedOptions);
+
+                if (selectedTeachers.length > 0) {
+                    teacherRolesSection.style.display = 'block';
+
+                    // Clear existing content
+                    teacherRolesContainer.innerHTML = '';
+
+                    // Create role selector for each selected teacher
+                    selectedTeachers.forEach(option => {
+                        const teacherId = option.value;
+                        const teacherName = option.text;
+
+                        const roleGroup = document.createElement('div');
+                        roleGroup.className = 'role-group';
+                        roleGroup.style.marginBottom = '0.5rem';
+                        roleGroup.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 1rem; padding: 0.5rem; background: #f8f9fa; border-radius: 4px;">
+                                <span style="min-width: 150px; font-weight: 500;">${teacherName}:</span>
+                                <select name="TeacherRoles[${teacherId}]" class="form-control compact-input" style="min-width: 150px;">
+                                    <option value="Examiner">Examiner</option>
+                                    <option value="Censor">Censor</option>
+                                </select>
+                            </div>
+                        `;
+
+                        teacherRolesContainer.appendChild(roleGroup);
+                    });
+                } else {
+                    teacherRolesSection.style.display = 'none';
+                }
+            }
+
+            // Update role section when teachers selection changes
+            if (teacherSelect) {
+                teacherSelect.addEventListener('change', updateTeacherRolesSection);
+
+                // Initial update
+                updateTeacherRolesSection();
+            }
+
+            // Update ReExam Name Preview based on Exam Name
+            const examNameInput = document.getElementById('Exam_ExamName');
+            const reExamPreview = document.getElementById('reExamNamePreview');
+            const checkbox = document.getElementById('createReExamBox');
+            const reExamFields = document.getElementById('reExamFields');
+
+            function updatePreview() {
+                if (checkbox.checked) {
+                    const examName = examNameInput.value || '';
+                    reExamPreview.textContent = `ReEksamen-${examName}`;
+                } else {
+                    reExamPreview.textContent = '';
+                }
+            }
+
+            if (examNameInput && reExamPreview) {
+                examNameInput.addEventListener('input', updatePreview);
+                checkbox.addEventListener('change', function () {
+                    reExamFields.style.display = this.checked ? '' : 'none';
+                    updatePreview();
+                });
+                updatePreview(); // initial value
+            }
+        });
     </script>
 }

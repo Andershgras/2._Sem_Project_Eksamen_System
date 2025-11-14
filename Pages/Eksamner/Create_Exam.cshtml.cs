@@ -50,6 +50,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public int NumberOfStudents { get; set; }
 
+        [BindProperty]
+        public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
+
+        // /////////////////TESTING ROLES ///////////////////////
+        public List<SelectListItem> RoleOptions { get; } = new List<SelectListItem>
+{
+    new SelectListItem { Value = "Examiner", Text = "Examiner" },
+    new SelectListItem { Value = "Censor", Text = "Censor" }
+};
+
         public Create_ExamModel(
             ICRUD<Exam> examService,
             ICRUDAsync<Class> classService,
@@ -62,6 +72,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             IStudentsToClasses studentsToClassesService
 
 
+            ITeachersToExam teachersToExamService
         )
         {
             _examService = examService;
@@ -262,6 +273,22 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
                     {
                         _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
+                    }
+                }
+                /////////////////////TESTING ROLES  ///////////////////////
+                // Persist selected examiners (SelectedTeacherIds) with roles
+                if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
+                {
+                    foreach (var teacherId in SelectedTeacherIds.Distinct())
+                    {
+                        // Get the role for this teacher, default to "Examiner" if not specified
+                        string role = "Examiner";
+                        if (TeacherRoles != null && TeacherRoles.ContainsKey(teacherId))
+                        {
+                            role = TeacherRoles[teacherId];
+                        }
+
+                        _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId, role);
                     }
                 }
 

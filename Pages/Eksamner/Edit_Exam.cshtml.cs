@@ -39,6 +39,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public bool EditReExam { get; set; }
 
+        ////////////TEST ROLE OPTIONS///////////
+        // ADD THIS MISSING PROPERTY:
+        [BindProperty]
+        public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
+        public List<SelectListItem> RoleOptions { get; } = new List<SelectListItem>
+{
+    new SelectListItem { Value = "Examiner", Text = "Examiner" },
+    new SelectListItem { Value = "Censor", Text = "Censor" }
+};
+
         public Edit_ExamModel(
             ICRUD<Exam> service,
             ICRUDAsync<Class> classService,
@@ -59,7 +69,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public async Task<IActionResult> OnGet(int id)
         {
-            // Load dropdown lists - USE DIFFERENT VARIABLE NAMES
+            // Load dropdown lists
             var allClasses = await _classService.GetAllAsync();
             var allTeachers = await _teacherService.GetAllAsync();
             var allRooms = await _roomService.GetAllAsync();
@@ -73,13 +83,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (Exam == null)
                 return RedirectToPage("GetEksamner");
 
-            // Load currently assigned teachers
+            // Load currently assigned teachers and their roles
             if (Exam.TeachersToExams != null)
             {
                 SelectedTeacherIds = Exam.TeachersToExams.Select(t => t.TeacherId).ToList();
+                TeacherRoles = Exam.TeachersToExams.ToDictionary(t => t.TeacherId, t => t.Role ?? "Examiner");
             }
 
-            // Load currently assigned room (single room like in Create_Exam)
+            // Load currently assigned room
             if (Exam.RoomsToExams != null && Exam.RoomsToExams.Any())
             {
                 SelectedRoomId = Exam.RoomsToExams.First().RoomId;
@@ -185,15 +196,23 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             // Update the exam
             _service.UpdateItem(Exam);
-           
-            
+
+
+            // ///////////TEST ROLE OPTIONS///////////
             // UPDATE TEACHER ASSIGNMENTS - CLEAN APPROACH
             _teachersToExamService.RemoveAllFromExam(Exam.ExamId); // Clear all existing teacher assignments first
             if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
             {
                 foreach (var teacherId in SelectedTeacherIds.Distinct())
                 {
-                    _teachersToExamService.AddTeachersToExams(teacherId, Exam.ExamId);
+                    // CHANGE THIS: Use the role from TeacherRoles dictionary
+                    string role = "Examiner";
+                    if (TeacherRoles != null && TeacherRoles.ContainsKey(teacherId))
+                    {
+                        role = TeacherRoles[teacherId];
+                    }
+
+                    _teachersToExamService.AddTeachersToExams(teacherId, Exam.ExamId, role);
                 }
             }
 
