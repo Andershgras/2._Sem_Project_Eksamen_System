@@ -189,10 +189,12 @@
                             </div>
 
                             <!-- number of stud -->
-                            <div class="form-group">
-                                <label asp-for="ReExam.NumOfStud" class="form-label"> Number of Students</label>
-                                <input asp-for="ReExam.NumOfStud" type="number" class="form-control compact-input" />
-                                <span asp-validation-for="ReExam.NumOfStud" class="text-danger"></span>
+                            <div class="row mb-3">
+                                <div class="col-4 form-group">
+                                    <label asp-for="ReExam.NumOfStud" class="form-label"> Number of Students</label>
+                                    <input asp-for="ReExam.NumOfStud" type="number" class="form-control compact-input" />
+                                    <span asp-validation-for="ReExam.NumOfStud" class="text-danger"></span>
+                                </div>
                             </div>
 
                             <!-- ReExam Dates -->
