@@ -19,6 +19,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _context = context;
         }
 
+        /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
+        /////////////////////Made to add corrected card display problem ///////////////////////
         public IActionResult OnGet(int id)
         {
             //I  Used the same pattern as our Delete page, but add Teacher inclusion
