@@ -8,13 +8,46 @@
 
 @if (Model.Class is null)
 {
-    <p> Class not found.</p>
+    <p>Class not found.</p>
 }
 else
 {
-    <p>Are you sure you want to delete? <strong>@Model.Class.ClassName</strong> (ID: @Model.Class.ClassId)?</p>
-    <form method="post">
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-    </form>
+    @if (!Model.CanDelete)
+    {
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> Cannot Delete Class</h4>
+            <p>@Model.ErrorMessage</p>
+            <hr>
+            <p class="mb-0"><strong>This class is assigned to the following exam(s):</strong></p>
+            <ul class="mt-2">
+                @foreach (var exam in Model.AssociatedExams)
+                {
+                    <li>
+                        <strong>@exam.ExamName</strong> (ID: @exam.ExamId)
+                        @if (exam.ExamStartDate.HasValue)
+                        {
+                            <span class="text-muted"> - @exam.ExamStartDate.Value.ToString("yyyy-MM-dd")</span>
+                        }
+                        <a asp-page="/Eksamner/Exam_Details" asp-route-id="@exam.ExamId" class="ms-2">View Exam</a>
+                    </li>
+                }
+            </ul>
+            <p class="mt-3 mb-0">
+                <small>Please remove or reassign these exams before deleting this class.</small>
+            </p>
+        </div>
+
+        <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            <strong>Warning:</strong> Are you sure you want to delete <strong>@Model.Class.ClassName</strong> (ID: @Model.Class.ClassId)?
+        </div>
+
+        <form method="post">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    }
 }
