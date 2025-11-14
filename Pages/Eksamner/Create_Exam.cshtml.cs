@@ -19,6 +19,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         private readonly IRoomsToExams _roomsToExamService;
         private readonly ICRUDAsync<Teacher> _teacherService;
         private readonly ITeachersToExam _teachersToExamsService;
+        private readonly ICheckOverlap _overlapService;
 
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
@@ -55,10 +56,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         // /////////////////TESTING ROLES ///////////////////////
         public List<SelectListItem> RoleOptions { get; } = new List<SelectListItem>
-{
-    new SelectListItem { Value = "Examiner", Text = "Examiner" },
-    new SelectListItem { Value = "Censor", Text = "Censor" }
-};
+        {
+            new SelectListItem { Value = "Examiner", Text = "Examiner" },
+            new SelectListItem { Value = "Censor", Text = "Censor" }
+        };
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
@@ -69,7 +70,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ICRUDAsync<Teacher> teacherService,
             ITeachersToExam teachersToExamService,
             ICRUDAsync<Student> studentService,
-            IStudentsToClasses studentsToClassesService
+            IStudentsToClasses studentsToClassesService,
+            ICheckOverlap overlapService
         )
         {
             _examService = examService;
@@ -81,6 +83,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _teachersToExamsService = teachersToExamService;
             _studentService = studentService;
             _studentsToClassesService = studentsToClassesService;
+            _overlapService = overlapService;
         }
 
         public async Task OnGet()
