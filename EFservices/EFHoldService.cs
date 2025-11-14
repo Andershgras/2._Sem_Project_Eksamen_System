@@ -64,5 +64,14 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.Classes.Update(item);
             await _context.SaveChangesAsync();
         }
+        //Gget exams for a specific class
+        public async Task<IEnumerable<Exam>> GetExamsForClassAsync(int classId)
+        {
+            return await _context.Exams
+                .Where(e => e.ClassId == classId)
+                .AsNoTracking()
+                .OrderBy(e => e.ExamStartDate)
+                .ToListAsync();
+        }
     }
 }

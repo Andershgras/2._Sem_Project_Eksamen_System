@@ -12,5 +12,6 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
         //////////////////////TESTING PURPOSES ONLY FOR ROLL//////////////////////
         // New method with role parameter
         public void AddTeachersToExams(int teacherId, int examId, string role);
+
     }
 }
