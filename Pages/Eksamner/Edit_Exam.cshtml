@@ -7,7 +7,14 @@
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
-            <h1>Edit Exam</h1>
+            @if (Model.Exam.IsReExam)
+            {
+                <h1 class="welcome-title">Edit Re-Exam: @Model.Exam.ExamName</h1>
+            }
+            else
+            {
+                <h1 class="welcome-title">Edit Exam: @Model.Exam.ExamName</h1>
+            }            
             <p>Update exam information</p>
         </div>
 
