@@ -21,10 +21,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         public async Task<IEnumerable<Student>> GetAllAsync()
         {
             return await _context.Students
-                .Include(s => s.StudentsToClasses)  // JOIN StudentsToClasses
-                    .ThenInclude(sc => sc.Class)    // JOIN Class
+                // Includes students to class 
+                .Include(s => s.StudentsToClasses) 
+                 .ThenInclude(sc => sc.Class)    
                 .Include(s => s.StudentsToExams)
-                    .ThenInclude(se => se.Exam)
+                 .ThenInclude(se => se.Exam)
                 .AsNoTracking()
                 .OrderBy(s => s.StudentId)
                 .ToListAsync();
@@ -61,11 +62,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                         sc.Class != null && sc.Class.ClassName == extendedFilter.FilterByClass));
                 }
 
-                return await query
+                    return await query
                     .Include(s => s.StudentsToClasses)
-                        .ThenInclude(sc => sc.Class)
+                     .ThenInclude(sc => sc.Class)
                     .Include(s => s.StudentsToExams)
-                        .ThenInclude(se => se.Exam)
+                      .ThenInclude(se => se.Exam)
                     .AsNoTracking()
                     .OrderBy(s => s.StudentId)
                     .ToListAsync();
