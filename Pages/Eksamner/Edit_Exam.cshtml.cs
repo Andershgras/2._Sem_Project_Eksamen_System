@@ -35,6 +35,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public List<int> SelectedTeacherIds { get; set; } = new List<int>();
 
         [BindProperty]
+        public int? ExaminerTeacherId { get; set; }
+        [BindProperty]
+        public int? CensorTeacherId { get; set; }
+
+        [BindProperty]
         public int? SelectedRoomId { get; set; }
 
         public bool HasReExam => Exam?.ReExamId.HasValue ?? false;
@@ -42,15 +47,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public bool EditReExam { get; set; }
 
-        /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
-        [BindProperty]
-        public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
-        public List<SelectListItem> RoleOptions { get; } = new List<SelectListItem>
-{
-    new SelectListItem { Value = "Examiner", Text = "Examiner" },
-    new SelectListItem { Value = "Censor", Text = "Censor" }
-};
-        ///////////////  ////////////////////////////////////////
         public Edit_ExamModel(
             ICRUD<Exam> service,
             ICRUDAsync<Class> classService,
@@ -90,8 +86,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Load currently assigned teachers and their roles
             if (Exam.TeachersToExams != null)
             {
-                SelectedTeacherIds = Exam.TeachersToExams.Select(t => t.TeacherId).ToList();
-                TeacherRoles = Exam.TeachersToExams.ToDictionary(t => t.TeacherId, t => t.Role ?? "Examiner");
+                var examiner = Exam.TeachersToExams.FirstOrDefault(t => t.Role == "Examiner");
+                if (examiner != null)
+                {
+                    ExaminerTeacherId = examiner.TeacherId;
+                }
+                var censor = Exam.TeachersToExams.FirstOrDefault(t => t.Role == "Censor");
+                if (censor != null)
+                {
+                    CensorTeacherId = censor.TeacherId;
+                }
             }
 
             // Load currently assigned room
@@ -254,22 +258,20 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Update the exam
             _service.UpdateItem(Exam);
 
-            /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
- 
-            _teachersToExamService.RemoveAllFromExam(Exam.ExamId); // Clear all existing teacher assignments first
-            if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
-            {
-                foreach (var teacherId in SelectedTeacherIds.Distinct())
-                {
-                    // CHANGE THIS: Use the role from TeacherRoles dictionary
-                    string role = "Examiner";
-                    if (TeacherRoles != null && TeacherRoles.ContainsKey(teacherId))
-                    {
-                        role = TeacherRoles[teacherId];
-                    }
+           _teachersToExamService.RemoveAllFromExam(Exam.ExamId);
 
-                    _teachersToExamService.AddTeachersToExams(teacherId, Exam.ExamId, role);
+            if (ExaminerTeacherId.HasValue)
+            {
+                _teachersToExamService.AddTeachersToExams(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
+            }
+            if(CensorTeacherId.HasValue)
+            {
+                if(ExaminerTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
+                {
+                    ModelState.AddModelError("CensorTeacherId", "Censor cannot be the same as Examiner.");
                 }
+                _teachersToExamService.AddTeachersToExams(CensorTeacherId.Value, Exam.ExamId, "Censor");
+
             }
 
             // Update room assignment - USING THE SAME CLEAN APPROACH AS TEACHERS
@@ -300,24 +302,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Update room assignment - USING THE SAME APPROACH AS CREATE_EXAM
             // First remove existing room assignment (you might need to implement this)
             // For now, we'll just add new one (this might create duplicates)
-            if (SelectedRoomId.HasValue)
-            {
-                // Use a different variable name to avoid conflict
-                var availableRooms = await _roomService.GetAllAsync();
-                var roomExists = availableRooms.Any(r => r.RoomId == SelectedRoomId.Value);
-
-                if (roomExists)
-                {
-                    var mapping = new RoomsToExam
-                    {
-                        ExamId = Exam.ExamId,
-                        RoomId = SelectedRoomId.Value,
-                        Role = null
-                    };
-                    _roomsToExamService.AddItem(mapping);
-                }
-            }
-
+           
             return RedirectToPage("GetEksamner");
         }
     }

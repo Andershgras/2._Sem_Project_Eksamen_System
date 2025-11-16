@@ -11,7 +11,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         private readonly ICRUD<Exam> _examService;
         private readonly EksamensDBContext _context;
 
-        public Exam Exam { get; set; }
+        public Exam ? Exam { get; set; }
 
         public Exam_DetailsModel(ICRUD<Exam> examService, EksamensDBContext context)
         {
@@ -28,11 +28,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 .Include(e => e.Class)
                 .Include(e => e.ReExam)
                 .Include(e => e.StudentsToExams)
-                    .ThenInclude(ste => ste.Student)
+                .ThenInclude(ste => ste.Student)
                 .Include(e => e.TeachersToExams) // CRITICAL: Include TeachersToExams
-                    .ThenInclude(tte => tte.Teacher) // CRITICAL: Include Teacher details
+                .ThenInclude(tte => tte.Teacher) // CRITICAL: Include Teacher details
                 .Include(e => e.RoomsToExams)
-                    .ThenInclude(rte => rte.Room)
+                .ThenInclude(rte => rte.Room)
                 .Include(e => e.InverseReExam)
                 .FirstOrDefault(e => e.ExamId == id);
 

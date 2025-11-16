@@ -53,15 +53,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public int NumberOfStudents { get; set; }
         /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
+        [BindProperty]
+        public int? ExaminerTeacherId { get; set; }
         [BindProperty] // thorughs an error here when trying to post a empty dictionary ------------------------------------------!!!!!!!! Eror
         public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
 
-        /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
-        public List<SelectListItem> RoleOptions { get; } = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "Examiner", Text = "Examiner" },
-            new SelectListItem { Value = "Censor", Text = "Censor" }
-        };
+        [BindProperty]
+        public int? CensorTeacherId { get; set; }
 
         public Create_ExamModel(
             ICRUD<Exam> examService,
@@ -287,34 +285,43 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     }
                 }
 
-                // Persist selected examiners (SelectedTeacherIds)
-                if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
-                {
-                    foreach (var teacherId in SelectedTeacherIds.Distinct())
-                    {
-                        _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
-                    }
-                    foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
-                    {
-                        _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId);
-                    }
-                }
+
+
                 /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
                 // Persist selected examiners (SelectedTeacherIds) with roles
-                if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
-                {
-                    foreach (var teacherId in SelectedTeacherIds.Distinct())
-                    {
-                        // Get the role for this teacher, default to "Examiner" if not specified
-                        string role = "Examiner";
-                        if (TeacherRoles != null && TeacherRoles.ContainsKey(teacherId))
-                        {
-                            role = TeacherRoles[teacherId];
-                        }
+                // --- NEW, SIMPLIFIED TEACHER ASSIGNMENT LOGIC ---
 
-                        _teachersToExamsService.AddTeachersToExams(teacherId, Exam.ExamId, role);
+                // 1. Assign Examiner using the new property
+                if (ExaminerTeacherId.HasValue)
+                {
+                    _teachersToExamsService.AddTeachersToExams(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
+                }
+
+                // 2. Assign Censor
+                if (CensorTeacherId.HasValue)
+                {
+                    // Optional: Add basic validation to ensure the Censor and Examiner are different
+                    if (ExaminerTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
+                    {
+                        ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Examiner.");
+                        // If validation fails, return Page() here to display the error.
+                        // If you are already checking ModelState at the start of OnPost, this check might be simplified.
+                    }
+
+                    _teachersToExamsService.AddTeachersToExams(CensorTeacherId.Value, Exam.ExamId, "Censor");
+                }
+
+                // 3. Keep the ReExam Teacher logic (it should be fine since the service handles null roles)
+                if (CreateReExam && SelectedReExamTeacherIds != null && SelectedReExamTeacherIds.Count > 0)
+                {
+                    foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
+                    {
+                        // Use the single service method. Role will default to "Examiner".
+                        _teachersToExamsService.AddTeachersToExams(teacherId, ReExam.ExamId);
                     }
                 }
+
+                // Ensure you keep the call to: _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);
 
                 // Add all students from the selected class to the exam
                 _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);

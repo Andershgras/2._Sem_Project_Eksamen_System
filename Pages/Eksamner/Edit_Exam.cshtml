@@ -127,22 +127,19 @@
 
                             <!-- Teachers (multi-select) -->
                             <div class="form-group">
-                                <label asp-for="SelectedTeacherIds" class="form-label">Examiners</label>
-                                <select asp-for="SelectedTeacherIds" asp-items="Model.TeacherList" multiple
-                                        class="form-control compact-input multi-select"
-                                        id="SelectedTeacherIds"
-                                        size="4">
+                                <label asp-for="ExaminerTeacherId" class="form-label">Examiner</label>
+                                <select asp-for="ExaminerTeacherId" class="form-control compact-input" asp-items="Model.TeacherList">
+                                    <option value="">-- Select Examiner --</option>
                                 </select>
-                                <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple examiners</small>
-                                <span asp-validation-for="SelectedTeacherIds" class="text-danger"></span>
+                                <span asp-validation-for="ExaminerTeacherId" class="text-danger"></span>
                             </div>
 
-                            <!-- Teacher Roles Section -->
-                            <div class="form-group" id="teacherRolesSection" style="display: none;">
-                                <label class="form-label">Assign Roles</label>
-                                <div id="teacherRolesContainer">
-                                    <!-- Dynamic content will be inserted here by JavaScript -->
-                                </div>
+                            <div class="form-group">
+                                <label asp-for="CensorTeacherId" class="form-label">Censor</label>
+                                <select asp-for="CensorTeacherId" class="form-control compact-input" asp-items="Model.TeacherList">
+                                    <option value="">-- Select Censor --</option>
+                                </select>
+                                <span asp-validation-for="CensorTeacherId" class="text-danger"></span>
                             </div>
 
                             <!-- Room selection -->
@@ -550,67 +547,8 @@
     }
 </style>
 @section Scripts {
-    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.default.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Initialize Tom Select for teachers multi-select
-            new TomSelect('#SelectedTeacherIds', {
-                plugins: ['remove_button'],
-                maxItems: null,
-                placeholder: 'Select examiners...',
-                allowEmptyOption: true,
-                persist: false,
-                hideSelected: true
-            });
-
-            // Teacher role assignment functionality
-            const teacherSelect = document.getElementById('SelectedTeacherIds');
-            const teacherRolesSection = document.getElementById('teacherRolesSection');
-            const teacherRolesContainer = document.getElementById('teacherRolesContainer');
-
-            function updateTeacherRolesSection() {
-                const selectedTeachers = Array.from(teacherSelect.selectedOptions);
-
-                if (selectedTeachers.length > 0) {
-                    teacherRolesSection.style.display = 'block';
-
-                    // Clear existing content
-                    teacherRolesContainer.innerHTML = '';
-
-                    // Create role selector for each selected teacher
-                    selectedTeachers.forEach(option => {
-                        const teacherId = option.value;
-                        const teacherName = option.text;
-
-                        const roleGroup = document.createElement('div');
-                        roleGroup.className = 'role-group';
-                        roleGroup.innerHTML = `
-                            <div class="role-selector">
-                                <span class="teacher-name">${teacherName}:</span>
-                                <select name="TeacherRoles[${teacherId}]" class="form-control compact-input" style="min-width: 150px;">
-                                    <option value="Examiner">Examiner</option>
-                                    <option value="Censor">Censor</option>
-                                </select>
-                            </div>
-                        `;
-
-                        teacherRolesContainer.appendChild(roleGroup);
-                    });
-                } else {
-                    teacherRolesSection.style.display = 'none';
-                }
-            }
-
-            // Update role section when teachers selection changes
-            if (teacherSelect) {
-                teacherSelect.addEventListener('change', updateTeacherRolesSection);
-
-                // Initial update
-                updateTeacherRolesSection();
-            }
-
             // ReExam toggle functionality
             const checkbox = document.getElementById('editReExamBox');
             const reExamFields = document.getElementById('reExamFields');
@@ -646,7 +584,6 @@
 
                 checkbox.addEventListener('change', toggleReExamSection);
                 examNameInput.addEventListener('input', updatePreview);
-
                 // Initial preview update
                 updatePreview();
             }

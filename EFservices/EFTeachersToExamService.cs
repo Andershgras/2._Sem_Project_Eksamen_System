@@ -87,7 +87,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         /// <param name="teacherId"></param>
         /// <param name="examId"></param>
         /// <exception cref="ArgumentException"></exception>
-        public void AddTeachersToExams(int teacherId, int examId)
+        // Keep and potentially clean up this one
+        // REMOVE THE TESTING PURPOSES ONLY COMMENT
+        // Keep and potentially clean up this one
+        // REMOVE THE TESTING PURPOSES ONLY COMMENT
+        public void AddTeachersToExams(int teacherId, int examId, string role = null)
         {
             if (teacherId <= 0) throw new ArgumentException("teacherId must be greater than zero", nameof(teacherId));
             if (examId <= 0) throw new ArgumentException("examId must be greater than zero", nameof(examId));
@@ -97,32 +101,39 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             if (!teacherExists)
                 return;
 
+            // Set default role if not provided
+            string finalRole = string.IsNullOrEmpty(role) ? "Examiner" : role; // <--- This is key
+
             // Check if mapping already exists
             var existingMapping = _context.TeachersToExams
                 .FirstOrDefault(tte => tte.TeacherId == teacherId && tte.ExamId == examId);
 
             if (existingMapping != null)
             {
-                // UPDATE EXISTING: Always ensure role has a value
-                if (string.IsNullOrEmpty(existingMapping.Role))
-                {
-                    existingMapping.Role = "Examiner";
-                    // No need for explicit Update() - Entity Framework tracks changes
-                    _context.SaveChanges();
-                }
+                // UPDATE EXISTING: Update the role
+                existingMapping.Role = finalRole;
+                _context.SaveChanges();
                 return;
             }
 
-            // CREATE NEW: Only create new mapping if it doesn't exist like above
+            /// // CREATEd NEW:ONLY FOR ROLE/////////
             var mapping = new TeachersToExam
             {
                 TeacherId = teacherId,
                 ExamId = examId,
-                Role = "Examiner" // Default role
+                Role = finalRole
             };
 
             _context.TeachersToExams.Add(mapping);
             _context.SaveChanges();
+        }
+        public IEnumerable<TeachersToExam>GetTeachersByExamId(int examId)
+        {
+            return _context.TeachersToExams
+                
+                .Where(tte => tte.ExamId == examId)
+                .AsNoTracking()
+                .ToList();
         }
 
         /// <summary>
@@ -159,50 +170,50 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 _context.SaveChanges();
             }
         }
-        ////////////// TESTING PURPOSES ONLY FOR ROLL LOGIC///////////////
-        /// <summary>
-        /// Add or update teacher-to-exam assignment with flexible role handling
-        /// </summary>
-        /// <param name="teacherId"></param>
-        /// <param name="examId"></param>
-        /// <param name="role">Optional role - defaults to "Examiner" if not provided</param>
-        /// <exception cref="ArgumentException"></exception>
-        public void AddTeachersToExams(int teacherId, int examId, string role = null)
-        {
-            if (teacherId <= 0) throw new ArgumentException("teacherId must be greater than zero", nameof(teacherId));
-            if (examId <= 0) throw new ArgumentException("examId must be greater than zero", nameof(examId));
+        //////////////// TESTING PURPOSES ONLY FOR ROLL LOGIC///////////////
+        ///// <summary>
+        ///// Add or update teacher-to-exam assignment with flexible role handling
+        ///// </summary>
+        ///// <param name="teacherId"></param>
+        ///// <param name="examId"></param>
+        ///// <param name="role">Optional role - defaults to "Examiner" if not provided</param>
+        ///// <exception cref="ArgumentException"></exception>
+        //public void AddTeachersToExams(int teacherId, int examId, string role = null)
+        //{
+        //    if (teacherId <= 0) throw new ArgumentException("teacherId must be greater than zero", nameof(teacherId));
+        //    if (examId <= 0) throw new ArgumentException("examId must be greater than zero", nameof(examId));
 
-            // Ensure teacher exists (defensive)
-            var teacherExists = _context.Teachers.AsNoTracking().Any(t => t.TeacherId == teacherId);
-            if (!teacherExists)
-                return;
+        //    // Ensure teacher exists (defensive)
+        //    var teacherExists = _context.Teachers.AsNoTracking().Any(t => t.TeacherId == teacherId);
+        //    if (!teacherExists)
+        //        return;
 
-            // Set default role if not provided
-            string finalRole = string.IsNullOrEmpty(role) ? "Examiner" : role;
+        //    // Set default role if not provided
+        //    string finalRole = string.IsNullOrEmpty(role) ? "Examiner" : role;
 
-            // Check if mapping already exists
-            var existingMapping = _context.TeachersToExams
-                .FirstOrDefault(tte => tte.TeacherId == teacherId && tte.ExamId == examId);
+        //    // Check if mapping already exists
+        //    var existingMapping = _context.TeachersToExams
+        //        .FirstOrDefault(tte => tte.TeacherId == teacherId && tte.ExamId == examId);
 
-            if (existingMapping != null)
-            {
-                // UPDATE EXISTING: Update the role
-                existingMapping.Role = finalRole;
-                _context.SaveChanges();
-                return;
-            }
+        //    if (existingMapping != null)
+        //    {
+        //        // UPDATE EXISTING: Update the role
+        //        existingMapping.Role = finalRole;
+        //        _context.SaveChanges();
+        //        return;
+        //    }
 
-           /// // CREATEd NEW:ONLY FOR ROLE/////////
-            var mapping = new TeachersToExam
-            {
-                TeacherId = teacherId,
-                ExamId = examId,
-                Role = finalRole
-            };
+        //   /// // CREATEd NEW:ONLY FOR ROLE/////////
+        //    var mapping = new TeachersToExam
+        //    {
+        //        TeacherId = teacherId,
+        //        ExamId = examId,
+        //        Role = finalRole
+        //    };
 
-            _context.TeachersToExams.Add(mapping);
-            _context.SaveChanges();
-        }
+        //    _context.TeachersToExams.Add(mapping);
+        //    _context.SaveChanges();
+        //}
 
         
     }
