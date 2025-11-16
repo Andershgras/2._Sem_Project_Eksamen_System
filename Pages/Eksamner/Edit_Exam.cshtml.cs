@@ -298,12 +298,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Update student assignments
             _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
 
-          
-            // Update room assignment - USING THE SAME APPROACH AS CREATE_EXAM
-            // First remove existing room assignment (you might need to implement this)
-            // For now, we'll just add new one (this might create duplicates)
-           
+            // ... after all assignments are complete in OnPost()
+            // Add a success message
+            TempData["SuccessMessage"] = "Exam updated successfully!";
             return RedirectToPage("GetEksamner");
+            // ...
+
+                      
         }
     }
 }
