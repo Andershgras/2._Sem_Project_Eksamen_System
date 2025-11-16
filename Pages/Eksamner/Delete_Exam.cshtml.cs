@@ -82,7 +82,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     .Include(e => e.TeachersToExams)
                     .FirstOrDefault(e => e.ExamId == id);
 
+                
                 ModelState.AddModelError(string.Empty, $"Could not delete exam: {ex.Message}");
+                TempData["ErrorMessage"] = $"Error deleting exam: {ex.Message}";
                 return Page();
             }
         }

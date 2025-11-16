@@ -17,7 +17,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.NewFolder
         [BindProperty(SupportsGet = true)]
         public GenericFilter Filter1 { get; set; }
 
-        public IndexModel(ICRUDAsync<Class> service)
+        public  IndexModel(ICRUDAsync<Class> service)
         {
             _service = service;
             Filter = new GenericFilter();
