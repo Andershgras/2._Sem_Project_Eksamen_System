@@ -1,8 +1,10 @@
+using _2._Sem_Project_Eksamen_System.EFservices;
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +19,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         private readonly IStudentsToExams _studentsToExamService;
         private readonly ITeachersToExam _teachersToExamService;
         private readonly IRoomsToExams _roomsToExamService;
+        private readonly ICheckOverlap _overlapsService;
 
         public SelectList ClassList { get; set; } = default!;
         public SelectList TeacherList { get; set; } = default!;
@@ -55,7 +58,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ICRUDAsync<Room> roomService,
             IStudentsToExams studentsToExamService,
             ITeachersToExam teachersToExamService,
-            IRoomsToExams roomsToExamService)
+            IRoomsToExams roomsToExamService,
+            ICheckOverlap overlapsService)
         {
             _service = service;
             _classService = classService;
@@ -64,6 +68,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _studentsToExamService = studentsToExamService;
             _teachersToExamService = teachersToExamService;
             _roomsToExamService = roomsToExamService;
+            _overlapsService = overlapsService;
         }
 
         public async Task<IActionResult> OnGet(int id)
@@ -188,6 +193,59 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 ModelState[key]?.Errors.Clear();
                 if (ModelState[key] != null)
                     ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+            }
+
+            // validation checks--------------------------------------------------------------
+
+            if (SelectedRoomId.HasValue)// check room availability for Exam--
+            {
+                OverlapResult result = _overlapsService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate, Exam.ExamId);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("SelectedRoomId", result.Message);
+                    return Page();
+                }
+            }
+
+            if (ReExam.ExamId > 0 && SelectedRoomId.HasValue) // check room availability for ReExam if creating
+            {
+                OverlapResult result = _overlapsService.RoomHasOverlap(SelectedRoomId.Value, ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.ExamId);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("SelectedRoomId", result.Message);
+                    return Page();
+                }
+            }
+
+            if (Exam.ClassId > 0) // check class availability for Exam
+            {
+                OverlapResult result = _overlapsService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate, Exam.ExamId);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("Exam.ClassId", result.Message);
+                    return Page();
+                }
+            }
+
+            if (ReExam.ExamId > 0 && ReExam.ClassId > 0) // check class availability for ReExam if creating
+            {
+                OverlapResult result = _overlapsService.ClassHasOverlap(ReExam.ClassId, ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.ExamId);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("ReExam.ClassId", result.Message);
+                    return Page();
+                }
+            }
+
+            if (!SelectedTeacherIds.IsNullOrEmpty()) // check teacher availability for exam
+            {
+                OverlapResult result = _overlapsService.TeacherHasOverlap(SelectedTeacherIds.First(),
+                    Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam, Exam.ExamId);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("SelectedTeacherIds", result.Message);
+                    return Page();
+                }
             }
 
             if (!ModelState.IsValid)

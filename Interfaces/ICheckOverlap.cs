@@ -27,7 +27,7 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
         /// <param name="newStart"></param>
         /// <param name="newEndl"></param>
         /// <returns></returns>
-        OverlapResult ClassHasOverlap(int classId, DateOnly? newStart, DateOnly? newEndl);
+        OverlapResult ClassHasOverlap(int classId, DateOnly? newStart, DateOnly? newEnd, int? excludeExamId = null);
         /// <summary>
         /// Determines whether the specified room has a scheduling overlap with the given date range.
         /// </summary>
@@ -39,6 +39,6 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
         /// <param name="newEnd">The end date of the new booking range. Can be <see langword="null"/> to indicate no end date constraint.</param>
         /// <returns><see langword="true"/> if the room has an existing booking that overlaps with the specified date range;
         /// otherwise, <see langword="false"/>.</returns>
-        OverlapResult RoomHasOverlap(int roomId, DateOnly? newStart, DateOnly? newEnd);
+        OverlapResult RoomHasOverlap(int roomId, DateOnly? newStart, DateOnly? newEnd, int? excludeExamId = null);
     }
 }

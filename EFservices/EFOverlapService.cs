@@ -58,15 +58,19 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             return OverlapResult.Ok();
         }
 
-        public OverlapResult ClassHasOverlap(int classId, DateOnly? newStart, DateOnly? newEnd)
+        public OverlapResult ClassHasOverlap(int classId, DateOnly? newStart, DateOnly? newEnd, int? excludeExamId = null)
         {
             if (classId <= 0) throw new AggregateException("Needs Id to be bigger then 0");
 
             if (!newStart.HasValue || !newEnd.HasValue) return OverlapResult.Ok(); // caller needs to ensure 
 
-            var exams = _context.Exams
-                .Where(e => e.ClassId == classId)
-                .ToList();
+            var examsQuery = _context.Exams.Where(e => e.ClassId == classId);
+                
+
+            if (excludeExamId.HasValue)// if caller wants to exclude an Id
+                examsQuery = examsQuery.Where(e => e.ExamId != excludeExamId.Value);
+
+            var exams = examsQuery.ToList();
 
             foreach (var existing in exams)
             {
@@ -76,15 +80,24 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             return OverlapResult.Ok();
         }
 
-        public OverlapResult RoomHasOverlap(int roomId, DateOnly? newStart, DateOnly? newEnd)
+        public OverlapResult RoomHasOverlap(int roomId, DateOnly? newStart, DateOnly? newEnd, int? excludeExamId = null)
         {
             if (roomId <= 0) return OverlapResult.Ok();
             if (!newStart.HasValue || !newEnd.HasValue) return OverlapResult.Ok();
 
-            var conflicts = _context.RoomsToExams
-                .Include(rte => rte.Exam)
-                .Where(rte => rte.RoomId == roomId && rte.Exam != null)
-                .AsEnumerable() 
+            
+            var query = _context.RoomsToExams
+               .Include(rte => rte.Exam)
+               .Where(rte => rte.RoomId == roomId && rte.Exam != null);
+
+            // Exclude a specific exam if requested
+            if (excludeExamId.HasValue)
+            {
+                query = query.Where(rte => rte.Exam!.ExamId != excludeExamId.Value);
+            }
+            
+            var conflicts = query
+                .AsEnumerable()
                 .Where(rte =>
                 {
                     return DateRangesOverlap(rte.Exam.ExamStartDate, rte.Exam.ExamEndDate, newStart, newEnd);
