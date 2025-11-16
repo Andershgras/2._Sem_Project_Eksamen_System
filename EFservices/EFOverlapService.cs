@@ -21,7 +21,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             return aStart.Value <= bEnd.Value && aEnd.Value >= bStart.Value;
         }
 
-        //excludeExamId bruges til at undgå at sammenligne med sig selv ved opdatering
+        //excludeExamId bruges til at undgå at sammenligne med sig selv ved opdateing
         public OverlapResult TeacherHasOverlap(int teacherId, DateOnly? newStart, DateOnly? newEnd, bool newIsFinal, bool newIsReExam, int? excludeExamId = null)
         {
             if (teacherId <= 0) return OverlapResult.Ok();
@@ -62,7 +62,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         {
             if (classId <= 0) throw new AggregateException("Needs Id to be bigger then 0");
 
-            if (!newStart.HasValue || !newEnd.HasValue) return OverlapResult.Ok();
+            if (!newStart.HasValue || !newEnd.HasValue) return OverlapResult.Ok(); // caller needs to ensure 
 
             var exams = _context.Exams
                 .Where(e => e.ClassId == classId)
@@ -105,11 +105,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 return OverlapResult.Ok();
 
             var start = existingExam.ExamStartDate.HasValue
-                ? existingExam.ExamStartDate.Value.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)
+                ? existingExam.ExamStartDate.Value.ToString("dd-MM-yyyy")
                 : "N/A";
 
             var end = existingExam.ExamEndDate.HasValue
-                ? existingExam.ExamEndDate.Value.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)
+                ? existingExam.ExamEndDate.Value.ToString("dd-MM-yyyy")
                 : "N/A";
 
             var name = string.IsNullOrWhiteSpace(existingExam.ExamName) ? $"Exam ID {existingExam.ExamId}" : existingExam.ExamName;
@@ -117,7 +117,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             // Construct the message
             // actorPart is either "The resource" or the contextLabel provided
             var actorPart = string.IsNullOrWhiteSpace(contextLabel) ? "The resource" : contextLabel;
-            var msg = $"{actorPart} is allready asigned to an existing exam '{name}' ({start} —> {end}). Choose another {actorPart.ToLower()} or change the dates.";
+            var msg = $"{actorPart} is allready assigned to an existing exam '{name}' ({start} —> {end}). Choose another {actorPart.ToLower()} or change the dates.";
 
             return new OverlapResult
             {

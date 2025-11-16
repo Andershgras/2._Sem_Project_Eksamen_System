@@ -2,6 +2,7 @@ using _2._Sem_Project_Eksamen_System.EFservices;
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
@@ -52,7 +53,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public int NumberOfStudents { get; set; }
         /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
-        [BindProperty]
+        [BindProperty] // thorughs an error here when trying to post a empty dictionary ------------------------------------------!!!!!!!! Eror
         public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
 
         /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
@@ -115,6 +116,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Guard Exam.ExamName null and trim to max length
             if (!string.IsNullOrWhiteSpace(Exam.ExamName) && Exam.ExamName.Length > 30)
                 Exam.ExamName = Exam.ExamName.Substring(0, 30);
+
+            if (string.IsNullOrEmpty(Exam.ExamName)) {
+                ModelState.AddModelError("Exam.ExamName", "Needs a name");
+            }
+            
 
             // Validate Exam dates (only when values present)
             if (Exam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && Exam.ExamStartDate.Value > Exam.ExamEndDate.Value)
@@ -189,15 +195,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             // ModelState validation checks -----------------------------------
 
-            if (!ModelState.IsValid)
-                return Page();
+            
 
             if (SelectedRoomId.HasValue)// check room availability for the selected room and date range ---
             {
                 OverlapResult result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate);
                 if (result != null && result.HasConflict)
+                {
                     ModelState.AddModelError("SelectedRoomId", result.Message);
-                    return Page();  
+                    return Page();
+                }
             }
 
             if(CreateReExam && SelectedRoomId.HasValue) // check room availability for ReExam if creating
@@ -233,6 +240,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     return Page();
             }
             // validatetions end -------------------------------------------------
+
+            if (!ModelState.IsValid)
+                return Page();
 
             // Create Exam and related entities -------------------------------
             try
