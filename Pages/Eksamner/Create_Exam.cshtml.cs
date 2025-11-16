@@ -116,10 +116,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Guard Exam.ExamName null and trim to max length
             if (!string.IsNullOrWhiteSpace(Exam.ExamName) && Exam.ExamName.Length > 30)
                 Exam.ExamName = Exam.ExamName.Substring(0, 30);
-
-            if (string.IsNullOrEmpty(Exam.ExamName)) {
-                ModelState.AddModelError("Exam.ExamName", "Needs a name");
-            }
+            
+            if (string.IsNullOrEmpty(Exam.ExamName))
+                ModelState.AddModelError("Exam.ExamName", "Needs a Tittle");
             
 
             // Validate Exam dates (only when values present)
@@ -211,24 +210,30 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 OverlapResult result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, ReExam.ExamStartDate, ReExam.ExamEndDate);
                 if (result != null && result.HasConflict)
+                {
                     ModelState.AddModelError("SelectedRoomId", result.Message);
                     return Page();
+                }
             }
 
             if (Exam.ClassId > 0) // check class availability for Exam
             {
                 OverlapResult result = _overlapService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate);
                 if (result != null && result.HasConflict)
+                {
                     ModelState.AddModelError("Exam.ClassId", result.Message);
                     return Page();
+                }
             }
 
             if (CreateReExam && ReExam.ClassId > 0) // check class availability for ReExam if creating
             {
                 OverlapResult result = _overlapService.ClassHasOverlap(ReExam.ClassId, ReExam.ExamStartDate, ReExam.ExamEndDate);
                 if (result != null && result.HasConflict)
+                {
                     ModelState.AddModelError("ReExam.ClassId", result.Message);
                     return Page();
+                }
             }
 
             if (!SelectedTeacherIds.IsNullOrEmpty()) // check teacher availability for exam
@@ -236,8 +241,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 OverlapResult result = _overlapService.TeacherHasOverlap(SelectedTeacherIds.First(), 
                     Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
                 if (result != null && result.HasConflict)
+                {
                     ModelState.AddModelError("SelectedTeacherIds", result.Message);
                     return Page();
+                }
             }
             // validatetions end -------------------------------------------------
 
