@@ -21,11 +21,11 @@
             </div>
 
             <div class="form-container">
-                <!-- ✅ ERROR DISPLAY -->
+                <!--Display Errors -->
                 <div asp-validation-summary="All" class="alert alert-danger"></div>
 
                 <form method="post">
-                    <!-- FORM GRID LAYOUT -->
+                    <!-- FORM GRID LAYOUT INCLUDE CARDS -->
                     <div class="form-grid">
                         <!-- BASIC INFORMATION COLUMN -->
                         <div class="form-column">
@@ -38,7 +38,7 @@
                                 <span asp-validation-for="Student.StudentName" class="text-danger"></span>
                             </div>
 
-                            <!-- Email -->
+                            <!--  Student Email -->
                             <div class="form-group">
                                 <label asp-for="Student.Email" class="form-label">Email *</label>
                                 <input asp-for="Student.Email" class="form-control compact-input" placeholder="student@email.com" />
@@ -50,7 +50,7 @@
                         <div class="form-column">
                             <h3 class="form-section-title">Class Assignment</h3>
 
-                            <!-- Class Dropdown -->
+                            <!-- CLASS DROPDOWN -->
                             <div class="form-group">
                                 <label asp-for="SelectedClassId" class="form-label">Assigned Class</label>
                                 <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control compact-input">

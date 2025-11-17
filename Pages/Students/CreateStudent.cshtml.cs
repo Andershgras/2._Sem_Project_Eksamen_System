@@ -60,8 +60,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             await _studentService.AddItemAsync(Student);
 
             // If a class was selected, create the relationship
-            if (SelectedClassId.HasValue && SelectedClassId > 0)
+            if (SelectedClassId.HasValue && SelectedClassId.Value > 0)
             {
+                //here this SelectedClassId.Value is the ID we need
                 await CreateStudentClassRelationship(Student.StudentId, SelectedClassId.Value);
             }
 
@@ -81,10 +82,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             return existingStudent != null;
         }
 
-        private async Task PopulateClassDropdown()
+        private async Task PopulateClassDropdown()///I might modify this method later
         {
             // it is used to populate the ClassList for the dropdown
-            var classes = await Task.Run(() => _classService.GetAllAsync(new GenericFilter()));
+            var classes = await  _classService.GetAllAsync(new GenericFilter());
 
             ClassList.Clear();
             ClassList.Add(new SelectListItem
