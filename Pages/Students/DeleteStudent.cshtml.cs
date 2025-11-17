@@ -31,6 +31,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             }
 
             StudentId = student.StudentId;
+            Student = student;
             return Page();
         }
 

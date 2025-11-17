@@ -72,13 +72,15 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
             // Update class relationship
             await UpdateStudentClassRelationship(Student.StudentId, SelectedClassId);
+            //Added Success Message
+            TempData["SuccessMessage"] = "The student has been updated successfully!";
 
             return RedirectToPage("/Students/GetStudent");
         }
 
-        private async Task PopulateClassDropdown()
+        private async Task PopulateClassDropdown()/// We might modify this method later
         {
-            var classes = await Task.Run(() => _classService.GetAllAsync(new GenericFilter()));//Method is async now
+            var classes = await _classService.GetAllAsync(new GenericFilter());//Method is async now
 
             ClassList.Clear();
             ClassList.Add(new SelectListItem
