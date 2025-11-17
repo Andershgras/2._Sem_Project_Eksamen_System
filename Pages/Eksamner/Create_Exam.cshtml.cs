@@ -55,8 +55,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
         [BindProperty]
         public int? ExaminerTeacherId { get; set; }
-        [BindProperty] // thorughs an error here when trying to post a empty dictionary ------------------------------------------!!!!!!!! Eror
-        public Dictionary<int, string> TeacherRoles { get; set; } = new Dictionary<int, string>();
+       
 
         [BindProperty]
         public int? CensorTeacherId { get; set; }
