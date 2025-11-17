@@ -69,21 +69,21 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public async Task<IActionResult> OnGet(int id)
         {
-            // Load dropdown lists
+            //Getting all data from classes , teachers and rooms for dropdown lists
             var allClasses = await _classService.GetAllAsync();
             var allTeachers = await _teacherService.GetAllAsync();
             var allRooms = await _roomService.GetAllAsync();
-
+            //now creating select lists to populate dropdowns
             ClassList = new SelectList(allClasses, "ClassId", "ClassName");
             TeacherList = new SelectList(allTeachers, "TeacherId", "TeacherName");
             RoomList = new SelectList(allRooms, "RoomId", "Name");
 
-            // Load exam with related data
+            // Load the selected exam with its related exam with related data
             Exam = _service.GetItemById(id);
             if (Exam == null)
                 return RedirectToPage("GetEksamner");
 
-            // Load currently assigned teachers and their roles
+            //Extract assigned teachers for roles
             if (Exam.TeachersToExams != null)
             {
                 var examiner = Exam.TeachersToExams.FirstOrDefault(t => t.Role == "Examiner");
@@ -98,16 +98,20 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
             }
 
-            // Load currently assigned room
+
+            // Preselect the first assigned room for editing (if any)
             if (Exam.RoomsToExams != null && Exam.RoomsToExams.Any())
             {
                 SelectedRoomId = Exam.RoomsToExams.First().RoomId;
             }
+            // Load ReExam if it exists
 
             if (HasReExam)
+
             {
                 ReExam = _service.GetItemById(Exam.ReExamId.Value);
                 EditReExam = true;
+                //  used in the view to determine whether ReExam fields should be shown and editable
             }
             else
             {
@@ -119,8 +123,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public async Task<IActionResult> OnPost()
         {
-            // Reload dropdown lists - USE DIFFERENT VARIABLE NAMES
-            var allClasses = await _classService.GetAllAsync();
+            // Reload dropdown lists and populate withdata
+            var allClasses = await _classService.GetAllAsync();
             var allTeachers = await _teacherService.GetAllAsync();
             var allRooms = await _roomService.GetAllAsync();
 
@@ -128,43 +132,43 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             TeacherList = new SelectList(allTeachers, "TeacherId", "TeacherName");
             RoomList = new SelectList(allRooms, "RoomId", "Name");
 
-            // Clear validation for all ReExam fields when not editing/creating a ReExam
-            if (!EditReExam)
+            //Clear validation for all ReExam fields when not editing/creating a ReExam
+            if (!EditReExam)
             {
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
                     ModelState[key]?.Errors.Clear();
             }
 
-            // Truncate Exam name if too long
-            if (Exam.ExamName.Length > 30)
+            // Trim Exam name if too long
+            if (Exam.ExamName.Length > 30)
                 Exam.ExamName = Exam.ExamName.Substring(0, 30);
 
-            // Validate Exam dates
-            if (Exam.ExamStartDate > Exam.ExamEndDate)
+            // Validate Main Exam dates
+            if (Exam.ExamStartDate > Exam.ExamEndDate)
                 ModelState.AddModelError("Exam.ExamStartDate", "Exam start date must not be after end date.");
             if (Exam.DeliveryDate > Exam.ExamStartDate)
                 ModelState.AddModelError("Exam.DeliveryDate", "Delivery date must not be after start date.");
 
-            // Handle ReExam create/update logic if editing/creating
-            if (EditReExam)
+            // while  editing or updating ReExam logic and validations
+            if (EditReExam)
             {
-                // Always set ReExam.ClassId from Exam.ClassId!
-                ReExam.ClassId = Exam.ClassId;
-
+               
+                ReExam.ClassId = Exam.ClassId;
+                //To set default classId and name for ReExam if not provided
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
-
+                // Trim ReExam name if too long
                 if (ReExam.ExamName.Length > 30)
                     ReExam.ExamName = ReExam.ExamName.Substring(0, 30);
 
-                // Validate ReExam dates
-                if (ReExam.ExamStartDate > ReExam.ExamEndDate)
+                // Validate ReExam dates
+                if (ReExam.ExamStartDate > ReExam.ExamEndDate)
                     ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must not be after end date.");
                 if (ReExam.DeliveryDate > ReExam.ExamStartDate)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery date must not be after start date.");
 
-                // Validate ReExam dates against Exam dates
-                if (ReExam.ExamStartDate <= Exam.ExamEndDate)
+                // Validate ReExam dates against Exam dates
+                if (ReExam.ExamStartDate <= Exam.ExamEndDate)
                     ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must be after main exam end date.");
                 if (ReExam.ExamEndDate <= Exam.ExamEndDate)
                     ModelState.AddModelError("ReExam.ExamEndDate", "ReExam end date must be after main exam end date.");
@@ -176,22 +180,20 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (Exam.IsFinalExam)
                     ReExam.IsFinalExam = true;
 
-                if (!HasReExam) // Create new ReExam and link it
+                //Derfore reexam persistance logic until all logic is validated
+                if (!HasReExam)
                 {
-                    _service.AddItem(ReExam);
-                    Exam.ReExamId = ReExam.ExamId;
-                }
-                else // Update existing ReExam
-                {
-                    _service.UpdateItem(ReExam);
+                    // If this is a new ReExam, we must set Exam.ReExamId to null for now. 
+                    // We only link the exams after both are successfully created/updated in the DB.
+                    Exam.ReExamId = null;
                 }
             }
             else
             {
-                // Unlink ReExam from Exam
-                Exam.ReExamId = null;
+                // Unlink ReExam from Exam
+                Exam.ReExamId = null;
             }
-
+            // Clear validation errors for class and name fields to avoid blocking save
             foreach (var key in ModelState.Keys.Where(k => k.Equals("Exam.Class") || k.Equals("ReExam.Class") || k.Equals("ReExam.ExamName")))
             {
                 ModelState[key]?.Errors.Clear();
@@ -200,111 +202,195 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
 
             // validation checks--------------------------------------------------------------
+            // Legacy logic removed: teacher list overlap check is deprecated
+            // if (!SelectedTeacherIds.IsNullOrEmpty()) { ... }
 
-            if (SelectedRoomId.HasValue)// check room availability for Exam--
+            // Check Examiner availaiblity  to avoid overlap conflicts
+            if (ExaminerTeacherId.HasValue && CensorTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
             {
+                ModelState.AddModelError("CensorTeacherId", "Censor cannot be the same as Examiner.");
+            }
+
+            // Check teacher availability for Exam
+            if (ExaminerTeacherId.HasValue)
+            {
+                OverlapResult result = _overlapsService.TeacherHasOverlap(ExaminerTeacherId.Value,
+                  Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam, Exam.ExamId);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("ExaminerTeacherId", "Examiner: " + result.Message);
+                }
+            }
+            // Check Censor availability for Exam
+            if (CensorTeacherId.HasValue)
+            {
+                OverlapResult result = _overlapsService.TeacherHasOverlap(CensorTeacherId.Value,
+                  Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam, Exam.ExamId);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("CensorTeacherId", "Censor: " + result.Message);
+                }
+            }
+
+            // Check teacher availability for ReExam (if creating/editing)
+            if (EditReExam && ReExam.ExamId > 0)
+            {
+                if (ExaminerTeacherId.HasValue)
+                {
+                    OverlapResult result = _overlapsService.TeacherHasOverlap(ExaminerTeacherId.Value,
+                      ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.IsFinalExam, ReExam.IsReExam, ReExam.ExamId);
+                    if (result != null && result.HasConflict)
+                    {
+                        // Added specific error key for ReExam validation
+                        ModelState.AddModelError("ReExam.ExaminerTeacherId", "ReExam Examiner: " + result.Message);
+                    }
+                }
+                // Check Censor availability for ReExam
+                if (CensorTeacherId.HasValue)
+                {
+                    OverlapResult result = _overlapsService.TeacherHasOverlap(CensorTeacherId.Value,
+                      ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.IsFinalExam, ReExam.IsReExam, ReExam.ExamId);
+                    if (result != null && result.HasConflict)
+                    {
+                        // Added specific error key for ReExam validation
+                        ModelState.AddModelError("ReExam.CensorTeacherId", "ReExam Censor: " + result.Message);
+                    }
+                }
+            }
+            // Check room availability for Exam
+            if (SelectedRoomId.HasValue)
+            {
                 OverlapResult result = _overlapsService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate, Exam.ExamId);
                 if (result != null && result.HasConflict)
                 {
                     ModelState.AddModelError("SelectedRoomId", result.Message);
-                    return Page();
                 }
             }
+            // Check room availability for ReExam
 
-            if (ReExam.ExamId > 0 && SelectedRoomId.HasValue) // check room availability for ReExam if creating
-            {
+            if (EditReExam && ReExam.ExamId > 0 && SelectedRoomId.HasValue) // check room availability for ReExam if creating/editing
+            {
                 OverlapResult result = _overlapsService.RoomHasOverlap(SelectedRoomId.Value, ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.ExamId);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("SelectedRoomId", result.Message);
-                    return Page();
-                }
+                    ModelState.AddModelError("SelectedRoomId", "ReExam Room: " + result.Message); // Added ReExam context
+                }
             }
-
-            if (Exam.ClassId > 0) // check class availability for Exam
-            {
+            // check class availability for Exam
+            if (Exam.ClassId > 0) 
+            {
                 OverlapResult result = _overlapsService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate, Exam.ExamId);
                 if (result != null && result.HasConflict)
                 {
                     ModelState.AddModelError("Exam.ClassId", result.Message);
-                    return Page();
                 }
             }
+            // check class availability for ReExam
 
-            if (ReExam.ExamId > 0 && ReExam.ClassId > 0) // check class availability for ReExam if creating
-            {
+            if (EditReExam && ReExam.ExamId > 0 && ReExam.ClassId > 0) // check class availability for ReExam if creating/editing
+            {
                 OverlapResult result = _overlapsService.ClassHasOverlap(ReExam.ClassId, ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.ExamId);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("ReExam.ClassId", result.Message);
-                    return Page();
-                }
+                    ModelState.AddModelError("ReExam.ClassId", "ReExam Class: " + result.Message); // Added ReExam context
+                }
             }
 
-            if (!SelectedTeacherIds.IsNullOrEmpty()) // check teacher availability for exam
-            {
-                OverlapResult result = _overlapsService.TeacherHasOverlap(SelectedTeacherIds.First(),
-                    Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam, Exam.ExamId);
-                if (result != null && result.HasConflict)
-                {
-                    ModelState.AddModelError("SelectedTeacherIds", result.Message);
-                    return Page();
-                }
-            }
+            // ------------------------------------------End validation checks--------------------------------------------------------------
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return Page();
 
-            // Update the exam
-            _service.UpdateItem(Exam);
 
-           _teachersToExamService.RemoveAllFromExam(Exam.ExamId);
+            // START PERSISTENCE LOGIC
+
+            // Save or update ReExam as needed
+            if (EditReExam)
+            {
+                if (!HasReExam) // Create new ReExam and link it
+                {
+                    _service.AddItem(ReExam);
+                    Exam.ReExamId = ReExam.ExamId; // Link ReExam to main Exam
+                }
+                else // Update existing ReExam
+                {
+                    _service.UpdateItem(ReExam);
+                }
+            }
+            else if (HasReExam)
+            {
+                // ReExam exsists but editing is not desired , so delete it
+                _service.DeleteItem(Exam.ReExamId.Value);
+                Exam.ReExamId = null;
+            }
+
+            // Save changes to Main Exam
+            _service.UpdateItem(Exam);
+
+            // 1. Update Teachers for Main Exam
+            _teachersToExamService.RemoveAllFromExam(Exam.ExamId);
 
             if (ExaminerTeacherId.HasValue)
             {
                 _teachersToExamService.AddTeachersToExams(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
             }
-            if(CensorTeacherId.HasValue)
+            if (CensorTeacherId.HasValue)
             {
-                if(ExaminerTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
-                {
-                    ModelState.AddModelError("CensorTeacherId", "Censor cannot be the same as Examiner.");
-                }
                 _teachersToExamService.AddTeachersToExams(CensorTeacherId.Value, Exam.ExamId, "Censor");
-
             }
 
-            // Update room assignment - USING THE SAME CLEAN APPROACH AS TEACHERS
-            // First remove existing room assignments
-            _roomsToExamService.RemoveAllRoomsFromExam(Exam.ExamId);//Added This line to remove all existing room assignments
+            // 2. Update Room assignment for Main Exam
+            _roomsToExamService.RemoveAllRoomsFromExam(Exam.ExamId);
 
             if (SelectedRoomId.HasValue)
             {
-                var availableRooms = await _roomService.GetAllAsync();
-                var roomExists = availableRooms.Any(r => r.RoomId == SelectedRoomId.Value);
+                // Removed redundant async DB call to check if room exists
+                var mapping = new RoomsToExam
+                {
+                    ExamId = Exam.ExamId,
+                    RoomId = SelectedRoomId.Value,
+                    Role = null
+                };
+                _roomsToExamService.AddItem(mapping);
+            }
 
-                if (roomExists)
+            // 3. Update student assignments for Main Exam
+            _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
+
+            // 4. Update Assignments for ReExam (NEW LOGIC)
+            if (EditReExam && ReExam.ExamId > 0)
+            {
+                // Teacher assignment for ReExam (inherits Examiner/Censor from main exam)
+                _teachersToExamService.RemoveAllFromExam(ReExam.ExamId);
+                if (ExaminerTeacherId.HasValue)
+                {
+                    _teachersToExamService.AddTeachersToExams(ExaminerTeacherId.Value, ReExam.ExamId, "Examiner");
+                }
+                if (CensorTeacherId.HasValue)
+                {
+                    _teachersToExamService.AddTeachersToExams(CensorTeacherId.Value, ReExam.ExamId, "Censor");
+                }
+
+                // Room assignment for ReExam (inherits room from main exam)
+                _roomsToExamService.RemoveAllRoomsFromExam(ReExam.ExamId);
+                if (SelectedRoomId.HasValue)
                 {
                     var mapping = new RoomsToExam
                     {
-                        ExamId = Exam.ExamId,
+                        ExamId = ReExam.ExamId,
                         RoomId = SelectedRoomId.Value,
                         Role = null
                     };
                     _roomsToExamService.AddItem(mapping);
                 }
+
+                // Student assignment for ReExam
+                _studentsToExamService.SyncStudentsForExamAndClass(ReExam.ExamId, ReExam.ClassId);
             }
 
-            // Update student assignments
-            _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
-
-            // ... after all assignments are complete in OnPost()
-            // Add a success message
-            TempData["SuccessMessage"] = "Exam updated successfully!";
+            // Add a success message
+            TempData["SuccessMessage"] = "Exam updated successfully!";
             return RedirectToPage("GetEksamner");
-            // ...
-
-                      
         }
     }
 }
