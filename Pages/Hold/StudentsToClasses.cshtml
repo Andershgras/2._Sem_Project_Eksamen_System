@@ -5,7 +5,7 @@
 }
 
 
-<h1>HOld - @(Model.ClassItem.ClassName)</h1>
+<h2>Students in @Model.ClassItem.ClassName</h2>
 <nav>
     <a asp-page="StudentsToClasses" asp-route-id="@Model.ClassItem.ClassId" class="btn btn-primary">Students</a>
     <a asp-page="ExamsToClass" asp-route-id="@Model.ClassItem.ClassId" class="btn btn-outline-primary">Exams</a>
@@ -18,6 +18,7 @@
             <th>Student ID</th>
             <th>Student Name</th>
             <th>Email</th>
+            <th>Details</th>
         </tr>
     </thead>
     <tbody>
@@ -27,7 +28,13 @@
             <td>@s.StudentId.</td>
             <td>@s.StudentName</td>
             <td>@s.Email</td>
-            
+                <td>
+                    <a asp-page="/Students/DetailStudent"
+                       asp-route-id="@s.StudentId"
+                       class="btn-toggle btn-details">
+                        Details
+                    </a>
+                </td>
         </tr>
     }
     </tbody>
