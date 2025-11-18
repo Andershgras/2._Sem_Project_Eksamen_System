@@ -555,23 +555,34 @@
 </style>
 @section Scripts {
     <script>
+        // Wait until the entire HTML document has been fully loaded before running the script
         document.addEventListener('DOMContentLoaded', function () {
-            const checkbox = document.getElementById('editReExamBox');
-            const reExamFields = document.getElementById('reExamFields');
-            const examNameInput = document.getElementById('Exam_ExamName');
-            const reExamPreview = document.getElementById('reExamNamePreview');
 
+            //  Get references to the key DOM elements
+            const checkbox = document.getElementById('editReExamBox');         // Checkbox to enable/disable ReExam section
+            const reExamFields = document.getElementById('reExamFields');     // Container holding ReExam input fields
+            const examNameInput = document.getElementById('Exam_ExamName');   // Input field for the main exam name
+            const reExamPreview = document.getElementById('reExamNamePreview'); // Element to display the ReExam name preview
+
+            //  Exit early if any of the required elements are missing
             if (!checkbox || !reExamFields || !examNameInput || !reExamPreview) return;
 
+            //  Function to update the UI based on checkbox state and exam name input
             const updateUI = () => {
-                const isChecked = checkbox.checked;
+                const isChecked = checkbox.checked; // Check if the ReExam checkbox is selected
+
+                // Show or hide the ReExam fields based on checkbox state
                 reExamFields.style.display = isChecked ? 'block' : 'none';
+
+                // Update the preview text to show "ReEksamen-{ExamName}" if checkbox is checked
                 reExamPreview.textContent = isChecked ? `ReEksamen-${examNameInput.value || ''}` : '';
             };
 
-            checkbox.addEventListener('change', updateUI);
-            examNameInput.addEventListener('input', updateUI);
-            updateUI(); // Initial call
+            //  Attach event listeners to update the UI when user interacts
+            checkbox.addEventListener('change', updateUI);       // When checkbox is toggled
+            examNameInput.addEventListener('input', updateUI);   // When exam name is typed or changed
+
+            updateUI(); //  Run once on page load to initialize the correct state
         });
     </script>
 }
