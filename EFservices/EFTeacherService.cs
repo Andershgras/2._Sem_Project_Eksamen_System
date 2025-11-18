@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    public class EFUnderviserService : ICRUDAsync<Teacher>
+    public class EFTeacherService : ICRUDAsync<Teacher>
     {
         private readonly EksamensDBContext _context;
 
-        public EFUnderviserService(EksamensDBContext context) => _context = context;
+        public EFTeacherService(EksamensDBContext context) => _context = context;
 
         #region Asynchronous Methods
 
