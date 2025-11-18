@@ -17,7 +17,7 @@ namespace _2._Sem_Project_Eksamen_System
             // Non -Async Services
             builder.Services.AddTransient<ICRUD<Exam>, EFEksamenService>();
 
-            builder.Services.AddScoped<ICRUDAsync<Class>, EFHoldService>();
+            builder.Services.AddScoped<ICRUDAsync<Class>, EFClassService>();
             //builder.Services.AddScoped<ICRUD<TeachersToExam>, EFTeachersToExamService>();
             builder.Services.AddScoped<IStudentsToExams, EFStudentsToExamService>();
             builder.Services.AddScoped<IRoomsToExams, EFRoomsToExamService>();

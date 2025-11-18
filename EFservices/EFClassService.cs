@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    public class EFHoldService : ICRUDAsync<Class>
+    public class EFClassService : ICRUDAsync<Class>
     {
         EksamensDBContext _context;
 
-        public EFHoldService(EksamensDBContext context)
+        public EFClassService(EksamensDBContext context)
         {
             _context = context;
         }
