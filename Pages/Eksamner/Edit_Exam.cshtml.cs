@@ -201,7 +201,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
             }
 
-            // validation checks--------------------------------------------------------------
+            // --------------------------------validation checks--------------------------------------------------------------
             // Legacy logic removed: teacher list overlap check is deprecated
             // if (!SelectedTeacherIds.IsNullOrEmpty()) { ... }
 

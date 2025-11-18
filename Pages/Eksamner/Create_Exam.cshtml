@@ -470,50 +470,54 @@
     }
 </style>
 @section Scripts {
+    <!-- Include Tom Select CSS for styling the enhanced dropdown -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.default.min.css" rel="stylesheet" />
+
+    <!-- Included Tom Select JavaScript for initializing the multi-select dropdown -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+                // Wait until the entire page is loaded before running the script
+                document.addEventListener('DOMContentLoaded', () => {
 
-            // Initialize Tom Select for the reexam examiners multi-select
-            // This is the only teacher multi-select that remains, so we keep this initialization.
-            if (document.querySelector('#SelectedReExamTeacherIds')) {
-                new TomSelect('#SelectedReExamTeacherIds', {
-                    plugins: ['remove_button'],
-                    maxItems: null,
-                    placeholder: 'Select reexam examiners (leave empty to inherit from main exam)...',
-                    allowEmptyOption: true,
-                    persist: false,
-                    hideSelected: true
+                    //  Initialize Tom Select and Tom Select is a lightweight JavaScript plugin that enhances  dropdowns with advanced features like search, autocomplete, and multi-select.
+                    const reExamSelect = document.querySelector('#SelectedReExamTeacherIds');
+                    if (reExamSelect) {
+                        new TomSelect(reExamSelect, {
+                            plugins: ['remove_button'],       // Allows users to remove selected items
+                            maxItems: null,                   // No limit on number of selections
+                            placeholder: 'Select reexam examiners...', // Placeholder text for guidance
+                            allowEmptyOption: true,           // Allows the field to be left blank
+                            persist: false,                   // Prevents saving custom options
+                            hideSelected: true                // Hides already selected items from dropdown
+                        });
+                    }
+
+                    //  Setup dynamic ReExam section toggle and preview logic by Showing the ReExam fields when the checkbox is checked ,Hide them when it’s unchecked
+        Update the preview accordingly
+                    const checkbox = document.getElementById('createReExamBox');       // Checkbox to enable ReExam editing
+                    const examName = document.getElementById('Exam_ExamName');         // Input field for main exam name
+                    const preview = document.getElementById('reExamNamePreview');      // Element to show ReExam name preview
+                    const reExamFields = document.getElementById('reExamFields');      // Container for ReExam input fields
+
+                    // Ensure all required elements exist before proceeding
+                    if (checkbox && examName && preview && reExamFields) {
+
+                        //  Function to update UI based on checkbox state and exam name input
+                        const updateUI = () => {
+                            // Show or hide the ReExam fields
+                            reExamFields.style.display = checkbox.checked ? 'block' : 'none';
+
+                            // Update the preview text with "ReEksamen-{ExamName}" if checkbox is checked
+                            preview.textContent = checkbox.checked ? `ReEksamen-${examName.value || ''}` : '';
+                        };
+
+                        //  Bind event listeners to update UI when user interacts
+                        checkbox.addEventListener('change', updateUI);     // When checkbox is toggled
+                        examName.addEventListener('input', updateUI);      // When exam name is typed or changed
+
+                        updateUI(); // 🔸 Run once on page load to set initial state
+                    }
                 });
-            }
-
-            // DELETE: Removed all code related to '#SelectedTeacherIds' and updateTeacherRolesSection
-
-            // Update ReExam Name Preview based on Exam Name (KEPT)
-            const examNameInput = document.getElementById('Exam_ExamName');
-            const reExamPreview = document.getElementById('reExamNamePreview');
-            const checkbox = document.getElementById('createReExamBox');
-            const reExamFields = document.getElementById('reExamFields');
-
-            function updatePreview() {
-                if (checkbox.checked) {
-                    const examName = examNameInput.value || '';
-                    reExamPreview.textContent = `ReEksamen-${examName}`;
-                } else {
-                    reExamPreview.textContent = '';
-                }
-            }
-
-            if (examNameInput && reExamPreview) {
-                examNameInput.addEventListener('input', updatePreview);
-                checkbox.addEventListener('change', function () {
-                    reExamFields.style.display = this.checked ? '' : 'none';
-                    updatePreview();
-                });
-                updatePreview(); // initial value
-            }
-        });
     </script>
 }

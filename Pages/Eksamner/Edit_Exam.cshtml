@@ -556,44 +556,22 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // ReExam toggle functionality
             const checkbox = document.getElementById('editReExamBox');
             const reExamFields = document.getElementById('reExamFields');
-            const reExamPreviewBlock = document.getElementById('reExamPreviewBlock');
             const examNameInput = document.getElementById('Exam_ExamName');
             const reExamPreview = document.getElementById('reExamNamePreview');
 
-            function toggleReExamSection() {
-                if (checkbox.checked) {
-                    reExamFields.style.display = '';
-                    reExamPreviewBlock.style.display = '';
-                    updatePreview();
-                } else {
-                    reExamFields.style.display = 'none';
-                    reExamPreviewBlock.style.display = 'none';
-                    reExamPreview.textContent = '';
-                }
-            }
+            if (!checkbox || !reExamFields || !examNameInput || !reExamPreview) return;
 
-            function updatePreview() {
-                if (checkbox.checked && examNameInput) {
-                    const examName = examNameInput.value || '';
-                    reExamPreview.textContent = `ReEksamen-${examName}`;
-                } else {
-                    reExamPreview.textContent = '';
-                }
-            }
+            const updateUI = () => {
+                const isChecked = checkbox.checked;
+                reExamFields.style.display = isChecked ? 'block' : 'none';
+                reExamPreview.textContent = isChecked ? `ReEksamen-${examNameInput.value || ''}` : '';
+            };
 
-            if (checkbox && reExamFields && reExamPreviewBlock && examNameInput && reExamPreview) {
-                // Set initial state based on checkbox
-                reExamFields.style.display = checkbox.checked ? '' : 'none';
-                reExamPreviewBlock.style.display = checkbox.checked ? '' : 'none';
-
-                checkbox.addEventListener('change', toggleReExamSection);
-                examNameInput.addEventListener('input', updatePreview);
-                // Initial preview update
-                updatePreview();
-            }
+            checkbox.addEventListener('change', updateUI);
+            examNameInput.addEventListener('input', updateUI);
+            updateUI(); // Initial call
         });
     </script>
 }
