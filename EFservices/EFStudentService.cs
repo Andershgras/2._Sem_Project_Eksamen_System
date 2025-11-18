@@ -9,14 +9,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
+    /// <summary>
+    /// This service provides asynchronous CRUD operations for Student entities using Entity Framework.
+    /// </summary>
     public class EFStudentService : ICRUDAsync<Student>
     {
+        /// <summary>
+        /// intializes a new instance of the EFStudentService with the provided database context.
+        /// </summary>
         private readonly EksamensDBContext _context;
 
         public EFStudentService(EksamensDBContext dBContext)
         {
             _context = dBContext;
         }
+        /// </summary>
+        /// Retrieves a student by their unique identifier asynchronously.
+        /// </summary>
+        /// <param name="id">The unique identifier of the student.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the student if found; otherwise, null.</returns>
 
         public async Task<IEnumerable<Student>> GetAllAsync()
         {
