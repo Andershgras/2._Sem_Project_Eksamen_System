@@ -13,7 +13,12 @@
 
 <table class="table">
     <thead>
-        <tr><th>Exam ID</th><th>Exam Title</th><th>Date</th></tr>
+        <tr>
+            <th>Exam ID</th>
+            <th>Exam Title</th>
+            <th>Date</th>
+            <th>Details</th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var exam in Model.Exams)
@@ -22,6 +27,13 @@
                 <td>@exam.ExamId</td>
                 <td>@exam.ExamName</td>
                 <td>@exam.ExamStartDate</td>
+                <td>
+                    <a asp-page="/Eksamner/Exam_Details"
+                       asp-route-id="@exam.ExamId"
+                       class="btn-toggle btn-details">
+                        Details
+                    </a>
+                </td>
             </tr>
         }
     </tbody>
