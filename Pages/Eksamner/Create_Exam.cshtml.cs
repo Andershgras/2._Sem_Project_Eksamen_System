@@ -285,15 +285,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 // --- NEW, SIMPLIFIED TEACHER ASSIGNMENT LOGIC ---
 
                 // 1. Assign Examiner using the new property
-                if (ExaminerTeacherId.HasValue)
-                {
+                if (ExaminerTeacherId.HasValue){
                     await _teachersToExamsService.AddTeachersToExamsAsync(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
                 }
 
                 // 2. Assign Censor
                 if (CensorTeacherId.HasValue)
                 {
-                    // Optional: Add basic validation to ensure the Censor and Examiner are different
+                    // validate the Censor and Examiner are different
                     if (ExaminerTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
                     {
                         ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Examiner.");
@@ -303,14 +302,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     await _teachersToExamsService.AddTeachersToExamsAsync(CensorTeacherId.Value, Exam.ExamId, "Censor");
                 }
 
-                // 3. Keep the ReExam Teacher logic (it should be fine since the service handles null roles)
+                // 3. Assign any additional teachers without specific roles
                 if (CreateReExam && SelectedReExamTeacherIds != null && SelectedReExamTeacherIds.Count > 0)
                 {
                     foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
-                    {
-                        // Use the single service method. Role will default to "Examiner".
                         await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, ReExam.ExamId);
-                    }
                 }
 
                 // Add all students from the selected class to the exam
