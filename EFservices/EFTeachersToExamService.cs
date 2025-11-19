@@ -7,14 +7,17 @@ using _2._Sem_Project_Eksamen_System.Utils;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
+    // Service managing Teacher <-> Exam join entries via EF Core
     public class EFTeachersToExamService : ITeachersToExam
     {
+        // DbCOntext injection
         private readonly EksamensDBContext _context;
 
         public EFTeachersToExamService(EksamensDBContext context)
         {
             _context = context;
         }
+        // Return all teacher-exam mappings with related Teacher and Exam loaded (read-only)
         public async Task<IEnumerable<TeachersToExam>> GetAllAsync()
         {
             return await _context.TeachersToExams
@@ -23,7 +26,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsNoTracking()
                 .ToListAsync();
         }
-
+        // Return mappings filtered by role substring (case-insensitive)
         public async Task<IEnumerable<TeachersToExam>> GetAllAsync(GenericFilter filter)
         {
             return await _context.TeachersToExams
@@ -31,7 +34,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsNoTracking()
                 .ToListAsync();
         }
-
+        // Find a single mapping by primary key with related entities
         public async Task<TeachersToExam?> GetItemByIdAsync(int id)
         {
             return await _context.TeachersToExams
@@ -39,7 +42,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .Include(te => te.Exam)
                 .FirstOrDefaultAsync(te => te.TeacherExamId == id);
         }
-
+        // Add a mapping; ensure Role has a default value if none provided
         public async Task AddItemAsync(TeachersToExam item)
         {
             // Ensure role has a default value if not provided
@@ -51,7 +54,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await _context.TeachersToExams.AddAsync(item);
             await _context.SaveChangesAsync();
         }
-
+        // Update an existing mapping; ensure Role default and copy scalar values
         public async Task UpdateItemAsync(TeachersToExam item)
         {
             // Ensure role has a default value if not provided
@@ -67,6 +70,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 await _context.SaveChangesAsync();
             }
         }
+        // Delete a mapping by id if it exists
         public async Task DeleteItemAsync(int id)
         {
             var toDelete = await _context.TeachersToExams.FindAsync(id);
