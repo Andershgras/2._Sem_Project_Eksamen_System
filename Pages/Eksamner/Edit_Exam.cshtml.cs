@@ -340,7 +340,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
 
             // 2. Update Room assignment for Main Exam
-            _roomsToExamService.RemoveAllRoomsFromExam(Exam.ExamId);
+            await _roomsToExamService.RemoveAllRoomsFromExamAsync(Exam.ExamId);
 
             if (SelectedRoomId.HasValue)
             {
@@ -351,7 +351,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     RoomId = SelectedRoomId.Value,
                     Role = null
                 };
-                _roomsToExamService.AddItem(mapping);
+                await _roomsToExamService.AddItemAsync(mapping);
             }
 
             // 3. Update student assignments for Main Exam
@@ -372,7 +372,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
 
                 // Room assignment for ReExam (inherits room from main exam)
-                _roomsToExamService.RemoveAllRoomsFromExam(ReExam.ExamId);
+                await _roomsToExamService.RemoveAllRoomsFromExamAsync(ReExam.ExamId);
                 if (SelectedRoomId.HasValue)
                 {
                     var mapping = new RoomsToExam
@@ -381,7 +381,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                         RoomId = SelectedRoomId.Value,
                         Role = null
                     };
-                    _roomsToExamService.AddItem(mapping);
+                    await _roomsToExamService.AddItemAsync(mapping);
                 }
 
                 // Student assignment for ReExam
