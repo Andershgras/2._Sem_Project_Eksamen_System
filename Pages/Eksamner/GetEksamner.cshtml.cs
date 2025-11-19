@@ -11,27 +11,27 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     public class GetEksamnerModel : PageModel
     {
         public IEnumerable<Exam> Eksamner { get; set; }
-        public ICRUD<Exam> context { get; set; }
+        public ICRUDAsync<Exam> context { get; set; }
 
 
         [BindProperty(SupportsGet = true)]
         public GenericFilter? Filter { get; set; }
 
-        public GetEksamnerModel(ICRUD<Exam> service)
+        public GetEksamnerModel(ICRUDAsync<Exam> service)
         {
             context = service;
             Eksamner = new List<Exam>();
             Filter = new GenericFilter();
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
             if (!string.IsNullOrEmpty(Filter?.FilterByName))
             {
-                Eksamner = context.GetAll(Filter);
+                Eksamner = await context.GetAllAsync(Filter);
             }
             else
-                Eksamner = context.GetAll();
+                Eksamner = await context.GetAllAsync();
         }
     }
 }

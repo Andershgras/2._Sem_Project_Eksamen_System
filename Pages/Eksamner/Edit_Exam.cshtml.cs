@@ -12,7 +12,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
     public class Edit_ExamModel : PageModel
     {
-        private readonly ICRUD<Exam> _service;
+        private readonly ICRUDAsync<Exam> _service;
         private readonly ICRUDAsync<Class> _classService;
         private readonly ICRUDAsync<Teacher> _teacherService;
         private readonly ICRUDAsync<Room> _roomService;
@@ -48,7 +48,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public bool EditReExam { get; set; }
 
         public Edit_ExamModel(
-            ICRUD<Exam> service,
+            ICRUDAsync<Exam> service,
             ICRUDAsync<Class> classService,
             ICRUDAsync<Teacher> teacherService,
             ICRUDAsync<Room> roomService,
@@ -79,7 +79,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             RoomList = new SelectList(allRooms, "RoomId", "Name");
 
             // Load the selected exam with its related exam with related data
-            Exam = _service.GetItemById(id);
+            Exam = await _service.GetItemByIdAsync(id);
             if (Exam == null)
                 return RedirectToPage("GetEksamner");
 
@@ -109,7 +109,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (HasReExam)
 
             {
-                ReExam = _service.GetItemById(Exam.ReExamId.Value);
+                ReExam = await _service.GetItemByIdAsync(Exam.ReExamId.Value);
                 EditReExam = true;
                 //  used in the view to determine whether ReExam fields should be shown and editable
             }
@@ -309,24 +309,23 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 if (!HasReExam) // Create new ReExam and link it
                 {
-                    _service.AddItem(ReExam);
+                    await _service.AddItemAsync(ReExam);
                     Exam.ReExamId = ReExam.ExamId; // Link ReExam to main Exam
                 }
                 else // Update existing ReExam
                 {
-                    _service.UpdateItem(ReExam);
+                    await _service.UpdateItemAsync(ReExam);
                 }
             }
             else if (HasReExam)
             {
-                // ReExam exsists but editing is not desired , so delete it
-                _service.DeleteItem(Exam.ReExamId.Value);
+                // ReExam exsists but editing is not desired , so delete it
+                await _service.DeleteItemAsync(Exam.ReExamId.Value);
                 Exam.ReExamId = null;
             }
 
-            // Save changes to Main Exam
-            _service.UpdateItem(Exam);
-
+            // Save changes to Main Exam
+            await _service.UpdateItemAsync(Exam);
             // 1. Update Teachers for Main Exam
             await _teachersToExamService.RemoveAllFromExamAsync(Exam.ExamId);
 
