@@ -287,7 +287,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 // 1. Assign Examiner using the new property
                 if (ExaminerTeacherId.HasValue)
                 {
-                    _teachersToExamsService.AddTeachersToExams(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
+                    await _teachersToExamsService.AddTeachersToExamsAsync(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
                 }
 
                 // 2. Assign Censor
@@ -300,7 +300,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                         return Page();
                     }
 
-                    _teachersToExamsService.AddTeachersToExams(CensorTeacherId.Value, Exam.ExamId, "Censor");
+                    await _teachersToExamsService.AddTeachersToExamsAsync(CensorTeacherId.Value, Exam.ExamId, "Censor");
                 }
 
                 // 3. Keep the ReExam Teacher logic (it should be fine since the service handles null roles)
@@ -309,7 +309,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
                     {
                         // Use the single service method. Role will default to "Examiner".
-                        _teachersToExamsService.AddTeachersToExams(teacherId, ReExam.ExamId);
+                        await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, ReExam.ExamId);
                     }
                 }
 

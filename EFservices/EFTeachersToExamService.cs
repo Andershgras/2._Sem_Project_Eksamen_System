@@ -15,35 +15,32 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         {
             _context = context;
         }
-
-        public IEnumerable<TeachersToExam> GetAll()
+        public async Task<IEnumerable<TeachersToExam>> GetAllAsync()
         {
-            // Returns all teacher-to-exam assignments, with teacher and exam 
-            return _context.TeachersToExams
+            return await _context.TeachersToExams
                 .Include(te => te.Teacher)
                 .Include(te => te.Exam)
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
         }
 
-        public IEnumerable<TeachersToExam> GetAll(GenericFilter filter)
+        public async Task<IEnumerable<TeachersToExam>> GetAllAsync(GenericFilter filter)
         {
-            // Example: filter by role or teacher or exam name if needed; left basic here
-            return _context.TeachersToExams // needs implementation in GernericFilter to make this work properly
+            return await _context.TeachersToExams
                 .Where(te => te.Role != null && te.Role.ToLower().Contains(filter.FilterByName.ToLower()))
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
         }
 
-        public TeachersToExam? GetItemById(int id)
+        public async Task<TeachersToExam?> GetItemByIdAsync(int id)
         {
-            return _context.TeachersToExams
+            return await _context.TeachersToExams
                 .Include(te => te.Teacher)
                 .Include(te => te.Exam)
-                .FirstOrDefault(te => te.TeacherExamId == id);
+                .FirstOrDefaultAsync(te => te.TeacherExamId == id);
         }
 
-        public void AddItem(TeachersToExam item)
+        public async Task AddItemAsync(TeachersToExam item)
         {
             // Ensure role has a default value if not provided
             if (string.IsNullOrEmpty(item.Role))
@@ -51,11 +48,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 item.Role = "Examiner";
             }
 
-            _context.TeachersToExams.Add(item);
-            _context.SaveChanges();
+            await _context.TeachersToExams.AddAsync(item);
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateItem(TeachersToExam item)
+        public async Task UpdateItemAsync(TeachersToExam item)
         {
             // Ensure role has a default value if not provided
             if (string.IsNullOrEmpty(item.Role))
@@ -63,59 +60,55 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 item.Role = "Examiner";
             }
 
-            var existing = _context.TeachersToExams.Find(item.TeacherExamId);
+            var existing = await _context.TeachersToExams.FindAsync(item.TeacherExamId);
             if (existing != null)
             {
                 _context.Entry(existing).CurrentValues.SetValues(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
-        public void DeleteItem(int id)
+        public async Task DeleteItemAsync(int id)
         {
-            var toDelete = _context.TeachersToExams.Find(id);
+            var toDelete = await _context.TeachersToExams.FindAsync(id);
             if (toDelete != null)
             {
                 _context.TeachersToExams.Remove(toDelete);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
-
         /// <summary>
         /// Add or update teacher-to-exam assignment with proper role handling
         /// </summary>
         /// <param name="teacherId"></param>
         /// <param name="examId"></param>
+        /// <param name="role">Optional role - defaults to "Examiner" if not provided</param>
         /// <exception cref="ArgumentException"></exception>
-        // Keep and potentially clean up this one
-        // REMOVE THE TESTING PURPOSES ONLY COMMENT
-        // Keep and potentially clean up this one
-        // REMOVE THE TESTING PURPOSES ONLY COMMENT
-        public void AddTeachersToExams(int teacherId, int examId, string role = null)
+        public async Task AddTeachersToExamsAsync(int teacherId, int examId, string role = null)
         {
             if (teacherId <= 0) throw new ArgumentException("teacherId must be greater than zero", nameof(teacherId));
             if (examId <= 0) throw new ArgumentException("examId must be greater than zero", nameof(examId));
 
             // Ensure teacher exists (defensive)
-            var teacherExists = _context.Teachers.AsNoTracking().Any(t => t.TeacherId == teacherId);
+            var teacherExists = await _context.Teachers.AsNoTracking().AnyAsync(t => t.TeacherId == teacherId);
             if (!teacherExists)
                 return;
 
             // Set default role if not provided
-            string finalRole = string.IsNullOrEmpty(role) ? "Examiner" : role; // <--- This is key
+            string finalRole = string.IsNullOrEmpty(role) ? "Examiner" : role;
 
             // Check if mapping already exists
-            var existingMapping = _context.TeachersToExams
-                .FirstOrDefault(tte => tte.TeacherId == teacherId && tte.ExamId == examId);
+            var existingMapping = await _context.TeachersToExams
+                .FirstOrDefaultAsync(tte => tte.TeacherId == teacherId && tte.ExamId == examId);
 
             if (existingMapping != null)
             {
                 // UPDATE EXISTING: Update the role
                 existingMapping.Role = finalRole;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return;
             }
 
-            /// // CREATEd NEW:ONLY FOR ROLE/////////
+            // CREATE NEW
             var mapping = new TeachersToExam
             {
                 TeacherId = teacherId,
@@ -123,42 +116,43 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 Role = finalRole
             };
 
-            _context.TeachersToExams.Add(mapping);
-            _context.SaveChanges();
+            await _context.TeachersToExams.AddAsync(mapping);
+            await _context.SaveChangesAsync();
         }
-        public IEnumerable<TeachersToExam>GetTeachersByExamId(int examId)
+        public async Task<IEnumerable<TeachersToExam>> GetTeachersByExamIdAsync(int examId)
         {
-            return _context.TeachersToExams
-                
+            return await _context.TeachersToExams
                 .Where(tte => tte.ExamId == examId)
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
         }
 
         /// <summary>
         /// Remove all teacher->exam mappings for the specified exam.
         /// </summary>
         /// <param name="examId">Exam id</param>
-        public void RemoveAllFromExam(int examId)
+        public async Task RemoveAllFromExamAsync(int examId)
         {
             if (examId <= 0) return;
 
-            var items = _context.TeachersToExams.Where(t => t.ExamId == examId).ToList();
+            var items = await _context.TeachersToExams
+                .Where(t => t.ExamId == examId)
+                .ToListAsync();
+
             if (!items.Any()) return;
 
             _context.TeachersToExams.RemoveRange(items);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-
         /// <summary>
         /// NEW METHOD: Bulk update roles for existing records
         /// Call this once to fix all existing null/empty roles
         /// </summary>
-        public void FixMissingRoles()
+        public async Task FixMissingRolesAsync()
         {
-            var recordsWithMissingRoles = _context.TeachersToExams
+            var recordsWithMissingRoles = await _context.TeachersToExams
                 .Where(tte => string.IsNullOrEmpty(tte.Role))
-                .ToList();
+                .ToListAsync();
 
             if (recordsWithMissingRoles.Any())
             {
@@ -166,7 +160,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 {
                     record.Role = "Censor";
                 }
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
                
