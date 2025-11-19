@@ -96,7 +96,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         {
             // repopulate lists (use correct property names)
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
-            RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
+
+            var rooms = await _roomService.GetAllAsync(); // Load all rooms once
+            RoomList = new SelectList(rooms, "RoomId", "Name");
+
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
 
 
@@ -264,13 +267,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 // Map selected Room to Exam (only if selected and exists)
                 if (SelectedRoomId.HasValue)
                 {
-
-                    // inefefficient but simple existence check loading all rooms the first time
-                    // Consider optimizing with a dedicated existence check method in ICRUDAsync<Room> if needed
-                    var rooms = await _roomService.GetAllAsync();
-                    var roomExists = rooms.Any(r => r.RoomId == SelectedRoomId.Value);
-
-                    if (roomExists)
+                    // Ensure the room exists
+                    if (rooms.Any(r => r.RoomId == SelectedRoomId.Value))
                     {
                         var mapping = new RoomsToExam
                         {
@@ -283,9 +281,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     }
                 }
 
-
-
-                /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
                 // Persist selected examiners (SelectedTeacherIds) with roles
                 // --- NEW, SIMPLIFIED TEACHER ASSIGNMENT LOGIC ---
 
@@ -317,8 +312,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                         _teachersToExamsService.AddTeachersToExams(teacherId, ReExam.ExamId);
                     }
                 }
-
-                // Ensure you keep the call to: _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);
 
                 // Add all students from the selected class to the exam
                 _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);
