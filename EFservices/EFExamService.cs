@@ -7,13 +7,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
+    // EFCore backed CRUD services for exam entities 
+
     public class EFExamService: ICRUDAsync<Exam>
     {
+        //DbContext injected via DI
         EksamensDBContext context;
         public EFExamService(EksamensDBContext dBContext)
         {
             this.context = dBContext;
         }
+        // Return all exams with all relevent navigations
 
         public async Task<IEnumerable<Exam>> GetAllAsync()
         {
@@ -30,6 +34,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .OrderBy(e => e.ExamId)
                 .ToListAsync();
         }
+        // Return exam filtered by name prefix a simple filter concept
         public async Task<IEnumerable<Exam>> GetAllAsync(GenericFilter Filter)
         {
             return await context.Exams
@@ -37,13 +42,13 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsNoTracking()
                 .ToListAsync();
         }
-
+        //Add a new exam and persisit
         public async Task AddItemAsync(Exam item)
         {
             await context.AddAsync(item);
             await context.SaveChangesAsync();
         }
-
+        // Get a single exam by ID with full navigations
         public async Task<Exam?> GetItemByIdAsync(int id)
         {
             return await context.Exams
@@ -57,14 +62,14 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                     .ThenInclude(st => st.Student)
                 .FirstOrDefaultAsync(e => e.ExamId == id);
         }
-
+        //Delete an exam and also clean up all relationship entries within a transaction
         public async Task DeleteItemAsync(int id)
         {
             await using var transaction = await context.Database.BeginTransactionAsync();
 
             try
             {
-                // Find the exam with ALL relationships including inverse re-exams
+                // Find and load the exam with ALL relationships including inverse re-exams
                 var examToDelete = await context.Exams
                     .Include(e => e.StudentsToExams)
                     .Include(e => e.TeachersToExams)
@@ -126,6 +131,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 throw new Exception($"Failed to delete exam: {ex.Message}", ex);
             }
         }
+        //Update an exsisting exam apply newly updated values and save them
         public async Task UpdateItemAsync(Exam item)
         {
             if (item == null)
@@ -136,6 +142,8 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             var existingExam = await context.Exams.FindAsync(item.ExamId);
             if (existingExam != null)
             {
+                //Replace scaler properties with values from the provided item 
+                // and Navigation properties remains intact
                 context.Entry(existingExam).CurrentValues.SetValues(item);
                 await context.SaveChangesAsync();
             }
