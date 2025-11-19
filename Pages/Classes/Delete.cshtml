@@ -13,8 +13,50 @@
 else
 {
     <p>Are you sure you want to delete? <strong>@Model.Class.ClassName</strong> (ID: @Model.Class.ClassId)?</p>
-    <form method="post">
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-page="Index" class="btn btn-secondary">Cancel</a>
-    </form>
+
+    @if (Model.Exams.Any())
+    {
+        <div class="alert alert-warning">
+            <strong>This class has the following exams assigned:</strong> <br />
+            You must delete all associated exams before deleting the class.
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Exam ID</th>
+                    <th>Exam Name</th>
+                    <th>Date</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var exam in Model.Exams)
+                {
+                    <tr>
+                        <td>@exam.ExamId</td>
+                        <td>@exam.ExamName</td>
+                        <td>@exam.ExamStartDate</td>
+                        <td>
+                            <a asp-page="/Eksamner/Delete_Exam" asp-route-id="@exam.ExamId" class="btn btn-danger btn-sm">Delete Exam</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a asp-page="Index" class="btn btn-secondary">Back</a>
+    }
+    else
+    {
+        <form method="post">
+            <button type="submit" class="btn btn-danger">Delete Class</button>
+            <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    }
+
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary()
+        </div>
+    }
 }
