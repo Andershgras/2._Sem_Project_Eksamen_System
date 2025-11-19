@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
     /// <summary>
-    /// This service provides asynchronous CRUD operations for Student entities using Entity Framework.
+    /// EF Core implementation of async CRUD operations for Student entities.
     /// </summary>
     public class EFStudentService : ICRUDAsync<Student>
     {
@@ -18,17 +18,12 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         /// intializes a new instance of the EFStudentService with the provided database context.
         /// </summary>
         private readonly EksamensDBContext _context;
-
+        // DbContext injection
         public EFStudentService(EksamensDBContext dBContext)
         {
             _context = dBContext;
         }
-        /// </summary>
-        /// Retrieves a student by their unique identifier asynchronously.
-        /// </summary>
-        /// <param name="id">The unique identifier of the student.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the student if found; otherwise, null.</returns>
-
+        //Get all studentds with related classes and exam
         public async Task<IEnumerable<Student>> GetAllAsync()
         {
             return await _context.Students
@@ -41,7 +36,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .OrderBy(s => s.StudentId)
                 .ToListAsync();
         }
-
+        // Get students with optional extended filtering (name, email, id, class)
         public async Task<IEnumerable<Student>> GetAllAsync(GenericFilter Filter)
         {
             if (Filter is ExtendedStudentFilter extendedFilter)
@@ -54,12 +49,13 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                     var nameFilter = extendedFilter.FilterByName.ToLower();
                     query = query.Where(s => s.StudentName != null && s.StudentName.ToLower().Contains(nameFilter));
                 }
-
+                // Filter by email
                 if (!string.IsNullOrWhiteSpace(extendedFilter.FilterByEmail))
                 {
                     var emailFilter = extendedFilter.FilterByEmail.ToLower();
                     query = query.Where(s => s.Email != null && s.Email.ToLower().Contains(emailFilter));
                 }
+                //Filter by exact student ID
 
                 if (extendedFilter.FilterById.HasValue && extendedFilter.FilterById > 0)
                 {
@@ -84,10 +80,12 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
             else if (Filter == null || string.IsNullOrWhiteSpace(Filter.FilterByName))
             {
+                //No filter applied Get All
                 return await GetAllAsync();
             }
             else
             {
+                //Simple name filter fallback
                 var nameFilter = Filter.FilterByName.ToLower();
                 return await _context.Students
                     .Where(s => s.StudentName != null && s.StudentName.ToLower().Contains(nameFilter))
@@ -100,7 +98,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                     .ToListAsync();
             }
         }
-
+        //Add a new student and save made changes
         public async Task AddItemAsync(Student item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
@@ -108,6 +106,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await _context.AddAsync(item);
             await _context.SaveChangesAsync();
         }
+        // Get a single studnet by id with related classes and exam
         public async Task<Student?> GetItemByIdAsync(int id)
         {
             // Use tracking because caller might update the returned entity;
@@ -119,7 +118,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                     .ThenInclude(se => se.Exam)
                 .FirstOrDefaultAsync(s => s.StudentId == id);
         }
-
+        //Delete a student by id if exsists
         public async Task DeleteItemAsync(int id)
         {
             var studentToDelete = await _context.Students.FindAsync(id);
@@ -129,7 +128,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 await _context.SaveChangesAsync();
             }
         }
-
+        // Update scalar properties of an existing student; throws if the student does not exist
         public async Task UpdateItemAsync(Student item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
