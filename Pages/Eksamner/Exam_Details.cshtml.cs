@@ -8,23 +8,20 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
     public class Exam_DetailsModel : PageModel
     {
-        private readonly ICRUD<Exam> _examService;
+        private readonly ICRUDAsync<Exam> _examService;
         private readonly EksamensDBContext _context;
 
         public Exam ? Exam { get; set; }
 
-        public Exam_DetailsModel(ICRUD<Exam> examService, EksamensDBContext context)
+        public Exam_DetailsModel(ICRUDAsync<Exam> examService, EksamensDBContext context)
         {
             _examService = examService;
             _context = context;
         }
-
-        /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
-        /////////////////////Made to add corrected card display problem ///////////////////////
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             //I  Used the same pattern as our Delete page, but add Teacher inclusion
-            Exam = _context.Exams
+            Exam = await _context.Exams
                 .Include(e => e.Class)
                 .Include(e => e.ReExam)
                 .Include(e => e.StudentsToExams)
@@ -34,7 +31,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 .Include(e => e.RoomsToExams)
                 .ThenInclude(rte => rte.Room)
                 .Include(e => e.InverseReExam)
-                .FirstOrDefault(e => e.ExamId == id);
+                .FirstOrDefaultAsync(e => e.ExamId == id);
 
             if (Exam == null)
                 return NotFound();

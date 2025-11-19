@@ -12,7 +12,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
     public class Create_ExamModel : PageModel
     {
-        private readonly ICRUD<Exam> _examService;
+        private readonly ICRUDAsync<Exam> _examService;
         private readonly ICRUDAsync<Class> _classService;
         private readonly ICRUDAsync<Student> _studentService;
         private readonly IStudentsToExams _studentsToExamService;
@@ -60,7 +60,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public int? CensorTeacherId { get; set; }
 
         public Create_ExamModel(
-            ICRUD<Exam> examService,
+            ICRUDAsync<Exam> examService,
             ICRUDAsync<Class> classService,
             IStudentsToExams studentsToExamService,
             ICRUDAsync<Room> roomService,
@@ -255,14 +255,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 if (CreateReExam)
                 {
-                    _examService.AddItem(ReExam);
+                    await _examService.AddItemAsync(ReExam);
                     Exam.ReExamId = ReExam.ExamId;
 
                     if (NumberOfStudents > 0 && NumberOfStudents != null) // set number of students for re-exam if specified
                         ReExam.NumOfStud = NumberOfStudents;
                 }
 
-                _examService.AddItem(Exam);
+                await _examService.AddItemAsync(Exam);
 
                 // Map selected Room to Exam (only if selected and exists)
                 if (SelectedRoomId.HasValue)

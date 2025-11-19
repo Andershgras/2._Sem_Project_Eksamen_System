@@ -5,22 +5,26 @@ using System.Globalization;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
+    //Using EFCore service that centerlize overlaps checks
     public class EFOverlapService : ICheckOverlap
     {
+      //DbContext injection for data access
         private readonly EksamensDBContext _context;
 
         public EFOverlapService(EksamensDBContext context)
         {
             _context = context;
         }
-
-        private bool DateRangesOverlap(DateOnly? aStart, DateOnly? aEnd, DateOnly? bStart, DateOnly? bEnd)
+        // Simple date-range overlap test for two nullable DateOnly intervals
+       private bool DateRangesOverlap(DateOnly? aStart, DateOnly? aEnd, DateOnly? bStart, DateOnly? bEnd)
         {
             if (!aStart.HasValue || !aEnd.HasValue || !bStart.HasValue || !bEnd.HasValue)
                 return false;
             return aStart.Value <= bEnd.Value && aEnd.Value >= bStart.Value;
         }
-
+        //Checks if a teacher has any exam that overlaps at the given dates
+        // Skips the exam with excludeExamId when updating the same exam.
+        // Allows overlap when either existing or new exam is Final or ReExam
         //excludeExamId bruges til at undgå at sammenligne med sig selv ved opdateing
         public OverlapResult TeacherHasOverlap(int teacherId, DateOnly? newStart, DateOnly? newEnd, bool newIsFinal, bool newIsReExam, int? excludeExamId = null)
         {
@@ -34,6 +38,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsEnumerable()
                 .Where(a => a.Exam != null)
                 .ToList();
+            //Friendly label used in message construction
 
             var teacher = assignments.Select(a => a.Teacher).FirstOrDefault() ?? _context.Teachers.AsNoTracking().FirstOrDefault(t => t.TeacherId == teacherId);
             var teacherLabel = teacher != null ? $"Teacher {teacher.TeacherName ?? teacher.TeacherId.ToString()}" : $"Teacher (ID {teacherId})";
@@ -57,7 +62,8 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
             return OverlapResult.Ok();
         }
-
+        // Check if a class has any exam that overlaps the given dates.
+        // Throws on invalid classId; excludes a given exam id if provided
         public OverlapResult ClassHasOverlap(int classId, DateOnly? newStart, DateOnly? newEnd, int? excludeExamId = null)
         {
             if (classId <= 0) throw new AggregateException("Needs Id to be bigger then 0");
@@ -79,7 +85,8 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
             return OverlapResult.Ok();
         }
-
+        // Check if a room has any exam that overlaps the given dates.
+        // Excludes the provided exam id and returns conflict details if found
         public OverlapResult RoomHasOverlap(int roomId, DateOnly? newStart, DateOnly? newEnd, int? excludeExamId = null)
         {
             if (roomId <= 0) return OverlapResult.Ok();

@@ -7,68 +7,75 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    public class EFEksamenService: ICRUD<Exam>
+    // EFCore backed CRUD services for exam entities 
+
+    public class EFExamService: ICRUDAsync<Exam>
     {
+        //DbContext injected via DI
         EksamensDBContext context;
-        public EFEksamenService(EksamensDBContext dBContext)
+        public EFExamService(EksamensDBContext dBContext)
         {
             this.context = dBContext;
         }
+        // Return all exams with all relevent navigations
 
-        public IEnumerable<Exam> GetAll()
+        public async Task<IEnumerable<Exam>> GetAllAsync()
         {
-            return context.Exams
-           .Include(e => e.Class)
-           .Include(e => e.StudentsToExams)
-                .ThenInclude(se => se.Student)
-           .Include(e => e.RoomsToExams)
-                .ThenInclude(re => re.Room)
-           .Include(e => e.TeachersToExams)
-               .ThenInclude(et => et.Teacher)
-           .Include(e => e.ReExam)
-           .AsNoTracking()
-           .OrderBy(e => e.ExamId)
-           .ToList();
+            return await context.Exams
+                .Include(e => e.Class)
+                .Include(e => e.StudentsToExams)
+                    .ThenInclude(se => se.Student)
+                .Include(e => e.RoomsToExams)
+                    .ThenInclude(re => re.Room)
+                .Include(e => e.TeachersToExams)
+                    .ThenInclude(et => et.Teacher)
+                .Include(e => e.ReExam)
+                .AsNoTracking()
+                .OrderBy(e => e.ExamId)
+                .ToListAsync();
         }
-
-        public IEnumerable<Exam> GetAll(GenericFilter Filter)
+        // Return exam filtered by name prefix a simple filter concept
+        public async Task<IEnumerable<Exam>> GetAllAsync(GenericFilter Filter)
         {
-            return context.Exams.Where(s => s.ExamName.ToLower().StartsWith(Filter.FilterByName)).AsNoTracking().ToList();
+            return await context.Exams
+                .Where(s => s.ExamName.ToLower().StartsWith(Filter.FilterByName))
+                .AsNoTracking()
+                .ToListAsync();
         }
-
-        public void AddItem(Exam item)
+        //Add a new exam and persisit
+        public async Task AddItemAsync(Exam item)
         {
-            context.Add(item);
-            context.SaveChanges();
+            await context.AddAsync(item);
+            await context.SaveChangesAsync();
         }
-
-        public Exam? GetItemById(int id)
+        // Get a single exam by ID with full navigations
+        public async Task<Exam?> GetItemByIdAsync(int id)
         {
-            return context.Exams
-            .Include(e => e.Class)
-            .Include(e => e.ReExam)
-            .Include(e => e.TeachersToExams)
-                .ThenInclude(te => te.Teacher)
-            .Include(e => e.RoomsToExams)
-                .ThenInclude(rt => rt.Room)
-            .Include(e => e.StudentsToExams)
-          .ThenInclude(st => st.Student)
-          .FirstOrDefault(e => e.ExamId == id);
+            return await context.Exams
+                .Include(e => e.Class)
+                .Include(e => e.ReExam)
+                .Include(e => e.TeachersToExams)
+                    .ThenInclude(te => te.Teacher)
+                .Include(e => e.RoomsToExams)
+                    .ThenInclude(rt => rt.Room)
+                .Include(e => e.StudentsToExams)
+                    .ThenInclude(st => st.Student)
+                .FirstOrDefaultAsync(e => e.ExamId == id);
         }
-
-        public void DeleteItem(int id)//TEST
+        //Delete an exam and also clean up all relationship entries within a transaction
+        public async Task DeleteItemAsync(int id)
         {
-            using var transaction = context.Database.BeginTransaction();
+            await using var transaction = await context.Database.BeginTransactionAsync();
 
             try
             {
-                // Find the exam with ALL relationships including inverse re-exams
-                var examToDelete = context.Exams
+                // Find and load the exam with ALL relationships including inverse re-exams
+                var examToDelete = await context.Exams
                     .Include(e => e.StudentsToExams)
                     .Include(e => e.TeachersToExams)
                     .Include(e => e.RoomsToExams)
                     .Include(e => e.InverseReExam) // Important: exams that have this as their ReExam
-                    .FirstOrDefault(e => e.ExamId == id);
+                    .FirstOrDefaultAsync(e => e.ExamId == id);
 
                 if (examToDelete != null)
                 {
@@ -109,36 +116,37 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                     }
 
                     // Save all relationship changes first
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
                     // 6. Finally delete the exam itself
                     context.Exams.Remove(examToDelete);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                 }
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 throw new Exception($"Failed to delete exam: {ex.Message}", ex);
             }
         }
-        //EndTest
-        public void UpdateItem(Exam item)
+        //Update an exsisting exam apply newly updated values and save them
+        public async Task UpdateItemAsync(Exam item)
         {
             if (item == null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
 
-            var existingExam = context.Exams.Find(item.ExamId);
+            var existingExam = await context.Exams.FindAsync(item.ExamId);
             if (existingExam != null)
             {
+                //Replace scaler properties with values from the provided item 
+                // and Navigation properties remains intact
                 context.Entry(existingExam).CurrentValues.SetValues(item);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
-           
         }
     }
 }

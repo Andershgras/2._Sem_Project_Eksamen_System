@@ -15,7 +15,7 @@ namespace _2._Sem_Project_Eksamen_System
             builder.Services.AddDbContext<EksamensDBContext>();
             // Muliggør dependency injection for ICRUD interface, hvor funktionaliteten referers til EFEksamenService
             // Non -Async Services
-            builder.Services.AddTransient<ICRUD<Exam>, EFEksamenService>();
+            builder.Services.AddTransient<ICRUDAsync<Exam>, EFExamService>();
 
             builder.Services.AddScoped<ICRUDAsync<Class>, EFClassService>();
             //builder.Services.AddScoped<ICRUD<TeachersToExam>, EFTeachersToExamService>();
