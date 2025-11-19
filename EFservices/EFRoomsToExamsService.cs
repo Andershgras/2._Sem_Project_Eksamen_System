@@ -6,15 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
+    // EFCore serive to handel Room and Exam assignments
     public class EFRoomsToExamService : IRoomsToExams
     {
+        //DbContext injection for data access
         private readonly EksamensDBContext _context;
 
         public EFRoomsToExamService(EksamensDBContext context)
         {
             _context = context;
         }
-
+        //Return all rooms assignments with linked room and exam
         public async Task<IEnumerable<RoomsToExam>> GetAllAsync()
         {
             return await _context.RoomsToExams
@@ -23,7 +25,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsNoTracking()
                 .ToListAsync();
         }
-
+        // Return assignments filtered by role substring and this is case insensitive
         public async Task<IEnumerable<RoomsToExam>> GetAllAsync(GenericFilter filter)
         {
             var term = (filter?.FilterByName ?? string.Empty).ToLower();
@@ -34,7 +36,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsNoTracking()
                 .ToListAsync();
         }
-
+        // Find a single RoomTOExam by Primary key with related entities
         public async Task<RoomsToExam?> GetItemByIdAsync(int id)
         {
             return await _context.RoomsToExams
@@ -42,14 +44,14 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .Include(rte => rte.Exam)
                 .FirstOrDefaultAsync(rte => rte.RoomExamId == id);
         }
-
+        //Add a single room assignment
         public async Task AddItemAsync(RoomsToExam item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             await _context.RoomsToExams.AddAsync(item);
             await _context.SaveChangesAsync();
         }
-
+        // Update simple scaler fields for an exsiting assignments
         public async Task UpdateItemAsync(RoomsToExam item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
@@ -62,7 +64,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
             await _context.SaveChangesAsync();
         }
-
+        //Delte and assignment by id
         public async Task DeleteItemAsync(int id)
         {
             var entity = await _context.RoomsToExams.FindAsync(id);
@@ -120,6 +122,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
             return !overlaps;
         }
+        //Remove all room assignments for a specific exam
         public async Task RemoveAllRoomsFromExamAsync(int examId)//Added This method to remove all room assignments from a specific exam
         {
             var existingAssignments = await _context.RoomsToExams
