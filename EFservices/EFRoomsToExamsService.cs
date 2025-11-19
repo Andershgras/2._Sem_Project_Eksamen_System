@@ -15,67 +15,67 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context = context;
         }
 
-        public IEnumerable<RoomsToExam> GetAll()
+        public async Task<IEnumerable<RoomsToExam>> GetAllAsync()
         {
-            return _context.RoomsToExams
+            return await _context.RoomsToExams
                 .Include(rte => rte.Room)
                 .Include(rte => rte.Exam)
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
         }
 
-        public IEnumerable<RoomsToExam> GetAll(GenericFilter filter)
+        public async Task<IEnumerable<RoomsToExam>> GetAllAsync(GenericFilter filter)
         {
             var term = (filter?.FilterByName ?? string.Empty).ToLower();
-            return _context.RoomsToExams
+            return await _context.RoomsToExams
                 .Include(rte => rte.Room)
                 .Include(rte => rte.Exam)
                 .Where(rte => rte.Role != null && rte.Role.ToLower().Contains(term))
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
         }
 
-        public RoomsToExam? GetItemById(int id)
+        public async Task<RoomsToExam?> GetItemByIdAsync(int id)
         {
-            return _context.RoomsToExams
+            return await _context.RoomsToExams
                 .Include(rte => rte.Room)
                 .Include(rte => rte.Exam)
-                .FirstOrDefault(rte => rte.RoomExamId == id);
+                .FirstOrDefaultAsync(rte => rte.RoomExamId == id);
         }
 
-        public void AddItem(RoomsToExam item)
+        public async Task AddItemAsync(RoomsToExam item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            _context.RoomsToExams.Add(item);
-            _context.SaveChanges();
+            await _context.RoomsToExams.AddAsync(item);
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateItem(RoomsToExam item)
+        public async Task UpdateItemAsync(RoomsToExam item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            var existing = _context.RoomsToExams.Find(item.RoomExamId);
+            var existing = await _context.RoomsToExams.FindAsync(item.RoomExamId);
             if (existing == null) return;
 
             existing.RoomId = item.RoomId;
             existing.ExamId = item.ExamId;
             existing.Role = item.Role;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteItem(int id)
+        public async Task DeleteItemAsync(int id)
         {
-            var entity = _context.RoomsToExams.Find(id);
+            var entity = await _context.RoomsToExams.FindAsync(id);
             if (entity == null) return;
             _context.RoomsToExams.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Add multiple room assignments to an exam in one call.
         /// Existing assignments are not removed by this method.
         /// </summary>
-        public void AddRoomsToExam(int examId, IEnumerable<RoomsToExam> assignments)
+        public async Task AddRoomsToExamAsync(int examId, IEnumerable<RoomsToExam> assignments)
         {
             if (assignments == null) return;
 
@@ -90,8 +90,8 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
             if (!list.Any()) return;
 
-            _context.RoomsToExams.AddRange(list);
-            _context.SaveChanges();
+            await _context.RoomsToExams.AddRangeAsync(list);
+            await _context.SaveChangesAsync();
         }
 
         // Check availability: returns true if room is available for the entire requested range
@@ -120,16 +120,16 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
             return !overlaps;
         }
-        public void RemoveAllRoomsFromExam(int examId)//Added This method to remove all room assignments from a specific exam
+        public async Task RemoveAllRoomsFromExamAsync(int examId)//Added This method to remove all room assignments from a specific exam
         {
-            var existingAssignments = _context.RoomsToExams
+            var existingAssignments = await _context.RoomsToExams
                 .Where(rte => rte.ExamId == examId)
-                .ToList();
+                .ToListAsync();
 
             if (existingAssignments.Any())
             {
                 _context.RoomsToExams.RemoveRange(existingAssignments);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

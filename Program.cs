@@ -20,7 +20,7 @@ namespace _2._Sem_Project_Eksamen_System
             builder.Services.AddScoped<ICRUDAsync<Class>, EFClassService>();
             //builder.Services.AddScoped<ICRUD<TeachersToExam>, EFTeachersToExamService>();
             builder.Services.AddScoped<IStudentsToExams, EFStudentsToExamService>();
-            builder.Services.AddScoped<IRoomsToExams, EFRoomsToExamService>();
+           
             builder.Services.AddScoped<ITeachersToExam, EFTeachersToExamService>();
             // All Async Services
             builder.Services.AddScoped<ICRUDAsync<Student>, EFStudentService>();
@@ -29,6 +29,8 @@ namespace _2._Sem_Project_Eksamen_System
             builder.Services.AddScoped<ICRUDAsync<Teacher>, EFTeacherService>();
             builder.Services.AddScoped<IStudentsToClasses, EFStudentsToClassesService>();
             builder.Services.AddScoped<ICheckOverlap, EFOverlapService>();
+            builder.Services.AddScoped<IRoomsToExams, EFRoomsToExamService>();
+
 
             var app = builder.Build();
 

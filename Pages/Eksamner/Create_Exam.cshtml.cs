@@ -277,7 +277,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                             Role = null
                         };
                     
-                        _roomsToExamService.AddItem(mapping);
+                        await _roomsToExamService.AddItemAsync(mapping);
                     }
                 }
 

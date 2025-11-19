@@ -2,7 +2,7 @@
 
 namespace _2._Sem_Project_Eksamen_System.Interfaces
 {
-    public interface IRoomsToExams : ICRUD<RoomsToExam>
+    public interface IRoomsToExams : ICRUDAsync<RoomsToExam>
     {
         /// <summary>
         /// Add multiple room assignments to an exam.
@@ -10,7 +10,7 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
         /// </summary>
         /// <param name="examId">Target exam id</param>
         /// <param name="assignments">Collection of RoomsToExam assignments (RoomId + Role)</param>
-        void AddRoomsToExam(int examId, IEnumerable<RoomsToExam> assignments);
+        Task AddRoomsToExamAsync(int examId, IEnumerable<RoomsToExam> assignments);
 
         /// <summary>
         /// Determines whether a room is available for booking within the specified date range.
@@ -32,6 +32,6 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
         /// Remove all room assignments from a specific exam
         /// </summary>
         /// <param name="examId">Target exam id</param>
-        void RemoveAllRoomsFromExam(int examId);
+        Task RemoveAllRoomsFromExamAsync(int examId);
     }    
 }
