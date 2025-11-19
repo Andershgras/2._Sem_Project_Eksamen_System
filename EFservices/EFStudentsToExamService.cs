@@ -4,16 +4,17 @@ using _2._Sem_Project_Eksamen_System.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
-{
+{// EFCore Service for managing Student to Exam join entries (StudentsToExam)
     public class EFStudentsToExamService : IStudentsToExams
     {
+        //DbContext Injection
         private readonly EksamensDBContext _context;
         public EFStudentsToExamService(EksamensDBContext context)
         {
             _context = context;
         }
 
-        
+        // Return all student-exam mappings with related Student and Exam loaded (read-only)
         public async Task<IEnumerable<StudentsToExam>> GetAllAsync()
             => await _context.StudentsToExams
                 .Include(se => se.Student)
@@ -21,7 +22,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsNoTracking()
                 .OrderBy(se => se.ExamId)
                 .ToListAsync();
-
+        // Return mappings filtered by student name substring
         public async Task<IEnumerable<StudentsToExam>> GetAllAsync(GenericFilter filter)
         {
             var term = (filter?.FilterByName ?? string.Empty).ToLower();
@@ -34,17 +35,17 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .ToListAsync();
         }
             
-
+        // Add asingle student to exam mapping
         public async Task AddItemAsync(StudentsToExam item)
         {
             if (item == null) return;
             await _context.StudentsToExams.AddAsync(item);
             await _context.SaveChangesAsync();
         }
-
+        //Find a mapping by primary key
         public async Task<StudentsToExam?> GetItemByIdAsync(int id)
             => await _context.StudentsToExams.FindAsync(id);
-
+        // Delete a mapping if present
         public async Task DeleteItemAsync(int id)
         {
             var entity = await GetItemByIdAsync(id);
@@ -54,7 +55,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 await _context.SaveChangesAsync();
             }
         }
-
+        // Update scalar fields of an existing mapping
         public async Task UpdateItemAsync(StudentsToExam item)
         {
             if (item == null) return;
@@ -114,7 +115,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await RemoveAllFromExamAsync(examId);
             await AddStudentsFromClassToExamAsync(newClassId, examId);
         }
-
+        // Add multiple student ids to an exam (calls AddItemAsync for each)
         public async Task AddStudentsToExamAsync(IEnumerable<int> studIds, int examId)
         {
             foreach (var studentId in studIds)
