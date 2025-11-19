@@ -302,8 +302,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     if (ExaminerTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
                     {
                         ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Examiner.");
-                        // If validation fails, return Page() here to display the error.
-                        // If you are already checking ModelState at the start of OnPost, this check might be simplified.
+                        return Page();
                     }
 
                     _teachersToExamsService.AddTeachersToExams(CensorTeacherId.Value, Exam.ExamId, "Censor");
