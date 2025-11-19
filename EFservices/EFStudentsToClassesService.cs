@@ -9,15 +9,18 @@ using _2._Sem_Project_Eksamen_System.Utils;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
+    // EFCore Service managing the many-to-many relationship between Students and Classes
+
     public class EFStudentsToClassesService : IStudentsToClasses
     {
+        //DbContext Injection
         private readonly EksamensDBContext _context;
 
         public EFStudentsToClassesService(EksamensDBContext context)
         {
             _context = context;
         }
-
+        // Return all student-class mappings with related Student and Class loaded
         public async Task<IEnumerable<StudentsToClass>> GetAllAsync()
         {
             return await _context.StudentsToClasses
@@ -27,7 +30,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .OrderBy(stc => stc.ClassId)
                 .ToListAsync();
         }
-
+        // Return mappings filtered by student name sub string
         public async Task<IEnumerable<StudentsToClass>> GetAllAsync(GenericFilter filter)
         {
             if (filter == null || string.IsNullOrWhiteSpace(filter.FilterByName))
@@ -43,7 +46,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .OrderBy(stc => stc.ClassId)
                 .ToListAsync();
         }
-
+        // Find a single mapping by primary key with related entities (read-only)
         public async Task<StudentsToClass?> GetItemByIdAsync(int id)
         {
             return await _context.StudentsToClasses
@@ -52,7 +55,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsNoTracking()
                 .FirstOrDefaultAsync(stc => stc.StudentClassId == id);
         }
-
+        // Add a mapping if it does notalready exsists
         public async Task AddItemAsync(StudentsToClass item)
         {
             if (item == null) return;
@@ -67,7 +70,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await _context.StudentsToClasses.AddAsync(item);
             await _context.SaveChangesAsync();
         }
-
+        //Update scaler fielsd of an exsisting  mapping
         public async Task UpdateItemAsync(StudentsToClass item)
         {
             if (item == null) return;
@@ -78,7 +81,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.Entry(existing).CurrentValues.SetValues(item);
             await _context.SaveChangesAsync();
         }
-
+        // delete a mapping by id
         public async Task DeleteItemAsync(int id)
         {
             var entity = await _context.StudentsToClasses.FindAsync(id);
@@ -87,7 +90,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.StudentsToClasses.Remove(entity);
             await _context.SaveChangesAsync();
         }
-
+        // Return mappings for a specific class (read-only)
         public async Task<IEnumerable<StudentsToClass>> GetByClassIdAsync(int classId)
         {
             if (classId <= 0) return Enumerable.Empty<StudentsToClass>();
@@ -100,7 +103,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .OrderBy(stc => stc.StudentId)
                 .ToListAsync();
         }
-
+        // Return mappings for a specific student (read-only)
         public async Task<IEnumerable<StudentsToClass>> GetByStudentIdAsync(int studentId)
         {
             if (studentId <= 0) return Enumerable.Empty<StudentsToClass>();
@@ -113,6 +116,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .OrderBy(stc => stc.ClassId)
                 .ToListAsync();
         }
+        // Add a student to a class if both exist and mapping is not duplicate
 
         public async Task AddStudentToClassAsync(int studentId, int classId)
         {
@@ -140,7 +144,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await _context.StudentsToClasses.AddAsync(mapping);
             await _context.SaveChangesAsync();
         }
-
+        //Remove a specific student  class mapping
         public async Task RemoveStudentFromClassAsync(int studentId, int classId)
         {
             if (studentId <= 0 || classId <= 0) return;
@@ -153,7 +157,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.StudentsToClasses.Remove(mapping);
             await _context.SaveChangesAsync();
         }
-
+        //Remove all mappings from a class
         public async Task RemoveAllFromClassAsync(int classId)
         {
             if (classId <= 0) return;
@@ -164,7 +168,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.StudentsToClasses.RemoveRange(items);
             await _context.SaveChangesAsync();
         }
-
+        // Synchronize class membership: add missing mappings and remove extra ones
         public async Task SyncStudentsToClassAsync(int classId, IEnumerable<int> studentIds)
         {
             if (classId <= 0) throw new ArgumentException("classId must be greater than zero", nameof(classId));
@@ -177,12 +181,12 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
             var existingIds = existing.Select(e => e.StudentId).ToHashSet();
 
-            // removes
+            // removes mapping not in desired set
             var toRemove = existing.Where(e => !desired.Contains(e.StudentId)).ToList();
             if (toRemove.Any())
                 _context.StudentsToClasses.RemoveRange(toRemove);
 
-            // adds
+            // adds mappings that are desired but missing
             var toAddIds = desired.Except(existingIds).ToList();
             if (toAddIds.Any())
             {
@@ -197,7 +201,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
             await _context.SaveChangesAsync();
         }
-
+        // Return students in a class (read-only). Fixed to return an empty enumerable when invalid id.
         public async Task<IEnumerable<Student>> GetStudentsFromClass(int classId)
         {
             if (classId <= 0) return []; // return empty collection
