@@ -314,7 +314,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
 
                 // Add all students from the selected class to the exam
-                _studentsToExamService.AddStudentsFromClassToExam(Exam.ClassId, Exam.ExamId);
+                await _studentsToExamService.AddStudentsFromClassToExamAsync(Exam.ClassId, Exam.ExamId);
 
                 TempData["SuccessMessage"] = "Exam created successfully!";
                 return RedirectToPage("GetEksamner");

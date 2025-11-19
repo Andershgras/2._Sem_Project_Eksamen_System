@@ -355,7 +355,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
 
             // 3. Update student assignments for Main Exam
-            _studentsToExamService.SyncStudentsForExamAndClass(Exam.ExamId, Exam.ClassId);
+            await _studentsToExamService.SyncStudentsForExamAndClassAsync(Exam.ExamId, Exam.ClassId);
 
             // 4. Update Assignments for ReExam (NEW LOGIC)
             if (EditReExam && ReExam.ExamId > 0)
@@ -385,7 +385,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
 
                 // Student assignment for ReExam
-                _studentsToExamService.SyncStudentsForExamAndClass(ReExam.ExamId, ReExam.ClassId);
+                await _studentsToExamService.AddStudentsFromClassToExamAsync(ReExam.ExamId, ReExam.ClassId);
             }
 
             // Add a success message

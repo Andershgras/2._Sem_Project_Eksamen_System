@@ -14,63 +14,73 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         }
 
         
-        public IEnumerable<StudentsToExam> GetAll()
-            => _context.StudentsToExams
+        public async Task<IEnumerable<StudentsToExam>> GetAllAsync()
+            => await _context.StudentsToExams
                 .Include(se => se.Student)
                 .Include(se => se.Exam)
                 .AsNoTracking()
                 .OrderBy(se => se.ExamId)
-                .ToList();
+                .ToListAsync();
 
-        public IEnumerable<StudentsToExam> GetAll(GenericFilter filter)
-            => GetAll(); 
+        public async Task<IEnumerable<StudentsToExam>> GetAllAsync(GenericFilter filter)
+        {
+            var term = (filter?.FilterByName ?? string.Empty).ToLower();
+            return await _context.StudentsToExams
+                .Include(se => se.Student)
+                .Include(se => se.Exam)
+                .Where(se => se.Student != null && se.Student.StudentName.ToLower().Contains(term))
+                .AsNoTracking()
+                .OrderBy(se => se.ExamId)
+                .ToListAsync();
+        }
+            
 
-        public void AddItem(StudentsToExam item)
+        public async Task AddItemAsync(StudentsToExam item)
         {
             if (item == null) return;
-            _context.StudentsToExams.Add(item);
-            _context.SaveChanges();
+            await _context.StudentsToExams.AddAsync(item);
+            await _context.SaveChangesAsync();
         }
 
-        public StudentsToExam? GetItemById(int id)
-            => _context.StudentsToExams.Find(id);
+        public async Task<StudentsToExam?> GetItemByIdAsync(int id)
+            => await _context.StudentsToExams.FindAsync(id);
 
-        public void DeleteItem(int id)
+        public async Task DeleteItemAsync(int id)
         {
-            var entity = GetItemById(id);
+            var entity = await GetItemByIdAsync(id);
             if (entity != null)
             {
                 _context.StudentsToExams.Remove(entity);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public void UpdateItem(StudentsToExam item)
+        public async Task UpdateItemAsync(StudentsToExam item)
         {
             if (item == null) return;
-            var existing = _context.StudentsToExams.Find(item.StudentExamId);
+            var existing = await _context.StudentsToExams.FindAsync(item.StudentExamId);
             if (existing != null)
             {
                 _context.Entry(existing).CurrentValues.SetValues(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
 
 
         // Adds all students from a class to an exam
-        public void AddStudentsFromClassToExam(int classId, int examId)
+        public async Task AddStudentsFromClassToExamAsync(int classId, int examId)
         {
-            var studentIds = _context.StudentsToClasses
+            var studentIds = await _context.StudentsToClasses
                 .Where(stc => stc.ClassId == classId)
                 .Select(stc => stc.StudentId)
-                .ToList();
+                .ToListAsync();
 
             // add only students not already added to the exam
-            var alreadyAddedStudentIds = _context.StudentsToExams
+            var alreadyAddedStudentIds = await _context.StudentsToExams
                 .Where(se => se.ExamId == examId)
                 .Select(se => se.StudentId)
-                .ToHashSet();
+                .ToHashSetAsync();
 
             foreach (var studentId in studentIds)
             {
@@ -84,33 +94,32 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                     _context.StudentsToExams.Add(entry);
                 }
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         // Remove all students from exam (if class changes or exam deleted)
-        public void RemoveAllFromExam(int examId)
+        public async Task RemoveAllFromExamAsync(int examId)
         {
-            var items = _context.StudentsToExams.Where(se => se.ExamId == examId).ToList();
+            var items = await _context.StudentsToExams.Where(se => se.ExamId == examId).ToListAsync();
             if (items.Any())
             {
                 _context.StudentsToExams.RemoveRange(items);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
         // Updates students for exam when class changes
-        public void SyncStudentsForExamAndClass(int examId, int newClassId)
+        public async Task SyncStudentsForExamAndClassAsync(int examId, int newClassId)
         {
-            RemoveAllFromExam(examId);
-            AddStudentsFromClassToExam(newClassId, examId);
+            await RemoveAllFromExamAsync(examId);
+            await AddStudentsFromClassToExamAsync(newClassId, examId);
         }
 
-        public void AddStudentsToExam(IEnumerable<int> studIds, int examId)
+        public async Task AddStudentsToExamAsync(IEnumerable<int> studIds, int examId)
         {
             foreach (var studentId in studIds)
             {
-                AddItem(new StudentsToExam
-                {
+                await AddItemAsync(new StudentsToExam {
                     StudentId = studentId,
                     ExamId = examId
                 });
