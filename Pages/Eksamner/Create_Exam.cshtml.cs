@@ -94,7 +94,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
     
         public async Task<IActionResult> OnPost()
         {
-            // repopulate lists (use correct property names)
+                   // repopulate lists (use correct property names)
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
 
             var rooms = await _roomService.GetAllAsync(); // Load all rooms once
@@ -108,6 +108,27 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
                     ModelState[key]?.Errors.Clear();
+            }
+            ///////////////////////////////
+            if (Exam.ClassId <= 0)
+            {
+                ModelState.AddModelError("Exam.ClassId", "A class must be selected for the exam.");
+            }
+            if (!ExaminerTeacherId.HasValue || ExaminerTeacherId.Value <= 0)
+            {
+                ModelState.AddModelError("ExaminerTeacherId", "An examiner must be selected for the exam.");
+            }
+            if (!SelectedRoomId.HasValue || SelectedRoomId.Value <= 0)
+            {
+                ModelState.AddModelError("SelectedRoomId", "A room/place must be selected for the exam.");
+            }
+            if (Exam.ExamStartDate == default)
+            {
+                ModelState.AddModelError("Exam.ExamStartDate", "The Exam Start Date is required.");
+            }
+            if (Exam.ExamEndDate == default)
+            {
+                ModelState.AddModelError("Exam.ExamEndDate", "The Exam End Date is required.");
             }
 
             Exam.NumOfStud = ClassList.Count();
