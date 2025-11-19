@@ -328,15 +328,15 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _service.UpdateItem(Exam);
 
             // 1. Update Teachers for Main Exam
-            _teachersToExamService.RemoveAllFromExam(Exam.ExamId);
+            await _teachersToExamService.RemoveAllFromExamAsync(Exam.ExamId);
 
             if (ExaminerTeacherId.HasValue)
             {
-                _teachersToExamService.AddTeachersToExams(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
+                await _teachersToExamService.AddTeachersToExamsAsync(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
             }
             if (CensorTeacherId.HasValue)
             {
-                _teachersToExamService.AddTeachersToExams(CensorTeacherId.Value, Exam.ExamId, "Censor");
+                await _teachersToExamService.AddTeachersToExamsAsync(CensorTeacherId.Value, Exam.ExamId, "Censor");
             }
 
             // 2. Update Room assignment for Main Exam
@@ -361,14 +361,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (EditReExam && ReExam.ExamId > 0)
             {
                 // Teacher assignment for ReExam (inherits Examiner/Censor from main exam)
-                _teachersToExamService.RemoveAllFromExam(ReExam.ExamId);
+                await _teachersToExamService.RemoveAllFromExamAsync(ReExam.ExamId);
                 if (ExaminerTeacherId.HasValue)
                 {
-                    _teachersToExamService.AddTeachersToExams(ExaminerTeacherId.Value, ReExam.ExamId, "Examiner");
+                    await _teachersToExamService.AddTeachersToExamsAsync(ExaminerTeacherId.Value, ReExam.ExamId, "Examiner");
                 }
                 if (CensorTeacherId.HasValue)
                 {
-                    _teachersToExamService.AddTeachersToExams(CensorTeacherId.Value, ReExam.ExamId, "Censor");
+                    await _teachersToExamService.AddTeachersToExamsAsync(CensorTeacherId.Value, ReExam.ExamId, "Censor");
                 }
 
                 // Room assignment for ReExam (inherits room from main exam)
