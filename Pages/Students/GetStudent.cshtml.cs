@@ -34,13 +34,18 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         //Filles the AvailableClasses list with distinct class names from all students
         {
             var allStudents = await _service.GetAllAsync(new ExtendedStudentFilter());
-            AvailableClasses = allStudents
+            var studentClassLinks = allStudents
+
                 .Where(s => s.StudentsToClasses != null && s.StudentsToClasses.Any())
-                .SelectMany(s => s.StudentsToClasses.Select(sc => sc.Class?.ClassName))
-                .Where(className => !string.IsNullOrEmpty(className))
+                .SelectMany(s => s.StudentsToClasses);
+
+                var classNames = studentClassLinks
+                .Where(sc => sc.Class != null && !string.IsNullOrEmpty(sc.Class.ClassName))
+                .Select(sc => sc.Class!.ClassName)
                 .Distinct()
                 .OrderBy(className => className)
                 .ToList();
+            AvailableClasses = classNames;
         }
     }
 }
