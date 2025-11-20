@@ -14,7 +14,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
         public Student Student { get; set; } = new Student();//To fetch the complete student data before deletion
 
         [BindProperty]
-        public int StudentId { get; set; }//Added this just to Delete by Id
+        public int StudentId { get; set; }
 
         public DeleteStudentModel(ICRUDAsync<Student> studentService)
         {

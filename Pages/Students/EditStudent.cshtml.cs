@@ -78,9 +78,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             return RedirectToPage("/Students/GetStudent");
         }
 
-        private async Task PopulateClassDropdown()/// We might modify this method later
-        {
-            var classes = await _classService.GetAllAsync(new GenericFilter());//Method is async now
+        private async Task PopulateClassDropdown()// 
+        {// Fetch all classes to populate the dropdown
+            var classes = await _classService.GetAllAsync(new GenericFilter());
 
             ClassList.Clear();
             ClassList.Add(new SelectListItem
