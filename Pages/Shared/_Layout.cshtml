@@ -1,6 +1,7 @@
 ﻿@* 
     Pages/_Layout.cshtml
-    Sidebar now uses slimmer, consistent Bootstrap Stroke Icons
+    - Sidebar with slim Bootstrap icons
+    - Active nav item subtly highlighted
 *@
 <!DOCTYPE html>
 <html lang="da">
@@ -12,23 +13,78 @@
     <title>@ViewData["Title"] - Exam Planning</title>
     <link href="~/css/site.css" rel="stylesheet" />
 
-    <!-- Bootsrap-->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
 
     <style>
-        /* Make all sidebar icons consistently thin */
+        /* Make all sidebar icons consistently slim */
         .nav-item .bi {
             font-size: 1.25rem;
             font-weight: 300;
-            stroke-width: 1 !important;
         }
+
+        /* Base nav item styling hook (augmenting your existing .nav-item) */
+        .nav-list .nav-item {
+            position: relative;
+            border-radius: 8px;
+            padding: 0.55rem 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+            .nav-list .nav-item .icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 1.5rem;
+            }
+
+            .nav-list .nav-item .nav-text {
+                font-size: 0.9rem;
+            }
+
+            /* Hover state - very subtle */
+            .nav-list .nav-item:hover {
+                background: rgba(244, 232, 124, 0.10);
+            }
+
+        /* ACTIVE STATE – highlight background + left bar, keep text/icon black */
+        .nav-item-active {
+            background: rgba(244, 232, 124, 0.45); /* highlight background */
+        }
+
+            .nav-item-active::before {
+                content: "";
+                position: absolute;
+                left: -6px;
+                top: 6px;
+                bottom: 6px;
+                width: 3px;
+                border-radius: 0 4px 4px 0;
+                background: #d6c144; /* visible gold left bar */
+            }
+
+            /* REMOVE color override so text + icons stay black */
+            .nav-item-active .nav-text,
+            .nav-item-active .bi {
+                color: inherit; /* stays default black */
+            }
     </style>
 </head>
 
 <body>
+    @{
+        // Current Razor Page, e.g. "/Index", "/Eksamner/GetEksamner"
+        var currentPage = (ViewContext.RouteData.Values["page"] as string) ?? "";
+    }
+
     <div class="app-shell">
 
         <!-- SIDEBAR -->
@@ -55,42 +111,48 @@
                 <!-- NAVIGATION -->
                 <nav class="nav-list" role="menu">
 
-                    <a class="nav-item" asp-page="/Index" role="menuitem">
+                    <a class="nav-item@(currentPage == "/Index" ? " nav-item-active" : "")"
+                       asp-page="/Index" role="menuitem">
                         <span class="icon">
                             <i class="bi bi-house-door"></i>
                         </span>
                         <span class="nav-text">Home</span>
                     </a>
 
-                    <a class="nav-item" asp-page="/Eksamner/GetEksamner" role="menuitem">
+                    <a class="nav-item@(currentPage == "/Eksamner/GetEksamner" ? " nav-item-active" : "")"
+                       asp-page="/Eksamner/GetEksamner" role="menuitem">
                         <span class="icon">
                             <i class="bi bi-list-task"></i>
                         </span>
                         <span class="nav-text">Exams</span>
                     </a>
 
-                    <a class="nav-item" asp-page="/Students/GetStudent" role="menuitem">
+                    <a class="nav-item@(currentPage == "/Students/GetStudent" ? " nav-item-active" : "")"
+                       asp-page="/Students/GetStudent" role="menuitem">
                         <span class="icon">
                             <i class="bi bi-person-lines-fill"></i>
                         </span>
                         <span class="nav-text">Students</span>
                     </a>
 
-                    <a class="nav-item" asp-page="/Rooms/Index" role="menuitem">
+                    <a class="nav-item@(currentPage == "/Rooms/Index" ? " nav-item-active" : "")"
+                       asp-page="/Rooms/Index" role="menuitem">
                         <span class="icon">
                             <i class="bi bi-door-closed"></i>
                         </span>
                         <span class="nav-text">Rooms</span>
                     </a>
 
-                    <a class="nav-item" asp-page="/Teachers/Index" role="menuitem">
+                    <a class="nav-item@(currentPage == "/Teachers/Index" ? " nav-item-active" : "")"
+                       asp-page="/Teachers/Index" role="menuitem">
                         <span class="icon">
                             <i class="bi bi-person-workspace"></i>
                         </span>
                         <span class="nav-text">Teachers</span>
                     </a>
 
-                    <a class="nav-item" asp-page="/Classes/Index" role="menuitem">
+                    <a class="nav-item@(currentPage == "/Classes/Index" ? " nav-item-active" : "")"
+                       asp-page="/Classes/Index" role="menuitem">
                         <span class="icon">
                             <i class="bi bi-journal-bookmark"></i>
                         </span>
@@ -109,7 +171,9 @@
                 <div class="header-left">
                     <h1 class="page-title">@ViewData["Title"]</h1>
                 </div>
-                <div class="header-right"></div>
+                <div class="header-right">
+                    @* Placeholder for future user menu *@
+                </div>
             </header>
 
             <!-- PAGE CONTENT -->
