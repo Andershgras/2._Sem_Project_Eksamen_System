@@ -1,9 +1,6 @@
 ﻿@* 
     Pages/_Layout.cshtml
-    - Improved semantic structure and accessibility
-    - Better responsive behavior
-    - Enhanced visual hierarchy
-    - Maintained all existing functionality
+    Sidebar now uses slimmer, consistent Bootstrap Stroke Icons
 *@
 <!DOCTYPE html>
 <html lang="da">
@@ -12,122 +9,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - Exam Planning</title>
     <link href="~/css/site.css" rel="stylesheet" />
+
     <!-- Bootsrap-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <!-- Bootsrap Icons-->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        /* Make all sidebar icons consistently thin */
+        .nav-item .bi {
+            font-size: 1.25rem;
+            font-weight: 300;
+            stroke-width: 1 !important;
+        }
+    </style>
 </head>
+
 <body>
     <div class="app-shell">
-        <!-- SIDEBAR SECTION -->
+
+        <!-- SIDEBAR -->
         <aside class="sidebar" role="navigation" aria-label="Hovednavigation">
             <div class="sidebar-flag" aria-hidden="true"></div>
 
             <div class="sidebar-content">
-                <!-- BRAND SECTION WITH ZEALAND LOGO -->
+
+                <!-- BRAND -->
                 <div class="brand" role="banner">
                     <div class="brand-logo" aria-hidden="true">
-                        <!-- Zealand Logo with Official Colors -->
-                        <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Yellow background circle (Zealand official color) -->
+                        <svg width="32" height="32" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="48" fill="#F4E87C" />
-
-                            <!-- Black "Z" for Zealand -->
                             <path d="M28 32 L72 32 L72 38 L38 68 L72 68 L72 74 L28 74 L28 68 L62 38 L28 38 Z"
-                                  fill="#000000" />
+                                  fill="#000" />
                         </svg>
                     </div>
                     <div class="brand-text">
-                        <div style="font-weight: 600; font-size: 0.95em;">Zealand</div>
-                        <div style="font-size: 0.75em; opacity: 0.8; margin-top: -2px;">Exam Management</div>
+                        <div style="font-weight:600; font-size:0.95em;">Zealand</div>
+                        <div style="font-size:0.75em; opacity:0.8; margin-top:-2px;">Exam Management</div>
                     </div>
                 </div>
 
-                <!-- NAVIGATION MENU SECTION -->
-                <nav class="nav-list" role="menu" aria-label="Applikationsmenu">
+                <!-- NAVIGATION -->
+                <nav class="nav-list" role="menu">
+
                     <a class="nav-item" asp-page="/Index" role="menuitem">
-                        <span class="icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                <path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V11.5z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
+                        <span class="icon">
+                            <i class="bi bi-house-door"></i>
                         </span>
                         <span class="nav-text">Home</span>
                     </a>
 
                     <a class="nav-item" asp-page="/Eksamner/GetEksamner" role="menuitem">
-                        <span class="icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                <path d="M8 6h10M8 12h10M8 18h10M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
+                        <span class="icon">
+                            <i class="bi bi-list-task"></i>
                         </span>
                         <span class="nav-text">Exams</span>
                     </a>
+
                     <a class="nav-item" asp-page="/Students/GetStudent" role="menuitem">
-                        <span class="icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="currentColor" stroke-width="1.2" />
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 2.3 16.38l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09c.7 0 1.29-.42 1.51-1a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 0 1 6.7 2.3l.06.06a1.65 1.65 0 0 0 1.82.33H8a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09c0 .7.42 1.29 1 1.51.63.22 1.36.01 1.82-.33l.06-.06A2 2 0 0 1 21.7 7.6l-.06.06a1.65 1.65 0 0 0-.33 1.82V10c.22.7.42 1.36.33 1.82z" stroke="currentColor" stroke-width="1.0" />
-                            </svg>
+                        <span class="icon">
+                            <i class="bi bi-person-lines-fill"></i>
                         </span>
                         <span class="nav-text">Students</span>
                     </a>
+
                     <a class="nav-item" asp-page="/Rooms/Index" role="menuitem">
-                        <span class="icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                <rect x="6" y="3" width="12" height="18" rx="1.5" stroke="currentColor" stroke-width="1.2" />
-                                <circle cx="16" cy="12" r="1" fill="currentColor" />
-                            </svg>
+                        <span class="icon">
+                            <i class="bi bi-door-closed"></i>
                         </span>
                         <span class="nav-text">Rooms</span>
                     </a>
+
                     <a class="nav-item" asp-page="/Teachers/Index" role="menuitem">
-                        <span class="icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                <path d="M16 11a3 3 0 1 0-6 0" stroke="currentColor" stroke-width="1.2" />
-                                <path d="M6 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1" stroke="currentColor" stroke-width="1.2" />
-                            </svg>
+                        <span class="icon">
+                            <i class="bi bi-person-workspace"></i>
                         </span>
                         <span class="nav-text">Teachers</span>
                     </a>
+
                     <a class="nav-item" asp-page="/Classes/Index" role="menuitem">
-                        <span class="icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="currentColor" stroke-width="1.2" />
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 2.3 16.38l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09c.7 0 1.29-.42 1.51-1a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 0 1 6.7 2.3l.06.06a1.65 1.65 0 0 0 1.82.33H8a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09c0 .7.42 1.29 1 1.51.63.22 1.36.01 1.82-.33l.06-.06A2 2 0 0 1 21.7 7.6l-.06.06a1.65 1.65 0 0 0-.33 1.82V10c.22.7.42 1.36.33 1.82z" stroke="currentColor" stroke-width="1.0" />
-                            </svg>
+                        <span class="icon">
+                            <i class="bi bi-journal-bookmark"></i>
                         </span>
                         <span class="nav-text">Classes</span>
                     </a>
+
                 </nav>
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA SECTION -->
+        <!-- MAIN CONTENT -->
         <div class="main-content">
-            <!-- HEADER SECTION -->
+
+            <!-- HEADER -->
             <header class="app-header">
                 <div class="header-left">
                     <h1 class="page-title">@ViewData["Title"]</h1>
                 </div>
-                <div class="header-right">
-                    @* Username removed intentionally - placeholder for future user menu *@
-                </div>
+                <div class="header-right"></div>
             </header>
 
-            <!-- MAIN CONTENT SECTION -->
+            <!-- PAGE CONTENT -->
             <main class="page-body" role="main">
                 @RenderBody()
             </main>
 
-            <!-- FOOTER SECTION -->
+            <!-- FOOTER -->
             <footer class="app-footer">
                 <div class="footer-inner">
-                    <div class="footer-accent" aria-hidden="true"></div>
+                    <div class="footer-accent"></div>
                     <div class="footer-text">© Zealand - Exam Management</div>
                 </div>
             </footer>
+
         </div>
+
     </div>
 
     @await RenderSectionAsync("Scripts", required: false)
