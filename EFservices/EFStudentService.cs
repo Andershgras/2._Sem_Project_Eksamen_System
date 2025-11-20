@@ -112,8 +112,8 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             // Use tracking because caller might update the returned entity;
             // if caller only needs read-only, consider AsNoTracking with FirstOrDefaultAsync
             return await _context.Students
-                .Include(s => s.StudentsToClasses)  // ADD THIS LINE
-                    .ThenInclude(sc => sc.Class)    // ADD THIS LINE
+                .Include(s => s.StudentsToClasses) 
+                    .ThenInclude(sc => sc.Class)    
                 .Include(s => s.StudentsToExams)
                     .ThenInclude(se => se.Exam)
                 .FirstOrDefaultAsync(s => s.StudentId == id);
@@ -128,7 +128,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 await _context.SaveChangesAsync();
             }
         }
-        // Update scalar properties of an existing student; throws if the student does not exist
+        // Update scalar properties of an existing student; throws an Exception if the student does not exist
         public async Task UpdateItemAsync(Student item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
