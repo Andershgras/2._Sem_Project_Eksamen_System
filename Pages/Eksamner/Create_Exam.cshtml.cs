@@ -109,7 +109,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
                     ModelState[key]?.Errors.Clear();
             }
-            ///////////////////////////////
+       
             if (Exam.ClassId <= 0)
             {
                 ModelState.AddModelError("Exam.ClassId", "A class must be selected for the exam.");
