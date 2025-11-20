@@ -110,10 +110,11 @@
             <div class="section-header">
                 <h2>All Exams</h2>
                 <div class="header-actions">
-                    <a asp-page="/Eksamner/Create_Exam" class="btn btn-primary">
-                        <span class="btn-icon">➕</span>
-                        Add New Exam
-                    </a>
+                    @await Html.PartialAsync("_CreateButton", new CreateButtonModel
+                    {
+                        Page = "/Eksamner/Create_Exam",
+                        Text = "Add New Exam"
+                    })
                 </div>
             </div>
 
