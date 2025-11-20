@@ -221,7 +221,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 OverlapResult result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("SelectedRoomId", result.Message);
+                    ModelState.AddModelError("SelectedRoomId", result.Message ?? "Something went wrong with Rooms");
                     return Page();
                 }
             }
@@ -231,7 +231,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 OverlapResult result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, ReExam.ExamStartDate, ReExam.ExamEndDate);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("SelectedRoomId", result.Message);
+                    ModelState.AddModelError("SelectedRoomId", result.Message ?? "Something went Wrong");
                     return Page();
                 }
             }
@@ -241,7 +241,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 OverlapResult result = _overlapService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("Exam.ClassId", result.Message);
+                    ModelState.AddModelError("Exam.ClassId", result.Message ?? "Something went Wrong");
                     return Page();
                 }
             }
@@ -251,7 +251,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 OverlapResult result = _overlapService.ClassHasOverlap(ReExam.ClassId, ReExam.ExamStartDate, ReExam.ExamEndDate);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("ReExam.ClassId", result.Message);
+                    ModelState.AddModelError("ReExam.ClassId", result.Message ?? "Something went Wrong");
                     return Page();
                 }
             }
@@ -262,7 +262,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("SelectedTeacherIds", result.Message);
+                    ModelState.AddModelError("SelectedTeacherIds", result.Message ?? "Something went wrong");
                     return Page();
                 }
             }
@@ -279,7 +279,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     await _examService.AddItemAsync(ReExam);
                     Exam.ReExamId = ReExam.ExamId;
 
-                    if (NumberOfStudents > 0 && NumberOfStudents != null) // set number of students for re-exam if specified
+                    if (NumberOfStudents > 0) // set number of students for re-exam if specified
                         ReExam.NumOfStud = NumberOfStudents;
                 }
 

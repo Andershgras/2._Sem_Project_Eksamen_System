@@ -257,7 +257,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 OverlapResult result = _overlapsService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate, Exam.ExamId);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("SelectedRoomId", result.Message);
+                    ModelState.AddModelError("SelectedRoomId", result.Message ?? "Something went wrong with Rooms");
                 }
             }
             // Check room availability for ReExam
@@ -276,7 +276,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 OverlapResult result = _overlapsService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate, Exam.ExamId);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("Exam.ClassId", result.Message);
+                    ModelState.AddModelError("Exam.ClassId", result.Message ?? "Something went wrong with Rooms");
                 }
             }
             // check class availability for ReExam
