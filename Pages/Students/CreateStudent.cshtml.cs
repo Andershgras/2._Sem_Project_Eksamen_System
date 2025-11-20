@@ -12,18 +12,23 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class CreateStudentModel : PageModel
     {
+        // Services for CRUD operations on Student,class  entities(used to populate dropdown)
         private readonly ICRUDAsync<Student> _studentService;
         private readonly ICRUDAsync<Class> _classService;
+        // Direct DbContext for small specific operations espacially relatioship checks
         private readonly EksamensDBContext _context;
 
+        //Bind student model for the form
         [BindProperty]
         public Student Student { get; set; } = new Student();
 
+        //Bound selected class id from the dropdown (nullable)
+
         [BindProperty]
         public int? SelectedClassId { get; set; }
-
+        //Dropdown for class selection
         public List<SelectListItem> ClassList { get; set; } = new List<SelectListItem>();
-
+        //       
         public CreateStudentModel(
             ICRUDAsync<Student> studentService,
             ICRUDAsync<Class> classService,
@@ -33,12 +38,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             _classService = classService;
             _context = context;
         }
-
+        //Get Handler to populate dropdown
         public async Task OnGetAsync()
         {
             await PopulateClassDropdown();
         }
-
+        //Post handler to validate,check duplicates and create students and realatioships
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -48,6 +53,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             }
 
             // Very important part checking for duplicates before creating new student
+            // Prevent duplicate student by name or email
 
             if (await StudentAlreadyExists(Student))
             {
@@ -55,7 +61,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
                 await PopulateClassDropdown();
                 return Page();
             }
-
+            //Create Students Record
             // wait First, create the student
             await _studentService.AddItemAsync(Student);
 
@@ -68,7 +74,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
             return RedirectToPage("/Students/GetStudent");
         }
-
+        // Check for existing student by name or email (case-insensitive)
         // here i added duplicate check
         private async Task<bool> StudentAlreadyExists(Student newStudent)
         {
@@ -81,7 +87,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 
             return existingStudent != null;
         }
-
+        // Fill ClassList used by the class dropdown
         private async Task PopulateClassDropdown()///I might modify this method later
         {
             // it is used to populate the ClassList for the dropdown
@@ -107,7 +113,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
                 }
             }
         }
-
+        // Create link record between student and class then save
         private async Task CreateStudentClassRelationship(int studentId, int classId)
         {
             //this methods creates a student class relationship

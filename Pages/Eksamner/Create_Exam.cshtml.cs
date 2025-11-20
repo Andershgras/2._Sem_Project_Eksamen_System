@@ -153,7 +153,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 ReExam.ClassId = Exam.ClassId;
 
 
-
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName ?? string.Empty}";
 
