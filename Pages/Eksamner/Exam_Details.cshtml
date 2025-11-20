@@ -143,9 +143,9 @@
                                     </div>
                                 }
                                 else
-                                {
+                                {   
                                     <div class="rooms-list">
-                                        <!-- FIX APPLIED: Group by RoomId and select first occurrence to remove duplicates -->
+                                        <!--Group by RoomId and select first occurrence to remove duplicates -->
                                         <!-- This ensures each room appears only once even if there are multiple room-to-exam mappings -->
                                         @foreach (var roomExam in exam.RoomsToExams.GroupBy(r => r.RoomId).Select(g => g.First()))
                                         {
@@ -261,7 +261,7 @@
                 </div>
             </div>
 
-            <!-- ACTION BUTTONS -->
+            <!-- BUTTONS -->
             <div class="form-actions">
                 <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">
                     <span class="btn-icon">←</span>
