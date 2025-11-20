@@ -105,9 +105,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 SelectedRoomId = Exam.RoomsToExams.First().RoomId;
             }
             // Load ReExam if it exists
-
             if (HasReExam)
-
             {
                 ReExam = await _service.GetItemByIdAsync(Exam.ReExamId.Value);
                 EditReExam = true;
@@ -132,7 +130,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             TeacherList = new SelectList(allTeachers, "TeacherId", "TeacherName");
             RoomList = new SelectList(allRooms, "RoomId", "Name");
 
-            //Clear validation for all ReExam fields when not editing/creating a ReExam
+            //Clear validation for  all ReExam fields when not editing/creating a ReExam
             if (!EditReExam)
             {
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
@@ -202,8 +200,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
 
             // --------------------------------validation checks--------------------------------------------------------------
-            // Legacy logic removed: teacher list overlap check is deprecated
-            // if (!SelectedTeacherIds.IsNullOrEmpty()) { ... }
 
             // Check Examiner availaiblity  to avoid overlap conflicts
             if (ExaminerTeacherId.HasValue && CensorTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
@@ -241,7 +237,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                       ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.IsFinalExam, ReExam.IsReExam, ReExam.ExamId);
                     if (result != null && result.HasConflict)
                     {
-                        // Added specific error key for ReExam validation
                         ModelState.AddModelError("ReExam.ExaminerTeacherId", "ReExam Examiner: " + result.Message);
                     }
                 }
@@ -252,7 +247,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                       ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.IsFinalExam, ReExam.IsReExam, ReExam.ExamId);
                     if (result != null && result.HasConflict)
                     {
-                        // Added specific error key for ReExam validation
                         ModelState.AddModelError("ReExam.CensorTeacherId", "ReExam Censor: " + result.Message);
                     }
                 }
@@ -304,7 +298,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             // START PERSISTENCE LOGIC
 
-            // Save or update ReExam as needed
+            // Save or update ReExam
             if (EditReExam)
             {
                 if (!HasReExam) // Create new ReExam and link it
@@ -343,7 +337,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             if (SelectedRoomId.HasValue)
             {
-                // Removed redundant async DB call to check if room exists
                 var mapping = new RoomsToExam
                 {
                     ExamId = Exam.ExamId,
@@ -356,7 +349,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // 3. Update student assignments for Main Exam
             await _studentsToExamService.SyncStudentsForExamAndClassAsync(Exam.ExamId, Exam.ClassId);
 
-            // 4. Update Assignments for ReExam (NEW LOGIC)
+            // 4. Update Assignments for ReExam
             if (EditReExam && ReExam.ExamId > 0)
             {
                 // Teacher assignment for ReExam (inherits Examiner/Censor from main exam)
