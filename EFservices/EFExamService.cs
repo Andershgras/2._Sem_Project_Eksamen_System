@@ -48,6 +48,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             .ThenInclude(se => se.Teacher)
             .Include(e => e.ReExam)
             .AsNoTracking();
+            
         }
         // Return exam filtered by name prefix a simple filter concept
         public async Task<IEnumerable<Exam>> GetAllAsync(GenericFilter Filter)
