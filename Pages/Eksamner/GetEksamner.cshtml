@@ -34,7 +34,7 @@
                                    placeholder="Exam name..." />
                         </div>
 
-                        <!-- NEW: Class Filter -->
+                        <!-- Class Filter -->
                         <div class="form-group">
                             <label for="Filter_FilterByClass" class="form-label">Class</label>
                             <select asp-for="Filter.FilterByClass" class="form-control compact-input">
@@ -49,7 +49,7 @@
                             </select>
                         </div>
 
-                        <!-- NEW: Teacher Filter -->
+                        <!-- Teacher Filter -->
                         <div class="form-group">
                             <label for="Filter_FilterByTeacher" class="form-label">Teacher</label>
                             <select asp-for="Filter.FilterByTeacher" class="form-control compact-input">
@@ -64,7 +64,7 @@
                             </select>
                         </div>
 
-                        <!-- NEW: Room Filter -->
+                        <!-- Room Filter -->
                         <div class="form-group">
                             <label for="Filter_FilterByRoom" class="form-label">Room</label>
                             <select asp-for="Filter.FilterByRoom" class="form-control compact-input">
@@ -79,7 +79,7 @@
                             </select>
                         </div>
 
-                        <!-- NEW: Date Filters -->
+                        <!-- Date Filters -->
                         <div class="form-group">
                             <label for="Filter_FilterByStartDate" class="form-label">Start Date</label>
                             <input type="date" asp-for="Filter.FilterByStartDate" class="form-control compact-input" />
@@ -134,90 +134,89 @@
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByExaminerName))
                     activeFilters.Add($"Class:{Model.Filter.FilterByExaminerName}");
                 if (Model.Filter.FilterByStartDate.HasValue)
-                    activeFilters.Add($"Start: {Model.Filter.FilterByStartDate.Value.ToString("dd-MM-yyyy")}");
+                    activeFilters.Add($"Start: {Model.Filter.FilterByStartDate.Value.ToString("dd-MM-yy")}");
                 if (Model.Filter.FilterByEndDate.HasValue)
-                    activeFilters.Add($"End: {Model.Filter.FilterByEndDate.Value.ToString("dd-MM-yyyy")}");
+                    activeFilters.Add($"End: {Model.Filter.FilterByEndDate.Value.ToString("dd-MM-yy")}");
 
             }
 
-            
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Date</th>
-                                <th>Title</th>
-                                <th>Class</th>
-                                <th>Number of Students</th>
-                                <th class="actions-header">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.Eksamner != null && Model.Eksamner.Any())
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Date</th>
+                            <th>Title</th>
+                            <th>Class</th>
+                            <th>Number of Students</th>
+                            <th class="actions-header">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Eksamner != null && Model.Eksamner.Any())
                         {
                             foreach (var eksamen in Model.Eksamner)
                             {
-                                    <tr>
-                                        <td>
-                                            <a asp-page="Exam_Details" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-details">
-                                                <span class="btn-icon">📋</span>
-                                                Details
-                                            </a>
-                                        </td>
-                                        <td>@(eksamen.ExamStartDate?.ToString("dd-MM-yyyy") ?? "")</td>
-                                        <td>@eksamen.ExamName</td>
-                                        <td>
-                                            @if (eksamen.Class != null)
+                                <tr>
+                                    <td>
+                                        <a asp-page="Exam_Details" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-details">
+                                            <span class="btn-icon">📋</span>
+                                            Details
+                                        </a>
+                                    </td>
+                                    <td>@(eksamen.ExamStartDate?.ToString("dd-MM-yy") ?? "")</td>
+                                    <td>@eksamen.ExamName</td>
+                                    <td>
+                                        @if (eksamen.Class != null)
                                         {
                                             @eksamen.Class.ClassName
-                                            }
-                                            else
-                                            {
-                                                <span class="not-assigned">Not Assigned</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if(eksamen.NumOfStud == 0 || eksamen.NumOfStud == null)
-                                            {
-                                                <p>@(eksamen.StudentsToExams.Count)</p>
-                                            }
-                                            else 
+                                        }
+                                        else
                                         {
-                                                <p>@eksamen.NumOfStud</p>
-                                            }
+                                            <span class="not-assigned">Not Assigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (eksamen.NumOfStud == 0 || eksamen.NumOfStud == null)
+                                        {
+                                            <p>@(eksamen.StudentsToExams.Count)</p>
+                                        }
+                                        else
+                                        {
+                                            <p>@eksamen.NumOfStud</p>
+                                        }
 
-                                        </td>
-                                        <td class="action-buttons">
-                                            <a asp-page="./Edit_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-edit">Edit</a>
-                                            <a asp-page="./Delete_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-delete">Delete</a>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                        {
-                                <tr>
-                                    <td colspan="6" class="no-data">
-                                        <div class="empty-state">
-                                            <span class="empty-icon">📝</span>
-                                            @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
-                                            {
-                                                <p>No exams found matching your search criteria</p>
-                                                <a asp-page="/Eksamner/GetEksamner" class="btn-toggle" role="menuitem">Show All Exams</a>
-                                            }
-                                            else
-                                        {
-                                                <p>No exams found in the system</p>
-                                                <a asp-page="/Eksamner/Create_Exam" class="btn-toggle" role="menuitem">Add First Exam</a>
-                                            }
-                                        </div>
+                                    </td>
+                                    <td class="action-buttons">
+                                        <a asp-page="./Edit_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-edit">Edit</a>
+                                        <a asp-page="./Delete_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-delete">Delete</a>
                                     </td>
                                 </tr>
                             }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="no-data">
+                                    <div class="empty-state">
+                                        <span class="empty-icon">📝</span>
+                                        @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
+                                        {
+                                            <p>No exams found matching your search criteria</p>
+                                            <a asp-page="/Eksamner/GetEksamner" class="btn-toggle" role="menuitem">Show All Exams</a>
+                                        }
+                                        else
+                                        {
+                                            <p>No exams found in the system</p>
+                                            <a asp-page="/Eksamner/Create_Exam" class="btn-toggle" role="menuitem">Add First Exam</a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -265,7 +264,7 @@
     }
 
         .filter-info p {
-                margin: 0;
+            margin: 0;
             color: #2c5aa0;
         }
 
@@ -344,7 +343,7 @@
     }
 
 
-                @@media (max-width: 768px) {
+    @@media (max-width: 768px) {
         .search-form {
             grid-template-columns: 1fr;
         }
@@ -358,8 +357,8 @@
         }
     }
     /* ==============================================
-       BUTTON STYLES FOR ADD NEW EXAM
-    ============================================== */
+           BUTTON STYLES FOR ADD NEW EXAM
+        ============================================== */
     .btn {
         display: inline-flex;
         align-items: center;
