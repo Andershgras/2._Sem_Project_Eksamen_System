@@ -23,7 +23,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
             if (classItem == null) return RedirectToPage("Index");
 
             ClassItem = classItem;
-            Exams = ClassItem.Exams ?? new List<Exam>();
+            Exams = ClassItem.Exams ?? new List<Exam>(); // Ensure Exams is not null
 
             return Page();
         }
