@@ -139,7 +139,8 @@
                     activeFilters.Add($"End: {Model.Filter.FilterByEndDate.Value.ToString("dd-MM-yyyy")}");
 
             }
-                        
+
+            
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
@@ -393,5 +394,15 @@
         display: flex;
         gap: 1rem;
         align-items: center;
+    }
+    /* Hide all filter fields except Exam Name */
+    .search-form .form-group:not(:first-child) {
+        display: none;
+    }
+
+    /* Adjust grid for single field */
+    .search-form {
+        grid-template-columns: 1fr;
+        max-width: 300px;
     }
 </style>
