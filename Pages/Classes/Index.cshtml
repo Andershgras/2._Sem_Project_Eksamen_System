@@ -11,13 +11,12 @@
 <a asp-page="Create" class="btn btn-primary mb-3"> <i class="bi bi-plus"></i> Class </a>
 
 <!-- Filter -->
-<form>
-    <p>
-        Search: <input type="text" asp-for="Filter.FilterByName" />
-
-        <input type="submit" value="Filter" />
-        <a asp-page="/Hold/Index">Back to Full List </a>
-    </p>
+<form method="get" class="mb-3">
+    <div class="input-group" style="max-width:420px;">
+        <input class="form-control" type="text" name="Filter.FilterByName" value="@Model.Filter?.FilterByName" placeholder="Search by name..." />
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+        <a asp-page="/Classes/Index" class="btn ms-3 btn-outline-secondary btn-sm">Full List</a>
+    </div>
 </form>
 
 <table class="table">

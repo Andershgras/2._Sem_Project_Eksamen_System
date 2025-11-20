@@ -13,11 +13,11 @@
 </p>
 
 <form method="get" class="mb-3">
-    <p>
-        Search: <input type="text" asp-for="Filter.FilterByName" />
-        <input type="submit" value="Filter" class="btn btn-outline-secondary btn-sm" />
-        <a asp-page="/Teachers/Index" class="btn btn-link btn-sm">Back to Full List</a>
-    </p>
+    <div class="input-group" style="max-width:420px;">
+        <input class="form-control" type="text" name="Filter.FilterByName" value="@Model.Filter?.FilterByName" placeholder="Search by name..." />
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+        <a asp-page="/Teachers/Index" class="btn ms-3 btn-outline-secondary btn-sm">Full List</a>
+    </div>
 </form>
 
 <table class="table table-striped align-middle">
