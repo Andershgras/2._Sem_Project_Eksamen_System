@@ -20,6 +20,7 @@ else
             <strong>This class has the following exams assigned:</strong> <br />
             You must delete all associated exams before deleting the class.
         </div>
+        <!-- Shows all Exams that are linked to the Class if any-->
         <table class="table">
             <thead>
                 <tr>
@@ -53,6 +54,7 @@ else
         </form>
     }
 
+    <!--Reports the validation errors-->
     if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">
