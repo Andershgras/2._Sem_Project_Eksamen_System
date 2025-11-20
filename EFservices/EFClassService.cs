@@ -112,7 +112,6 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         /// </summary>
         /// <param name="classId"></param>
         /// <returns></returns>
-
         public async Task<IEnumerable<Exam>> GetExamsForClassAsync(int classId)
         {
             return await _context.Exams

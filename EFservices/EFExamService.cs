@@ -7,17 +7,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    // EFCore backed CRUD services for exam entities 
+    
 
     public class EFExamService: ICRUDAsync<Exam>
     {
-        //DbContext injected via DI
+        //DbContext injected
         EksamensDBContext context;
         public EFExamService(EksamensDBContext dBContext)
         {
             this.context = dBContext;
         }
-        // Return all exams with all relevent navigations
+        
 
         public async Task<IEnumerable<Exam>> GetAllAsync()
         {
@@ -34,7 +34,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .OrderBy(e => e.ExamId)
                 .ToListAsync();
         }
-        // Return exam filtered by name prefix a simple filter concept
+        // Return exam filtered by name 
         public async Task<IEnumerable<Exam>> GetAllAsync(GenericFilter Filter)
         {
             return await context.Exams
@@ -48,7 +48,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await context.AddAsync(item);
             await context.SaveChangesAsync();
         }
-        // Get a single exam by ID with full navigations
+        // Get a single exam with all related elements like teachers, rooms, students and re-exam
         public async Task<Exam?> GetItemByIdAsync(int id)
         {
             return await context.Exams
@@ -64,7 +64,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         }
         //Delete an exam and also clean up all relationship entries within a transaction
         public async Task DeleteItemAsync(int id)
-        {
+        {   // Start a transaction to ensure all related deletions occur properly
             await using var transaction = await context.Database.BeginTransactionAsync();
 
             try
@@ -79,25 +79,25 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
 
                 if (examToDelete != null)
                 {
-                    // 1. Remove StudentsToExams relationships
+                    // Remove StudentsToExams relationships
                     if (examToDelete.StudentsToExams.Any())
                     {
                         context.StudentsToExams.RemoveRange(examToDelete.StudentsToExams);
                     }
 
-                    // 2. Remove TeachersToExams relationships
+                    // Remove TeachersToExams relationships
                     if (examToDelete.TeachersToExams.Any())
                     {
                         context.TeachersToExams.RemoveRange(examToDelete.TeachersToExams);
                     }
 
-                    // 3. Remove RoomsToExams relationships
+                    // Remove RoomsToExams relationships
                     if (examToDelete.RoomsToExams.Any())
                     {
                         context.RoomsToExams.RemoveRange(examToDelete.RoomsToExams);
                     }
 
-                    // 4. Handle inverse re-exams (exams that point to this exam as their ReExam)
+                    // Handle inverse re-exams (exams that point to this exam as their ReExam)
                     if (examToDelete.InverseReExam.Any())
                     {
                         foreach (var inverseExam in examToDelete.InverseReExam.ToList())
@@ -106,19 +106,17 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                         }
                     }
 
-                    // 5. If this exam has a ReExam, we need to decide what to do with it
-                    // Option A: Also delete the ReExam (cascade delete)
-                    // Option B: Keep the ReExam but remove the relationship
+                    
                     if (examToDelete.ReExamId.HasValue)
                     {
-                        // For now, let's just remove the relationship
+                        // Removes the relationship between this exam and its ReExam
                         examToDelete.ReExamId = null;
                     }
 
                     // Save all relationship changes first
                     await context.SaveChangesAsync();
 
-                    // 6. Finally delete the exam itself
+                    // Finally delete the exam itself
                     context.Exams.Remove(examToDelete);
                     await context.SaveChangesAsync();
 
