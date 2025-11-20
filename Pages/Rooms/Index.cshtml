@@ -9,7 +9,11 @@
          model='new PageHeaderModel("Room Overview", "View, edit and manage all rooms")' />
 
 <div class="mb-3">
-    <a asp-page="./Create" class="btn btn-primary">Create New Room</a>
+    @await Html.PartialAsync("_CreateButton", new CreateButtonModel
+    {
+        Page = "./Create",
+        Text = "Create New Room"
+        })
 </div>
 
 <form method="get" class="mb-3">

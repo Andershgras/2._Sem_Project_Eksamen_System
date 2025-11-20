@@ -1,0 +1,29 @@
+﻿@model CreateButtonModel
+
+<a asp-page="@Model.Page" class="btn btn-primary btn-add">
+    <span class="btn-icon">➕</span>
+    @Model.Text
+</a>
+
+<style>
+    .btn-add {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.9rem;
+        font-weight: 500;
+        border-radius: 6px;
+        background-color: #0066cc;
+        border: 1px solid #005bb5;
+    }
+
+        .btn-add:hover {
+            background-color: #005bb5;
+            border-color: #004c99;
+        }
+
+    .btn-icon {
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+</style>

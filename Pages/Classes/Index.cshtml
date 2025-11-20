@@ -8,8 +8,11 @@
 <partial name="~/Pages/Shared/_PageHeader.cshtml"
          model='new PageHeaderModel("Class Overview", "View, edit and manage all classes")' />
 
-<a asp-page="Create" class="btn btn-primary mb-3"> <i class="bi bi-plus"></i> Class </a>
-
+@await Html.PartialAsync("_CreateButton", new CreateButtonModel
+{
+    Page = "Create",
+    Text = "Create New Class"
+})
 <!-- Filter -->
 <form>
     <p>

@@ -9,7 +9,11 @@
          model='new PageHeaderModel("Teacher Overview", "View, edit and manage all teachers")' />
 
 <p>
-    <a asp-page="Create" class="btn btn-primary">Create New</a>
+    @await Html.PartialAsync("_CreateButton", new CreateButtonModel
+    {
+        Page = "Create",
+        Text = "Create New Teacher"
+        })
 </p>
 
 <form method="get" class="mb-3">
