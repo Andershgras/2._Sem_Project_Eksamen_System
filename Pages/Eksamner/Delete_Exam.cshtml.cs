@@ -18,7 +18,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _examService = examService;
             _context = context;
         }
-
+        //Check These green Lines and add remaining comments
         public async Task<IActionResult> OnGetAsync(int id)
         {
             Exam = await _context.Exams
