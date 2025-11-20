@@ -148,10 +148,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.TeachersToExams.RemoveRange(items);
             await _context.SaveChangesAsync();
         }
-        /// <summary>
-        /// NEW METHOD: Bulk update roles for existing records
-        /// Call this once to fix all existing null/empty roles
-        /// </summary>
+        
         public async Task FixMissingRolesAsync()
         {
             var recordsWithMissingRoles = await _context.TeachersToExams
