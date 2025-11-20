@@ -51,7 +51,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();
         }
-        //Return rooms filtered by name and this operation is case -insensitive
+        //Return rooms filtered by name
         public async Task<IEnumerable<Room>> GetAllAsync(GenericFilter filter)
         {
             var term = (filter?.FilterByName ?? string.Empty).Trim().ToLower();

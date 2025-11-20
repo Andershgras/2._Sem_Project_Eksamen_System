@@ -54,7 +54,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await _context.TeachersToExams.AddAsync(item);
             await _context.SaveChangesAsync();
         }
-        // Update an existing mapping; ensure Role default and copy scalar values
+        // Update an existing mapping; ensure Role default 
         public async Task UpdateItemAsync(TeachersToExam item)
         {
             // Ensure role has a default value if not provided

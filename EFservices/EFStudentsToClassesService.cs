@@ -189,7 +189,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             // adds mappings that are desired but missing
             var toAddIds = desired.Except(existingIds).ToList();
             if (toAddIds.Any())
-            {
+            {   // create new mapping entity
                 var newMappings = toAddIds.Select(sid => new StudentsToClass
                 {
                     StudentId = sid,

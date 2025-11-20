@@ -109,8 +109,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         // Get a single studnet by id with related classes and exam
         public async Task<Student?> GetItemByIdAsync(int id)
         {
-            // Use tracking because caller might update the returned entity;
-            // if caller only needs read-only, consider AsNoTracking with FirstOrDefaultAsync
+          
             return await _context.Students
                 .Include(s => s.StudentsToClasses) 
                     .ThenInclude(sc => sc.Class)    

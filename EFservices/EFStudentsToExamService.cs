@@ -4,7 +4,7 @@ using _2._Sem_Project_Eksamen_System.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
-{// EFCore Service for managing Student to Exam join entries (StudentsToExam)
+{
     public class EFStudentsToExamService : IStudentsToExams
     {
         //DbContext Injection

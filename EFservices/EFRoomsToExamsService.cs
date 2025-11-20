@@ -25,7 +25,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 .AsNoTracking()
                 .ToListAsync();
         }
-        // Return assignments filtered by role substring and this is case insensitive
+        // Return assignments filtered by role substring
         public async Task<IEnumerable<RoomsToExam>> GetAllAsync(GenericFilter filter)
         {
             var term = (filter?.FilterByName ?? string.Empty).ToLower();
