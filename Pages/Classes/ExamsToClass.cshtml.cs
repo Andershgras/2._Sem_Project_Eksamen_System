@@ -8,7 +8,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
     public class ExamsToClassModel : PageModel
     {
         private readonly ICRUDAsync<Class> _service;
-        public Class ClassItem { get; set; }
+        public Class? ClassItem { get; set; }
         public IEnumerable<Exam> Exams { get; set; }
 
         public ExamsToClassModel(ICRUDAsync<Class> service)

@@ -11,7 +11,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
         public IEnumerable<Student> Students { get; set; }
 
         [BindProperty]
-        public Class ClassItem { get; set; }
+        public Class? ClassItem { get; set; }
 
         public StudentsToClassesModel(ICRUDAsync<Class> service)
         {
@@ -23,7 +23,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
             var classItem = await _service.GetItemByIdAsync(id);
             if (classItem == null) return RedirectToPage("Index");
 
-            ClassItem = classItem;
+            ClassItem = classItem; // Assign the retrieved class to the property with students
             Students = ClassItem.StudentsToClasses
                 .Select(sc => sc.Student)
                 .Where(s => s != null)
