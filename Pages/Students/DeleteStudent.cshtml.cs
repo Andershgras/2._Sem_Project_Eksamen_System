@@ -8,6 +8,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
     public class DeleteStudentModel : PageModel
     {
+        // Service for CRUD operations on 
         private readonly ICRUDAsync<Student> _studentService;
 
         [BindProperty]
