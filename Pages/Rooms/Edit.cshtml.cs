@@ -19,11 +19,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Rooms
             Room = room;
             return Page();
         }
-
-        public IActionResult OnPostAsync()
+        public async Task<IActionResult> OnPostAsync() 
         {
-            if (!ModelState.IsValid) return Page();
-            _service.UpdateItemAsync(Room);
+            await _service.UpdateItemAsync(Room);
             return RedirectToPage("Index");
         }
     }
