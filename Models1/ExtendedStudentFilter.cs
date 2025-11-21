@@ -9,11 +9,8 @@ namespace _2._Sem_Project_Eksamen_System.Models1
     public class ExtendedStudentFilter : GenericFilter
     {
         private int? _filterById = null;
-        //Filter by e mail
         public string FilterByEmail { get; set; } = string.Empty;
-        // Filter student by class
         public string FilterByClass { get; set; } = string.Empty;
-        // Filter student by specific sutdent ID
         
         public int? FilterById
         {
