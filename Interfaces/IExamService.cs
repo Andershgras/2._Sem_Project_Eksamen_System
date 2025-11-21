@@ -5,8 +5,11 @@ using _2._Sem_Project_Eksamen_System.Utils;
 
 namespace _2._Sem_Project_Eksamen_System.Interfaces
 {
+    // Service contract for exam operations with async CRUD support
+
     public interface IExamService : ICRUDAsync<Exam>
     {
-        Task<IEnumerable<Exam>> GetAllAsync(ExtendedExamFilter filter);
+       // Retrieve exams matching filter criteria asynchronously
+            Task<IEnumerable<Exam>> GetAllAsync(ExtendedExamFilter filter);
     }
 }
