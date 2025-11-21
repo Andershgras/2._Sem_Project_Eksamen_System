@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _2._Sem_Project_Eksamen_System.Models1;
 // Maps this entity to the "Exam" database table
@@ -48,7 +44,6 @@ public partial class Exam
     public bool IsReExam { get; set; }
     // Indicates this exam is a final exam
     [BindNever]
-
     public bool IsFinalExam { get; set; }
     // Long description or instructions
    [Column(TypeName = "text")]

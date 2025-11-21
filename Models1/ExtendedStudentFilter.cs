@@ -14,7 +14,6 @@ namespace _2._Sem_Project_Eksamen_System.Models1
         // Filter student by class
         public string FilterByClass { get; set; } = string.Empty;
         // Filter student by specific sutdent ID
-        public int? FilterById { get; set; }
         
         public int? FilterById
         {

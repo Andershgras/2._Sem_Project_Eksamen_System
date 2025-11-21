@@ -33,6 +33,6 @@ public partial class Class
     public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
     // Navigation property inverse of StudentsToClass.Class
 
-     [InverseProperty("Class")]
+    [InverseProperty("Class")]
     public virtual ICollection<StudentsToClass> StudentsToClasses { get; set; } = new List<StudentsToClass>();
 }
