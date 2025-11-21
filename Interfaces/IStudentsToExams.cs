@@ -20,7 +20,7 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
 
         // Update students on an exam if Class changes
         Task SyncStudentsForExamAndClassAsync(int examId, int newClassId);
-        
+        // Add students to an existing exam
         Task AddStudentsToExamAsync(IEnumerable<int> studIds, int examId);
         #endregion
     }
