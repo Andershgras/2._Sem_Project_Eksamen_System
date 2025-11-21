@@ -302,7 +302,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
 
                 // Persist selected examiners (SelectedTeacherIds) with roles
-                // --- NEW, SIMPLIFIED TEACHER ASSIGNMENT LOGIC ---
+                // --- TEACHER ASSIGNMENT LOGIC ---
 
                 // 1. Assign Examiner using the new property
                 if (ExaminerTeacherId.HasValue){
