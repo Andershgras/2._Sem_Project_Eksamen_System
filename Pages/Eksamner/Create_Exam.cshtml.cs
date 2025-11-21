@@ -212,9 +212,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
 
             // ModelState validation checks -----------------------------------
-
-            
-
             if (SelectedRoomId.HasValue)// check room availability for the selected room and date range ---
             {
                 OverlapResult result = _overlapService.RoomHasOverlap(SelectedRoomId.Value, Exam.ExamStartDate, Exam.ExamEndDate);

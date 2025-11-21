@@ -67,8 +67,6 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
         }
 
-
-
         // Adds all students from a class to an exam
         public async Task AddStudentsFromClassToExamAsync(int classId, int examId)
         {

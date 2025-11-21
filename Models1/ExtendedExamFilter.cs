@@ -21,6 +21,5 @@ namespace _2._Sem_Project_Eksamen_System.Models1
         public DateOnly? FilterByStartDate { get; set; }
         // Filter exams by End date or identifier
         public DateOnly? FilterByEndDate { get; set; }
-       
     }
 }

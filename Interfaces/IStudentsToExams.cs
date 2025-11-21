@@ -5,7 +5,6 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
 {
     public interface IStudentsToExams : ICRUDAsync<StudentsToExam>
     {
-
         #region Custom Methods for StudentsToExam
 
         /// <summary>

@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    
-
     public class EFExamService: ICRUDAsync<Exam>
     {
         //DbContext injected
@@ -18,7 +16,6 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             this.context = dBContext;
         }
         
-
         public async Task<IEnumerable<Exam>> GetAllAsync()
         {
             return await context.Exams
@@ -208,7 +205,6 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 context.Entry(existingExam).CurrentValues.SetValues(item);
                 await context.SaveChangesAsync();
             }
-        } 
-              
+        }      
     }
 }
