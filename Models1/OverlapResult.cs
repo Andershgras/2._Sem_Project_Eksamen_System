@@ -9,23 +9,24 @@
     /// context (e.g., exam name, time range, teacher, or room) are provided.</remarks>
     public class OverlapResult
     {
+        // Flag indicating if a scheduling conflict exists
         public bool HasConflict { get; set; } = false;
-
+        // Print Descriptive mesage
         public string? Message { get; set; }
 
         // fx. "Exam", "Class", "Room", etc.
         public string? ConflictingEntityType { get; set; }
-
+        // Id Of the conflictiong entity 
         public int? ConflictingEntityId { get; set; }
-
+        //Name of the conflictiong exam
         public string? ConflictingExamName { get; set; }
-
+        //  start Date of the conflictiong exam
         public DateOnly? ConflictingExamStart { get; set; }
-
+        //  End Date of the conflictiong exam
         public DateOnly? ConflictingExamEnd { get; set; }
-
+        // Id of the teacher involved on that conflict or overlap
         public int? ConflictingTeacherId { get; set; }
-
+        //Id of the room involved in conflict
         public int? ConflictingRoomId { get; set; }
 
         // Convenience factory for no-conflict

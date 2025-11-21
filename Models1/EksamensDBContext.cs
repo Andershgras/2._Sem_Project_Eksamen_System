@@ -6,12 +6,15 @@ namespace _2._Sem_Project_Eksamen_System.Models1;
 
 public partial class EksamensDBContext : DbContext
 {
+    // Connection string to loaded from configuration
+
+
     string? connectionString = null;
     public EksamensDBContext(IConfiguration conf)
     {
         connectionString = conf.GetConnectionString("EksamensDBCornection");
     }
-
+    // Configure EF Core to use SQL Server with provided connection string
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         //options.UseSqlServer (@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=RegistrationDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
@@ -45,34 +48,35 @@ public partial class EksamensDBContext : DbContext
     {
         modelBuilder.Entity<Class>(entity =>
         {
-            entity.HasKey(e => e.ClassId).HasName("PK__Class__CB1927A06216F48D");
+            entity.HasKey(e => e.ClassId).HasName("PK__Class__CB1927A06216F48D");//Primary key mapping
         });
 
         modelBuilder.Entity<Exam>(entity =>
         {
-            entity.HasKey(e => e.ExamId).HasName("PK__Exam__297521A7813E58EB");
+            entity.HasKey(e => e.ExamId).HasName("PK__Exam__297521A7813E58EB");// primary key mapping
 
-            entity.Property(e => e.IsFinalExam).HasDefaultValue(false);
-            entity.Property(e => e.IsReExam).HasDefaultValue(false);
+            entity.Property(e => e.IsFinalExam).HasDefaultValue(false);//Default not a final exam
+            entity.Property(e => e.IsReExam).HasDefaultValue(false);// Default not a re exam
+        // Required relationship to Class; prevent cascade delete, set client behavior
 
             entity.HasOne(d => d.Class).WithMany(p => p.Exams)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Exam__ClassID__44CA3770");
-
-            entity.HasOne(d => d.ReExam).WithMany(p => p.InverseReExam).HasConstraintName("FK__Exam__ReExamID__45BE5BA9");
+            // Optional self-reference for re-exam relationship
+             entity.HasOne(d => d.ReExam).WithMany(p => p.InverseReExam).HasConstraintName("FK__Exam__ReExamID__45BE5BA9");
         });
 
         modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.RoomId).HasName("PK__Room__32863919C5E8573E");
+            entity.HasKey(e => e.RoomId).HasName("PK__Room__32863919C5E8573E");//Primary key mapping
         });
 
         modelBuilder.Entity<RoomsToExam>(entity =>
         {
-            entity.HasKey(e => e.RoomExamId).HasName("PK__RoomsToE__910471D9E4363F92");
-
+            entity.HasKey(e => e.RoomExamId).HasName("PK__RoomsToE__910471D9E4363F92");// primary key mapping
+            //Relation ship to room
             entity.HasOne(d => d.Exam).WithMany(p => p.RoomsToExams).HasConstraintName("FK__RoomsToEx__ExamI__56E8E7AB");
-
+            // Relationship to exam
             entity.HasOne(d => d.Room).WithMany(p => p.RoomsToExams).HasConstraintName("FK__RoomsToEx__RoomI__55F4C372");
         });
 
@@ -83,6 +87,7 @@ public partial class EksamensDBContext : DbContext
 
         modelBuilder.Entity<StudentsToClass>(entity =>
         {
+            
             entity.HasKey(e => e.StudentClassId).HasName("PK__Students__2FF1216749CA654A");
 
             entity.HasOne(d => d.Class).WithMany(p => p.StudentsToClasses).HasConstraintName("FK__StudentsT__Class__498EEC8D");
@@ -101,20 +106,21 @@ public partial class EksamensDBContext : DbContext
 
         modelBuilder.Entity<Teacher>(entity =>
         {
-            entity.HasKey(e => e.TeacherId).HasName("PK__Teacher__EDF25944054A720C");
+            entity.HasKey(e => e.TeacherId).HasName("PK__Teacher__EDF25944054A720C");//primary key mapping
         });
 
         modelBuilder.Entity<TeachersToExam>(entity =>
         {
-            entity.HasKey(e => e.TeacherExamId).HasName("PK__Teachers__5A1FB6FE5D9C3D1D");
-
+            entity.HasKey(e => e.TeacherExamId).HasName("PK__Teachers__5A1FB6FE5D9C3D1D");//primary key mapping
+            // relationship to exam
             entity.HasOne(d => d.Exam).WithMany(p => p.TeachersToExams).HasConstraintName("FK__TeachersT__ExamI__5224328E");
-
+            // Relationship to teacher
             entity.HasOne(d => d.Teacher).WithMany(p => p.TeachersToExams).HasConstraintName("FK__TeachersT__Teach__51300E55");
         });
 
-        OnModelCreatingPartial(modelBuilder);
+
+        OnModelCreatingPartial(modelBuilder);//Imp Allow partial class to configuration
     }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);// Imp extention point for furthe config
 }
