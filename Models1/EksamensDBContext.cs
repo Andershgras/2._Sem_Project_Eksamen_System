@@ -6,18 +6,16 @@ namespace _2._Sem_Project_Eksamen_System.Models1;
 
 public partial class EksamensDBContext : DbContext
 {
-    
-
-
     string? connectionString = null;
     public EksamensDBContext(IConfiguration conf)
     {
         connectionString = conf.GetConnectionString("EksamensDBCornection");
     }
-   
+
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-       
+        //options.UseSqlServer (@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=RegistrationDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        //Finder appsettings.json connection string
         options.UseSqlServer(connectionString);
     }
 
@@ -56,13 +54,12 @@ public partial class EksamensDBContext : DbContext
 
             entity.Property(e => e.IsFinalExam).HasDefaultValue(false);
             entity.Property(e => e.IsReExam).HasDefaultValue(false);
-       
 
             entity.HasOne(d => d.Class).WithMany(p => p.Exams)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Exam__ClassID__44CA3770");
-          
-             entity.HasOne(d => d.ReExam).WithMany(p => p.InverseReExam).HasConstraintName("FK__Exam__ReExamID__45BE5BA9");
+
+            entity.HasOne(d => d.ReExam).WithMany(p => p.InverseReExam).HasConstraintName("FK__Exam__ReExamID__45BE5BA9");
         });
 
         modelBuilder.Entity<Room>(entity =>
@@ -73,9 +70,9 @@ public partial class EksamensDBContext : DbContext
         modelBuilder.Entity<RoomsToExam>(entity =>
         {
             entity.HasKey(e => e.RoomExamId).HasName("PK__RoomsToE__910471D9E4363F92");
-           
+
             entity.HasOne(d => d.Exam).WithMany(p => p.RoomsToExams).HasConstraintName("FK__RoomsToEx__ExamI__56E8E7AB");
-        
+
             entity.HasOne(d => d.Room).WithMany(p => p.RoomsToExams).HasConstraintName("FK__RoomsToEx__RoomI__55F4C372");
         });
 
@@ -110,14 +107,14 @@ public partial class EksamensDBContext : DbContext
         modelBuilder.Entity<TeachersToExam>(entity =>
         {
             entity.HasKey(e => e.TeacherExamId).HasName("PK__Teachers__5A1FB6FE5D9C3D1D");
-          
+
             entity.HasOne(d => d.Exam).WithMany(p => p.TeachersToExams).HasConstraintName("FK__TeachersT__ExamI__5224328E");
-            
+
             entity.HasOne(d => d.Teacher).WithMany(p => p.TeachersToExams).HasConstraintName("FK__TeachersT__Teach__51300E55");
         });
-
 
         OnModelCreatingPartial(modelBuilder);
     }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);}
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+}
