@@ -122,7 +122,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
                 StudentId = studentId,
                 ClassId = classId
             };
-
+            // Add students to class
             _context.StudentsToClasses.Add(studentClass);
             await _context.SaveChangesAsync();
         }

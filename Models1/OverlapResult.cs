@@ -9,29 +9,30 @@
     /// context (e.g., exam name, time range, teacher, or room) are provided.</remarks>
     public class OverlapResult
     {
+     
         public bool HasConflict { get; set; } = false;
-
+   
         public string? Message { get; set; }
 
-        // fx. "Exam", "Class", "Room", etc.
+    
         public string? ConflictingEntityType { get; set; }
-
+     
         public int? ConflictingEntityId { get; set; }
-
+     
         public string? ConflictingExamName { get; set; }
-
+     
         public DateOnly? ConflictingExamStart { get; set; }
-
+      
         public DateOnly? ConflictingExamEnd { get; set; }
-
+      
         public int? ConflictingTeacherId { get; set; }
-
+     
         public int? ConflictingRoomId { get; set; }
 
-        // Convenience factory for no-conflict
+       
         public static OverlapResult Ok() => new OverlapResult { HasConflict = false };
 
-        // Convenience factory for conflict
+    
         public static OverlapResult Conflict(string message) => new OverlapResult { HasConflict = true, Message = message };
     }
 }

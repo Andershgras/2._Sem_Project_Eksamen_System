@@ -5,15 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.Models1;
-
 [Table("Class")]
 public partial class Class
 {
+    
     [Key]
     [Column("ClassID")]
     public int ClassId { get; set; }
 
-    // Example: Data-RO-F-V25B-2sem Format validation
+   
     private string _className = null!;
 
     [StringLength(250)]
@@ -26,9 +26,11 @@ public partial class Class
         get => _className;
         set => _className = ClassNameNormalizer.Normalize(value);
     }
+ 
 
     [InverseProperty("Class")]
     public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
+ 
 
     [InverseProperty("Class")]
     public virtual ICollection<StudentsToClass> StudentsToClasses { get; set; } = new List<StudentsToClass>();
