@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Threading.Tasks;
+using _2._Sem_Project_Eksamen_System.Utils;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
@@ -24,6 +25,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public SelectList ClassList { get; set; } = default!;
         public SelectList TeacherList { get; set; } = default!;
         public SelectList RoomList { get; set; } = default!;
+
+        [BindProperty]
+        public List<GenericMultySelect> ExaminerSelect { get; set; } = new List<GenericMultySelect>();
+
 
         [BindProperty]
         public Exam Exam { get; set; }
@@ -67,16 +72,35 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _overlapsService = overlapsService;
         }
 
+        private async Task PopulateExaminerSelectAsync(int id)
+        {
+            var teachers = (await _teacherService.GetAllAsync()).ToList();
+            ExaminerSelect = teachers.Select(t => new GenericMultySelect
+            {
+                SelectValue = t.TeacherId,
+                SelectText = t.TeacherName ?? string.Empty,
+                IsSelected = SelectedTeacherIds != null && SelectedTeacherIds.Contains(t.TeacherId)
+            }).ToList();
+        }
+
         public async Task<IActionResult> OnGet(int id)
         {
             //Getting all data from classes , teachers and rooms for dropdown lists
             var allClasses = await _classService.GetAllAsync();
             var allTeachers = await _teacherService.GetAllAsync();
             var allRooms = await _roomService.GetAllAsync();
+
             //now creating select lists to populate dropdowns
             ClassList = new SelectList(allClasses, "ClassId", "ClassName");
             TeacherList = new SelectList(allTeachers, "TeacherId", "TeacherName");
             RoomList = new SelectList(allRooms, "RoomId", "Name");
+
+            // Get currently assigned Examiner teachers for the exam
+            var examinerTeachers = await _teachersToExamService.GetTeachersByExamIdAndRoleAsync(id, "Examiner");
+            SelectedTeacherIds = examinerTeachers.Select(t => t.TeacherId).ToList();
+
+            await PopulateExaminerSelectAsync(id); // Populate examiner select list
+
 
             // Load the selected exam with its related exam with related data
             Exam = await _service.GetItemByIdAsync(id);
@@ -119,16 +143,20 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost(int id)
         {
             // Reload dropdown lists and populate withdata
             var allClasses = await _classService.GetAllAsync();
             var allTeachers = await _teacherService.GetAllAsync();
             var allRooms = await _roomService.GetAllAsync();
+            
 
             ClassList = new SelectList(allClasses, "ClassId", "ClassName");
             TeacherList = new SelectList(allTeachers, "TeacherId", "TeacherName");
             RoomList = new SelectList(allRooms, "RoomId", "Name");
+
+            await PopulateExaminerSelectAsync(id);
+            
 
             //Clear validation for  all ReExam fields when not editing/creating a ReExam
             if (!EditReExam)
@@ -152,6 +180,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                
                 ReExam.ClassId = Exam.ClassId;
+
                 //To set default classId and name for ReExam if not provided
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName}";
