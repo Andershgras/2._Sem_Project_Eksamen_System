@@ -237,14 +237,18 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
 
             // Check teacher availability for Exam
-            if (ExaminerTeacherId.HasValue)
+            if (SelectedTeacherIds.Count > 0)
             {
-                OverlapResult result = _overlapsService.TeacherHasOverlap(ExaminerTeacherId.Value,
-                  Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam, Exam.ExamId);
-                if (result != null && result.HasConflict)
+                foreach(var TeacherId in SelectedTeacherIds)
                 {
-                    ModelState.AddModelError("ExaminerTeacherId", "Examiner: " + result.Message);
+                    OverlapResult result = _overlapsService.TeacherHasOverlap(TeacherId,
+                    Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam, Exam.ExamId);
+                    if (result != null && result.HasConflict)
+                    {
+                        ModelState.AddModelError("ExaminerTeacherId", "Examiner: " + result.Message);
+                    }
                 }
+                
             }
             // Check Censor availability for Exam
             if (CensorTeacherId.HasValue)
@@ -349,12 +353,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             // Save changes to Main Exam
             await _service.UpdateItemAsync(Exam);
-            // 1. Update Teachers for Main Exam
+            
+            // 1. Update Teachers for Main Exam
             await _teachersToExamService.RemoveAllFromExamAsync(Exam.ExamId);
 
-            if (ExaminerTeacherId.HasValue)
+            if (SelectedTeacherIds.Count > 0)
             {
-                await _teachersToExamService.AddTeachersToExamsAsync(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
+                foreach (var teacherId in SelectedTeacherIds)
+                {
+                    await _teachersToExamService.AddTeachersToExamsAsync(teacherId, Exam.ExamId, "Examiner");
+                }
             }
             if (CensorTeacherId.HasValue)
             {
@@ -383,9 +391,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 // Teacher assignment for ReExam (inherits Examiner/Censor from main exam)
                 await _teachersToExamService.RemoveAllFromExamAsync(ReExam.ExamId);
-                if (ExaminerTeacherId.HasValue)
+                if (SelectedTeacherIds.Count > 0)
                 {
-                    await _teachersToExamService.AddTeachersToExamsAsync(ExaminerTeacherId.Value, ReExam.ExamId, "Examiner");
+                    foreach (var teacherId in SelectedTeacherIds)
+                    {
+                        await _teachersToExamService.AddTeachersToExamsAsync(teacherId, ReExam.ExamId, "Examiner");
+                    }
                 }
                 if (CensorTeacherId.HasValue)
                 {
