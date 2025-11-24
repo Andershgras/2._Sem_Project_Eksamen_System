@@ -14,9 +14,11 @@ public partial class EksamensDBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        //options.UseSqlServer (@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=RegistrationDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
-        //Finder appsettings.json connection string
-        options.UseSqlServer(connectionString);
+        // Prevent SQL Server from being added when InMemory is used in unit tests
+        if (!options.IsConfigured)
+        {
+            options.UseSqlServer(connectionString);
+        }
     }
 
     public virtual DbSet<Class> Classes { get; set; }
@@ -117,4 +119,8 @@ public partial class EksamensDBContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    public EksamensDBContext(DbContextOptions<EksamensDBContext> options)
+    : base(options)
+    {
+    }
 }
