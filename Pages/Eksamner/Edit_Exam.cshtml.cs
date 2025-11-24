@@ -39,8 +39,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public List<int> SelectedTeacherIds { get; set; } = new List<int>();
 
-        [BindProperty]
-        public int? ExaminerTeacherId { get; set; }
+        
         [BindProperty]
         public int? CensorTeacherId { get; set; }
 
@@ -110,11 +109,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             //Extract assigned teachers for roles
             if (Exam.TeachersToExams != null)
             {
-                var examiner = Exam.TeachersToExams.FirstOrDefault(t => t.Role == "Examiner");
-                if (examiner != null)
-                {
-                    ExaminerTeacherId = examiner.TeacherId;
-                }
+                //var examiner = Exam.TeachersToExams.FirstOrDefault(t => t.Role == "Examiner");
+                //if (examiner != null)
+                //{
+                //    ExaminerTeacherId = examiner.TeacherId;
+                //}
                 var censor = Exam.TeachersToExams.FirstOrDefault(t => t.Role == "Censor");
                 if (censor != null)
                 {
@@ -149,17 +148,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             var allClasses = await _classService.GetAllAsync();
             var allTeachers = await _teacherService.GetAllAsync();
             var allRooms = await _roomService.GetAllAsync();
-            
+
 
             ClassList = new SelectList(allClasses, "ClassId", "ClassName");
             TeacherList = new SelectList(allTeachers, "TeacherId", "TeacherName");
             RoomList = new SelectList(allRooms, "RoomId", "Name");
 
             await PopulateExaminerSelectAsync(id);
-            
 
-            //Clear validation for  all ReExam fields when not editing/creating a ReExam
-            if (!EditReExam)
+
+            //Clear validation for  all ReExam fields when not editing/creating a ReExam
+            if (!EditReExam)
             {
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
                     ModelState[key]?.Errors.Clear();
@@ -178,8 +177,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // while  editing or updating ReExam logic and validations
             if (EditReExam)
             {
-               
-                ReExam.ClassId = Exam.ClassId;
+
+                ReExam.ClassId = Exam.ClassId;
 
                 //To set default classId and name for ReExam if not provided
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
@@ -231,9 +230,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // --------------------------------validation checks--------------------------------------------------------------
 
             // Check Examiner availaiblity  to avoid overlap conflicts
-            if (ExaminerTeacherId.HasValue && CensorTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
-            {
-                ModelState.AddModelError("CensorTeacherId", "Censor cannot be the same as Examiner.");
+            if (CensorTeacherId.HasValue && SelectedTeacherIds.Contains(CensorTeacherId.Value)) { 
+              ModelState.AddModelError("CensorTeacherId", "Censor cannot be the same as Examiner.");
             }
 
             // Check teacher availability for Exam
@@ -264,13 +262,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Check teacher availability for ReExam (if creating/editing)
             if (EditReExam && ReExam.ExamId > 0)
             {
-                if (ExaminerTeacherId.HasValue)
+                if (SelectedTeacherIds.Count > 0)
                 {
-                    OverlapResult result = _overlapsService.TeacherHasOverlap(ExaminerTeacherId.Value,
-                      ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.IsFinalExam, ReExam.IsReExam, ReExam.ExamId);
-                    if (result != null && result.HasConflict)
+                    foreach (var TeacherId in SelectedTeacherIds)
                     {
-                        ModelState.AddModelError("ReExam.ExaminerTeacherId", "ReExam Examiner: " + result.Message);
+                        OverlapResult result = _overlapsService.TeacherHasOverlap(TeacherId,
+                        ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.IsFinalExam, ReExam.IsReExam, ReExam.ExamId);
+                        if (result != null && result.HasConflict)
+                        {
+                            ModelState.AddModelError("ReExam.ExaminerTeacherId", "ReExam Examiner: " + result.Message);
+                        }
                     }
                 }
                 // Check Censor availability for ReExam
