@@ -1,0 +1,38 @@
+﻿@using _2._Sem_Project_Eksamen_System.Models1
+@model Exam
+
+<div class="reexam-fields">
+    <div class="reexam-header">
+        <h3>ReExam Details</h3>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ExamName" class="form-label">ReExam Name</label>
+        <input asp-for="ExamName" class="form-control" placeholder="ReExam name" />
+        <span asp-validation-for="ExamName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NumOfStud" class="form-label">Number of Students</label>
+        <input asp-for="NumOfStud" type="number" class="form-control" />
+        <span asp-validation-for="NumOfStud" class="text-danger"></span>
+    </div>
+
+    <div class="form-grid compact-grid">
+        <div class="form-group">
+            <label asp-for="ExamStartDate" class="form-label">ReExam Start Date</label>
+            <input asp-for="ExamStartDate" type="date" class="form-control" />
+            <span asp-validation-for="ExamStartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ExamEndDate" class="form-label">ReExam End Date</label>
+            <input asp-for="ExamEndDate" type="date" class="form-control" />
+            <span asp-validation-for="ExamEndDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="DeliveryDate" class="form-label">ReExam Delivery Date</label>
+            <input asp-for="DeliveryDate" type="date" class="form-control" />
+            <span asp-validation-for="DeliveryDate" class="text-danger"></span>
+        </div>
+    </div>
+</div>

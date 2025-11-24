@@ -83,6 +83,7 @@
                         <div class="form-group">
                             <label for="Filter_FilterByStartDate" class="form-label">Start Date</label>
                             <input type="date" asp-for="Filter.FilterByStartDate" class="form-control compact-input" />
+
                         </div>
 
                         <div class="form-group">
@@ -124,21 +125,22 @@
                     activeFilters.Add($"Name: {Model.Filter.FilterByName}");
 
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByClass))
-                    activeFilters.Add($"Class:{Model.Filter.FilterByClass}");
+                    activeFilters.Add($"Class: {Model.Filter.FilterByClass}");  // Fixed label
 
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByTeacher))
-                    activeFilters.Add($"Class:{Model.Filter.FilterByTeacher}");
+                    activeFilters.Add($"Teacher: {Model.Filter.FilterByTeacher}");  // Fixed label
 
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByRoom))
-                    activeFilters.Add($"Class:{Model.Filter.FilterByRoom}");
+                    activeFilters.Add($"Room: {Model.Filter.FilterByRoom}");  // Fixed label
 
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByExaminerName))
-                    activeFilters.Add($"Class:{Model.Filter.FilterByExaminerName}");
+                    activeFilters.Add($"Examiner: {Model.Filter.FilterByExaminerName}");  // Fixed label
+
                 if (Model.Filter.FilterByStartDate.HasValue)
                     activeFilters.Add($"Start: {Model.Filter.FilterByStartDate.Value.ToString("dd-MM-yy")}");
+
                 if (Model.Filter.FilterByEndDate.HasValue)
                     activeFilters.Add($"End: {Model.Filter.FilterByEndDate.Value.ToString("dd-MM-yy")}");
-
             }
 
             <div class="table-container">
@@ -395,14 +397,5 @@
         gap: 1rem;
         align-items: center;
     }
-    /* Hide all filter fields except Exam Name */
-    .search-form .form-group:not(:first-child) {
-        display: none;
-    }
-
-    /* Adjust grid for single field */
-    .search-form {
-        grid-template-columns: 1fr;
-        max-width: 300px;
-    }
+   
 </style>

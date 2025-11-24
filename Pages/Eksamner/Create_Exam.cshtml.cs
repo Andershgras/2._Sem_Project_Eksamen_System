@@ -58,6 +58,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
        
         [BindProperty]
         public int? CensorTeacherId { get; set; }
+        /// ///////////////////////
+        public string ReExamNamePreview { get; set; }=string.Empty;
+
 
         public Create_ExamModel(
             ICRUDAsync<Exam> examService,
@@ -88,13 +91,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
-
         }
-        // Handles The student menu population based on selected class
-    
-        public async Task<IActionResult> OnPost()
+             
+            public async Task<IActionResult> OnPost()
         {
-                   // repopulate lists (use correct property names)
+            // repopulate lists (use correct property names)
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
 
             var rooms = await _roomService.GetAllAsync(); // Load all rooms once
@@ -102,8 +103,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
 
-
-            // Clear validation for all ReExam fields when not creating a ReExam
+             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
             {
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
@@ -152,7 +152,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 ReExam.ClassId = Exam.ClassId;
 
-
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName ?? string.Empty}";
 
@@ -175,9 +174,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
                 // if no teachers selected for ReExam, copy from main Exam
                 if (SelectedReExamTeacherIds == null)
-                    SelectedReExamTeacherIds = SelectedTeacherIds;
-                
-                         
+                   SelectedReExamTeacherIds = SelectedTeacherIds;                    
                 
                 ReExam.IsReExam = true;
 
