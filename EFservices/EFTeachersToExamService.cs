@@ -87,7 +87,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         /// <param name="examId"></param>
         /// <param name="role">Optional role - defaults to "Examiner" if not provided</param>
         /// <exception cref="ArgumentException"></exception>
-        public async Task AddTeachersToExamsAsync(int teacherId, int examId, string role = null)
+        public async Task AddTeachersToExamsAsync(int teacherId, int examId, string? role = null)
         {
             if (teacherId <= 0) throw new ArgumentException("teacherId must be greater than zero", nameof(teacherId));
             if (examId <= 0) throw new ArgumentException("examId must be greater than zero", nameof(examId));
@@ -163,6 +163,18 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 }
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<Teacher>> GetTeachersByExamIdAndRoleAsync(int examId, string role)
+        {
+            var teachers = await _context.TeachersToExams
+               .Where(tte => tte.ExamId == examId && tte.Role == role)
+               .Include(tte => tte.Teacher)
+               .Select(tte => tte.Teacher!)
+               .AsNoTracking()
+               .ToListAsync();
+
+            return teachers;
         }
     }
 }
