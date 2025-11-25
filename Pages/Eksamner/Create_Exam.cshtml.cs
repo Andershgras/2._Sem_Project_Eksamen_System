@@ -249,16 +249,37 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
             }
 
-            if (!SelectedTeacherIds.IsNullOrEmpty()) // check teacher availability for exam
+            // Check teacher availability for primary examiner
+            if (ExaminerTeacherId.HasValue)
             {
-                OverlapResult result = _overlapService.TeacherHasOverlap(SelectedTeacherIds.First(), 
+                OverlapResult result = _overlapService.TeacherHasOverlap(ExaminerTeacherId.Value,
                     Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
                 if (result != null && result.HasConflict)
                 {
-                    ModelState.AddModelError("SelectedTeacherIds", result.Message ?? "Something went wrong");
+                    ModelState.AddModelError("ExaminerTeacherId", result.Message ?? "Teacher has scheduling conflict");
                     return Page();
                 }
             }
+
+            // Check teacher availability for additional examiners
+            if (!SelectedTeacherIds.IsNullOrEmpty())
+            {
+                foreach (var teacherId in SelectedTeacherIds.Distinct())
+                {
+                    // Skip primary examiner (already checked above)
+                    if (teacherId == ExaminerTeacherId)
+                        continue;
+
+                    OverlapResult result = _overlapService.TeacherHasOverlap(teacherId,
+                        Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
+                    if (result != null && result.HasConflict)
+                    {
+                        ModelState.AddModelError("SelectedTeacherIds", result.Message ?? "Teacher has scheduling conflict");
+                        return Page();
+                    }
+                }
+            }
+
             // validatetions end -------------------------------------------------
 
             if (!ModelState.IsValid)
@@ -299,10 +320,21 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 // --- TEACHER ASSIGNMENT LOGIC ---
 
                 // 1. Assign Examiner using the new property
-                if (ExaminerTeacherId.HasValue){
+                if (ExaminerTeacherId.HasValue)
+                {
                     await _teachersToExamsService.AddTeachersToExamsAsync(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
                 }
-
+                if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
+                {
+                    foreach (var teacherId in SelectedTeacherIds)
+                    {
+                        // Don't duplicate if same as primary examiner
+                        if (teacherId != ExaminerTeacherId)
+                        {
+                            await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, Exam.ExamId, "Examiner");
+                        }
+                    }
+                }
                 // 2. Assign Censor
                 if (CensorTeacherId.HasValue)
                 {
