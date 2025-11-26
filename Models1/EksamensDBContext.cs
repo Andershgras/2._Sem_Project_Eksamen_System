@@ -9,7 +9,7 @@ public partial class EksamensDBContext : DbContext
     string? connectionString = null;
     public EksamensDBContext(IConfiguration conf)
     {
-        connectionString = conf.GetConnectionString("EksamensDBConection");
+        connectionString = conf.GetConnectionString("EksamensDBCornection");
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)

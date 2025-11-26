@@ -62,9 +62,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
        
         [BindProperty]
         public int? CensorTeacherId { get; set; }
-        /// ///////////////////////
-        public string ReExamNamePreview { get; set; }=string.Empty;
-
 
         public Create_ExamModel(
             ICRUDAsync<Exam> examService,
@@ -109,10 +106,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
             await PopulateExaminerSelectAsync();
         }
-             
-            public async Task<IActionResult> OnPost()
+        // Handles The student menu population based on selected class
+    
+        public async Task<IActionResult> OnPost()
         {
-            // repopulate lists (use correct property names)
+                   // repopulate lists (use correct property names)
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
 
             var rooms = await _roomService.GetAllAsync(); // Load all rooms once
@@ -123,7 +121,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             SelectedTeacherIds = ExaminerSelect.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
 
-             // Clear validation for all ReExam fields when not creating a ReExam
+
+            // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
             {
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
@@ -171,6 +170,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (CreateReExam)
             {
                 ReExam.ClassId = Exam.ClassId;
+
 
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName ?? string.Empty}";
@@ -271,8 +271,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
             }
 
-            // Check teacher availability for primary examiner
-            if (ExaminerTeacherId.HasValue)
+            if (!SelectedTeacherIds.IsNullOrEmpty()) // check teacher availability for exam
             {
                 foreach (var teacherId in SelectedTeacherIds.Distinct())
                 {
@@ -286,26 +285,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 }
                
             }
-
-            // Check teacher availability for additional examiners
-            if (!SelectedTeacherIds.IsNullOrEmpty())
-            {
-                foreach (var teacherId in SelectedTeacherIds.Distinct())
-                {
-                    // Skip primary examiner (already checked above)
-                    if (teacherId == ExaminerTeacherId)
-                        continue;
-
-                    OverlapResult result = _overlapService.TeacherHasOverlap(teacherId,
-                        Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
-                    if (result != null && result.HasConflict)
-                    {
-                        ModelState.AddModelError("SelectedTeacherIds", result.Message ?? "Teacher has scheduling conflict");
-                        return Page();
-                    }
-                }
-            }
-
             // validatetions end -------------------------------------------------
 
             if (!ModelState.IsValid)
@@ -352,17 +331,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                         await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, Exam.ExamId, "Examiner");
                     }
                 }
-                if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
-                {
-                    foreach (var teacherId in SelectedTeacherIds)
-                    {
-                        // Don't duplicate if same as primary examiner
-                        if (teacherId != ExaminerTeacherId)
-                        {
-                            await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, Exam.ExamId, "Examiner");
-                        }
-                    }
-                }
+
                 // 2. Assign Censor
                 if (CensorTeacherId.HasValue)
                 {

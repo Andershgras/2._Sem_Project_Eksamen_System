@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Exam Details";
     var exam = Model.Exam;
-    var reExam = exam?.ReExam;
+    var reExam = Model.Exam.ReExam;
 }
 
 <div class="page-body">
@@ -82,7 +82,7 @@
                                     <span class="info-value format-badge">@exam.Format</span>
                                 </div>
                                 <div class="info-row">
-                                    <span class="info-label">Exam Invigilation</span>
+                                    <span class="info-label">Exam Patrol</span>
                                     <span class="info-value">
                                         <span class="status-badge @(exam.ExamPatrol ? "status-active" : "status-inactive")">
                                             @(exam.ExamPatrol ? "Yes" : "No")
@@ -143,7 +143,7 @@
                                     </div>
                                 }
                                 else
-                                {
+                                {   
                                     <div class="rooms-list">
                                         <!--Group by RoomId and select first occurrence to remove duplicates -->
                                         <!-- This ensures each room appears only once even if there are multiple room-to-exam mappings -->
@@ -216,7 +216,7 @@
                 </div>
             }
 
-            <!-- TEACHERS SECTION - SIMPLIFIED (REMOVED EXAMINER TYPE COLUMN) -->
+            <!-- TEACHERS SECTION -->
             <div class="section-card">
                 <div class="section-header">
                     <h2>Assigned Teachers</h2>
@@ -512,46 +512,6 @@
             font-size: 0.9rem;
         }
 
-    /* TABLE STYLES */
-    .table-container {
-        padding: 1.5rem;
-    }
-
-    .data-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #ffffff;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-        .data-table th {
-            background: #f8fafc;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #374151;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .data-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #f3f4f6;
-            color: #6b7280;
-        }
-
-        .data-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .data-table tr:hover {
-            background: #f9fafb;
-        }
-
     /* ACTION BUTTONS STYLES */
     .form-actions {
         display: flex;
@@ -633,11 +593,6 @@
 
         .room-details {
             gap: 0.75rem;
-        }
-
-        .data-table {
-            display: block;
-            overflow-x: auto;
         }
     }
 </style>

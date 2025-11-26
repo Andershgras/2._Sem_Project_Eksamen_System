@@ -28,116 +28,95 @@
             </div>
 
             <div class="form-container">
-               <form method="post" novalidate>
-    @Html.AntiForgeryToken()
-    
-    <!-- THREE COLUMN FORM GRID -->
-    <div class="form-grid">
-        <!-- COLUMN 1: BASIC INFORMATION -->
-        <div class="form-column">
-            <h3 class="form-section-title">Basic Information</h3>
+                <form method="post">
+                    <!-- THREE COLUMN FORM GRID -->
+                    <div class="form-grid">
 
-            <div class="form-group">
-                <label asp-for="Exam.ExamName" class="form-label">Exam Name</label>
-                <input asp-for="Exam.ExamName" class="form-control" placeholder="Enter exam name" required />
-                <span asp-validation-for="Exam.ExamName" class="text-danger"></span>
-            </div>
+                        <!-- COLUMN 1: BASIC INFORMATION -->
+                        <div class="form-column">
+                            <h3 class="form-section-title">Basic Information</h3>
 
-            <div class="form-group">
-                <label asp-for="Exam.ClassId" class="form-label">Class</label>
-                <select asp-for="Exam.ClassId" class="form-control" asp-items="Model.ClassList" required>
-                    <option value="">-- Select Class --</option>
-                </select>
-                <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Exam.Description" class="form-label">Description</label>
-                <textarea asp-for="Exam.Description" class="form-control" rows="3" placeholder="Enter exam description"></textarea>
-                <span asp-validation-for="Exam.Description" class="text-danger"></span>
-            </div>
-        </div>
-
-        <!-- COLUMN 2: EXAM DETAILS -->
-        <div class="form-column">
-            <h3 class="form-section-title">Exam Details</h3>
-
-            <div class="form-group">
-                <label asp-for="Exam.CensorType" class="form-label">Censor Type</label>
-                <select asp-for="Exam.CensorType" class="form-control" required>
-                    <option value="">-- Select Censor Type --</option>
-                    <option value="Intern">Intern</option>
-                    <option value="Extern">Extern</option>
-                </select>
-                <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Exam.Format" class="form-label">Format</label>
-                <input asp-for="Exam.Format" class="form-control" placeholder="e.g., Oral, Written" required />
-                <span asp-validation-for="Exam.Format" class="text-danger"></span>
-            </div>
-                            <!-- ADDED FOR MULTIPLE EXAMINERS AS OPTIONAL -->
                             <div class="form-group">
-                                <label class="form-label">Available Examiners </label>
-                                <div style="max-height:150px; overflow-y:auto; border:1px solid #e2e8f0; padding:12px; border-radius:6px; background: #f8f9fa;">
-                                    @if (Model.TeacherList != null)
-                                    {
-                                        foreach (var teacher in Model.TeacherList)
-                                        {
-                                            if (!string.IsNullOrEmpty(teacher.Value))
-                                            {
-                                                <div class="form-check">
-                                                    <input class="form-check-input"
-                                                           type="checkbox"
-                                                           name="SelectedTeacherIds"
-                                                           value="@teacher.Value"
-                                                           id="examiner_@teacher.Value" />
-                                                    <label class="form-check-label" for="examiner_@teacher.Value">
-                                                        @teacher.Text
-                                                    </label>
-                                                </div>
-                                            }
-                                        }
-                                    }
-                                </div>
-                                <small class="form-text text-muted">Select additional examiners if needed</small>
+                                <label asp-for="Exam.ExamName" class="form-label">Exam Name</label>
+                                <input asp-for="Exam.ExamName" class="form-control" placeholder="Enter exam name" />
+                                <span asp-validation-for="Exam.ExamName" class="text-danger"></span>
                             </div>
 
-            <!-- CHECKBOX GROUP -->
-            <div class="checkbox-group">
-                <div class="form-check">
-                    <input asp-for="Exam.ExamPatrol" class="form-check-input" type="checkbox" />
-                    <label asp-for="Exam.ExamPatrol" class="form-check-label">Exam Invigilation</label>
-                </div>
+                            <div class="form-group">
+                                <label asp-for="Exam.ClassId" class="form-label">Class</label>
+                                <select asp-for="Exam.ClassId" class="form-control" asp-items="Model.ClassList">
+                                    <option value="">-- Select Class --</option>
+                                </select>
+                                <span asp-validation-for="Exam.ClassId" class="text-danger"></span>
+                            </div>
 
-                <div class="form-check">
-                    <input asp-for="Exam.IsReExam" class="form-check-input" type="checkbox" />
-                    <label asp-for="Exam.IsReExam" class="form-check-label">Is Re-Exam</label>
-                </div>
+                            <div class="form-group">
+                                <label asp-for="Exam.Description" class="form-label">Description</label>
+                                <textarea asp-for="Exam.Description" class="form-control" rows="3" placeholder="Enter exam description"></textarea>
+                                <span asp-validation-for="Exam.Description" class="text-danger"></span>
+                            </div>
+                        </div>
 
-                <div class="form-check">
-                    <input asp-for="Exam.IsFinalExam" class="form-check-input" type="checkbox" />
-                    <label asp-for="Exam.IsFinalExam" class="form-check-label">Is Final Exam</label>
-                </div>
-            </div>
-        </div>
+                        <!-- COLUMN 2: EXAM DETAILS -->
+                        <div class="form-column">
+                            <h3 class="form-section-title">Exam Details</h3>
 
-        <!-- COLUMN 3: DATES & ASSIGNMENTS -->
-        <div class="form-column">
-            <h3 class="form-section-title">Dates & Assignments</h3>
+                            <div class="form-group">
+                                <label asp-for="Exam.CensorType" class="form-label">Censor Type</label>
+                                <select asp-for="Exam.CensorType" class="form-control">
+                                    <option value="">-- Select Censor Type --</option>
+                                    <option value="Intern">Intern</option>
+                                    <option value="Extern">Extern</option>
+                                </select>
+                                <span asp-validation-for="Exam.CensorType" class="text-danger"></span>
+                            </div>
 
-            <div class="form-group">
-                <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
-                <input asp-for="Exam.ExamStartDate" type="date" class="form-control" required />
-                <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
-            </div>
+                            <div class="form-group">
+                                <label asp-for="Exam.Format" class="form-label">Format</label>
+                                <input asp-for="Exam.Format" class="form-control" placeholder="e.g., Oral, Written" />
+                                <span asp-validation-for="Exam.Format" class="text-danger"></span>
+                            </div>
 
-            <div class="form-group">
-                <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
-                <input asp-for="Exam.ExamEndDate" type="date" class="form-control" required />
-                <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
-            </div>
+                            <!-- CHECKBOX GROUP -->
+                            <div class="checkbox-group">
+                                <div class="form-check">
+                                    <input asp-for="Exam.ExamPatrol" class="form-check-input" type="checkbox" />
+                                    <label asp-for="Exam.ExamPatrol" class="form-check-label">Exam Invigilation</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input asp-for="Exam.IsReExam" class="form-check-input" type="checkbox" />
+                                    <label asp-for="Exam.IsReExam" class="form-check-label">Is Re-Exam</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input asp-for="Exam.IsFinalExam" class="form-check-input" type="checkbox" />
+                                    <label asp-for="Exam.IsFinalExam" class="form-check-label">Is Final Exam</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COLUMN 3: DATES & ASSIGNMENTS -->
+                        <div class="form-column">
+                            <h3 class="form-section-title">Dates & Assignments</h3>
+
+                            <div class="form-group">
+                                <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
+                                <input asp-for="Exam.ExamStartDate" type="date" class="form-control" />
+                                <span asp-validation-for="Exam.ExamStartDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Exam.ExamEndDate" class="form-label">End Date</label>
+                                <input asp-for="Exam.ExamEndDate" type="date" class="form-control" />
+                                <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Exam.DeliveryDate" class="form-label">Delivery Date</label>
+                                <input asp-for="Exam.DeliveryDate" type="date" class="form-control" />
+                                <span asp-validation-for="Exam.DeliveryDate" class="text-danger"></span>
+                            </div>
 
                             @* <div class="form-group">
                                 <label asp-for="ExaminerTeacherId" class="form-label">Examiner</label>
@@ -147,13 +126,13 @@
                                 <span asp-validation-for="ExaminerTeacherId" class="text-danger"></span>
                             </div> *@
 
-            <div class="form-group">
-                <label asp-for="ExaminerTeacherId" class="form-label">Examiner</label>
-                <select asp-for="ExaminerTeacherId" class="form-control" asp-items="Model.TeacherList" required>
-                    <option value="">-- Select Examiner --</option>
-                </select>
-                <span asp-validation-for="ExaminerTeacherId" class="text-danger"></span>
-            </div>
+                            <div class="form-group">
+                                <label asp-for="CensorTeacherId" class="form-label">Censor</label>
+                                <select asp-for="CensorTeacherId" class="form-control" asp-items="Model.TeacherList">
+                                    <option value="">-- Select Censor --</option>
+                                </select>
+                                <span asp-validation-for="CensorTeacherId" class="text-danger"></span>
+                            </div>
 
                             <div class="form-group">
                                 <label asp-for="SelectedRoomId" class="form-label">Room</label>
@@ -190,17 +169,7 @@
 
                     </div>
 
-            <div class="form-group">
-                <label asp-for="SelectedRoomId" class="form-label">Room</label>
-                <select asp-for="SelectedRoomId" class="form-control" asp-items="Model.RoomList" required>
-                    <option value="">-- Select Room --</option>
-                </select>
-                <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-                    <!-- REEXAM SECTION WITH PROPER TOGGLE -->
+                    <!-- REEXAM SECTION -->
                     <div class="reexam-section">
                         <div class="reexam-toggle">
                             <input asp-for="CreateReExam" type="checkbox" class="form-check-input" id="createReExamBox" />
@@ -210,13 +179,11 @@
                             </label>
                         </div>
 
-                        <!-- ReExam fields - WITH PROPER ID AND HIDDEN BY DEFAULT -->
                         <div id="reExamFields" class="reexam-fields" style="display:none;">
                             <div class="reexam-header">
                                 <h3>ReExam Details</h3>
                             </div>
 
-                            <!-- ADD THE MISSING REEXAM NAME PREVIEW -->
                             <div class="form-group" id="reExamPreviewBlock">
                                 <label class="form-label">ReExam Name Preview:</label>
                                 <div id="reExamNamePreview" class="reexam-preview"></div>
@@ -224,7 +191,7 @@
 
                             <div class="form-group">
                                 <label asp-for="SelectedReExamTeacherIds" class="form-label">ReExam Examiners</label>
-                                <select asp-for="SelectedReExamTeacherIds" asp-items="Model.TeacherList" multiple class="form-control" style="min-height: 120px;">
+                                <select asp-for="SelectedReExamTeacherIds" asp-items="Model.TeacherList" multiple class="form-control multi-select">
                                     <option value="">-- Select ReExam Examiners --</option>
                                 </select>
                                 <span asp-validation-for="SelectedReExamTeacherIds" class="text-danger"></span>
@@ -256,18 +223,23 @@
                         </div>
                     </div>
 
-    <!-- FORM ACTIONS -->
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary" style="background: red; border: 3px solid yellow; color: white;">
-            <span class="btn-icon">➕</span>
-            TEST Create Exam
-        </button>
-        <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">
-            <span class="btn-icon">←</span>
-            Cancel
-        </a>
+                    <!-- FORM ACTIONS -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-icon">➕</span>
+                            Create Exam
+                        </button>
+                        <a asp-page="/Eksamner/GetEksamner" class="btn btn-secondary">
+                            <span class="btn-icon">←</span>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</form>
+</div>
+
 <!-- STYLES SECTION - RESTORED ORIGINAL HEADER STYLING -->
 <style>
     /* LAYOUT STYLES */
