@@ -73,7 +73,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
             try
             {
                 await _service.AddItemAsync(ClassItem);
-                return RedirectToPage("/Hold/Index");
+                return RedirectToPage("./Index");
             }
             catch (Exception ex)
             {
