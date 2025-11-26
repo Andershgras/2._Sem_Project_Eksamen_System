@@ -107,7 +107,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             await _context.SaveChangesAsync();
         }
         /// <summary>
-        /// Gget exams for a specific class
+        /// Get exams for a specific class
         /// Returns exams for a specific class,orderd by start date
         /// </summary>
         /// <param name="classId"></param>
