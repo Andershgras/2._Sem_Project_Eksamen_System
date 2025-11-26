@@ -21,11 +21,11 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             return await context.Exams
                 .Include(e => e.Class)
                 .Include(e => e.StudentsToExams)
-                .ThenInclude(se => se.Student)
+                    .ThenInclude(se => se.Student)
                 .Include(e => e.RoomsToExams)
-                .ThenInclude(re => re.Room)
+                    .ThenInclude(re => re.Room)
                 .Include(e => e.TeachersToExams)
-                .ThenInclude(et => et.Teacher)
+                    .ThenInclude(et => et.Teacher)
                 .Include(e => e.ReExam)
                 .AsNoTracking()
                 .OrderBy(e => e.ExamId)
@@ -52,120 +52,56 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         {
             var query = BuildBaseExamQuery();
 
-            if (Filter == null)
-            {
+            if (Filter == null || string.IsNullOrWhiteSpace(Filter.FilterByName))
                 return await query.OrderBy(e => e.ExamId).ToListAsync();
-            }
-            if (Filter is ExtendedExamFilter ef)
-            {
-                return await ApplyExtendedFilters(query, ef).OrderBy(e => e.ExamId).ToListAsync();
-            }
-            if (!string.IsNullOrWhiteSpace(Filter.FilterByName))
+            if (Filter is not ExtendedExamFilter ef)
             {
                 var name = Filter.FilterByName.ToLower();
-                return await query.Where(e => e.ExamName != null && e.ExamName.ToLower().Contains(name))
-                    .OrderBy(e => e.ExamId)
-                    .ToListAsync();
+                return await query.Where(e => e.ExamName != null && e.ExamName.ToLower().StartsWith(name))
+                           .OrderBy(e => e.ExamId)
+                           .ToListAsync();
             }
-            return await query.OrderBy(e => e.ExamId).ToListAsync();
-        }
-        private IQueryable<Exam> ApplyExtendedFilters(IQueryable<Exam> query, ExtendedExamFilter ef)
-        {
-            if (!string.IsNullOrWhiteSpace(ef.FilterByName))
-            {
-                var nameFilter = ef.FilterByName.ToLower();
-                query = query.Where(e => e.ExamName != null && e.ExamName.ToLower().Contains(nameFilter));
-            }
-            if (!string.IsNullOrWhiteSpace(ef.FilterByClass))
-            {
+            var nameFilter = ef.FilterByName?.ToLower();
+            if (!string.IsNullOrWhiteSpace(nameFilter))
+                query = query.Where(e => e.ExamName != null && e.ExamName.ToLower()
+                .Contains(nameFilter));
 
+            if (!string.IsNullOrWhiteSpace(ef.FilterByClass))
                 query = query.Where(e => e.Class != null && e.Class.ClassName == ef.FilterByClass);
-            }
+
+
             if (!string.IsNullOrWhiteSpace(ef.FilterByTeacher))
-            { 
-            query = query.Where(e => e.TeachersToExams.Any(t => t.Teacher != null && t.Teacher.TeacherName == ef.FilterByTeacher));
-            }
-            if (!string.IsNullOrWhiteSpace(ef.FilterByRoom))
-            {
-                query = query.Where(e => e.RoomsToExams.Any(r => r.Room != null && r.Room.Name == ef.FilterByRoom));
-            }
-            if (!string.IsNullOrWhiteSpace(ef.FilterByExaminerName))
-            {
-                query = query.Where(e => e.TeachersToExams.Any(t => t.Teacher != null && t.Teacher.TeacherName == ef.FilterByExaminerName && t.Role == "Examiner"));
-            }
+                query = query.Where(e => e.TeachersToExams
+            .Any(t => t.Teacher != null && t.Teacher.TeacherName == ef.FilterByTeacher));
+
+
+            if (!string.IsNullOrEmpty(ef.FilterByRoom))
+                query = query.Where(e => e.RoomsToExams
+           .Any(r => r.Room != null && r.Room.Name == ef.FilterByRoom));
+
+            if (!string.IsNullOrEmpty(ef.FilterByExaminerName))
+                query = query.Where(e => e.TeachersToExams
+          .Any(t => t.Teacher != null && t.Teacher.TeacherName == ef.FilterByExaminerName && t.Role == "Examiner"));
+
             if (ef.FilterByExaminerId.HasValue)
-            {
-                query = query.Where(e => e.TeachersToExams.Any(t => t.TeacherId == ef.FilterByExaminerId.Value && t.Role == "Examiner"));
-            }
+                query = query.Where(e => e.TeachersToExams
+          .Any(t => t.TeacherId == ef.FilterByExaminerId.Value && t.Role == "Examiner"));
+
+
             if (ef.FilterByStartDate.HasValue)
             {
-                var startDate = ef.FilterByStartDate.Value;
-                query = query.Where(e => e.ExamStartDate.HasValue &&
-                 e.ExamStartDate.Value >= startDate);
+                query = query.Where(e => e.ExamStartDate.HasValue && e.ExamStartDate.Value >= ef.FilterByStartDate.Value);
             }
 
-          
 
             if (ef.FilterByEndDate.HasValue)
             {
-                var endDate = ef.FilterByEndDate.Value;
-                query = query.Where(e => e.ExamEndDate.HasValue &&
-                e.ExamEndDate.Value <= endDate);
+                query = query.Where(e => e.ExamEndDate.HasValue && e.ExamEndDate.Value <= ef.FilterByEndDate.Value);
             }
-                                             
-            return query;
+
+            return await query.OrderBy(e => e.ExamId).ToListAsync();
         }
-
-            //  if (Filter == null || string.IsNullOrWhiteSpace(Filter.FilterByName))
-            //      return await query.OrderBy(e => e.ExamId).ToListAsync();
-            //  if (Filter is not ExtendedExamFilter ef)
-            //  {
-            //      var name = Filter.FilterByName.ToLower();
-            //      return await query.Where(e => e.ExamName != null && e.ExamName.ToLower().StartsWith(name))
-            //                 .OrderBy(e => e.ExamId)
-            //                 .ToListAsync();
-            //  }
-            //  var nameFilter = ef.FilterByName?.ToLower();
-            //  if (!string.IsNullOrWhiteSpace(nameFilter))
-            //      query = query.Where(e => e.ExamName != null && e.ExamName.ToLower()
-            //      .Contains(nameFilter));
-
-            //  if (!string.IsNullOrWhiteSpace(ef.FilterByClass))
-            //      query = query.Where(e => e.Class != null && e.Class.ClassName == ef.FilterByClass);
-
-
-            //  if (!string.IsNullOrWhiteSpace(ef.FilterByTeacher))
-            //      query = query.Where(e => e.TeachersToExams
-            //  .Any(t => t.Teacher != null && t.Teacher.TeacherName == ef.FilterByTeacher));
-
-
-            //  if (!string.IsNullOrEmpty(ef.FilterByRoom))
-            //      query = query.Where(e => e.RoomsToExams
-            // .Any(r => r.Room != null && r.Room.Name == ef.FilterByRoom));
-
-            //  if (!string.IsNullOrEmpty(ef.FilterByExaminerName))
-            //      query = query.Where(e => e.TeachersToExams
-            //.Any(t => t.Teacher != null && t.Teacher.TeacherName == ef.FilterByExaminerName && t.Role == "Examiner"));
-
-            //  if (ef.FilterByExaminerId.HasValue)
-            //      query = query.Where(e => e.TeachersToExams
-            //.Any(t => t.TeacherId == ef.FilterByExaminerId.Value && t.Role == "Examiner"));
-
-
-            //  if (ef.FilterByStartDate.HasValue)
-            //  {
-            //      query = query.Where(e => e.ExamStartDate.HasValue && e.ExamStartDate.Value >= ef.FilterByStartDate.Value);
-            //  }
-
-
-            //  if (ef.FilterByEndDate.HasValue)
-            //  {
-            //      query = query.Where(e => e.ExamEndDate.HasValue && e.ExamEndDate.Value <= ef.FilterByEndDate.Value);
-            //  }
-
-            //  return await query.OrderBy(e => e.ExamId).ToListAsync();
-        
-
+              
         //Add a new exam and persisit
         public async Task AddItemAsync(Exam item)
         {
