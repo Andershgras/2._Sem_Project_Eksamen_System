@@ -12,7 +12,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Rooms
         private readonly ICRUDAsync<Room> _service;
         private readonly EksamensDBContext _db;
 
-        public IEnumerable<Room> Rooms { get; set; } = Enumerable.Empty<Room>();
+        public IEnumerable<Room> Rooms { get; set; } = [];
 
         [BindProperty(SupportsGet = true)]
         public GenericFilter? Filter { get; set; }

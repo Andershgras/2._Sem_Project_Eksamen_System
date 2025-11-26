@@ -65,7 +65,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Hold
             }
 
             // Builds the class name from the individual components
-            var cityCode = City.Substring(0, Math.Min(2, City.Length)).ToUpper();
+            var cityCode = City[..Math.Min(2, City.Length)].ToUpper();
             var letterUpper = Letter.ToUpper();
 
             ClassItem.ClassName = $"{Education}-{cityCode}-{PhysicalOrVirtual}-{Season}{Year}{letterUpper}-{Semester}sem";
