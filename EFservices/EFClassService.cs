@@ -103,7 +103,18 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
 
-            _context.Classes.Update(item);
+            // Find den eksisterende klasse i context
+            var existing = await _context.Classes.FindAsync(item.ClassId);
+            if (existing == null)
+            {
+                // Intet at opdatere – du kan evt. smide en exception hvis du vil
+                return;
+            }
+
+            // Opdater kun de simple felter (ClassName)
+            existing.ClassName = item.ClassName;
+
+            // Navigation properties (Exams, StudentsToClasses) lader vi være i fred
             await _context.SaveChangesAsync();
         }
         /// <summary>
