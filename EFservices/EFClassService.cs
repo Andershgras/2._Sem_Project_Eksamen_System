@@ -111,7 +111,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 return;
             }
 
-            // Opdater kun de simple felter (ClassName)
+            // Opdater kun felter vi vil ændre
             existing.ClassName = item.ClassName;
 
             // Navigation properties (Exams, StudentsToClasses) lader vi være i fred
