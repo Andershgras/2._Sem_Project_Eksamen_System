@@ -4,8 +4,8 @@ using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
 using _2._Sem_Project_Eksamen_System.Utils;
+using Microsoft.IdentityModel.Tokens;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
@@ -84,8 +84,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         {
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
-           
-
+            
             var teachers = (await _teacherService.GetAllAsync()).ToList();
             var rooms = (await _roomService.GetAllAsync()).ToList();
 
@@ -111,7 +110,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }).ToList();
 
             // ReExam (if exists, otherwise blank)
-            if (HasReExam && EditReExam)
+            if (reExamId.HasValue && reExamId > 0)
             {
                 var reExaminerTeachers = await _teachersToExamService.GetTeachersByExamIdAndRoleAsync(reExamId.Value, "Examiner");
                 SelectedReExamTeacherIds = reExaminerTeachers.Select(t => t.TeacherId).ToList();
@@ -227,6 +226,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (ReExam.DeliveryDate <= Exam.DeliveryDate)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
 
+
+                if (SelectedReExamTeacherIds.IsNullOrEmpty())
+                    SelectedReExamTeacherIds = SelectedTeacherIds;
+                if (SelectedReExamRoomIds.IsNullOrEmpty())
+                    SelectedReExamRoomIds = SelectedRoomIds;
+
+
                 ReExam.IsReExam = true;
                 if (Exam.IsFinalExam)
                     ReExam.IsFinalExam = true;
@@ -325,7 +331,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             // ------------------------------------------End validation checks--------------------------------------------------------------
             if (!ModelState.IsValid)
+            {
+                LogModelState("OnPost - after validations");
                 return Page();
+            }
+       
 
             // ---- Persistence logic ----
             // Save or update ReExam
