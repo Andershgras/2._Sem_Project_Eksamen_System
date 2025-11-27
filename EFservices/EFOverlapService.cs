@@ -92,10 +92,12 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             if (roomId <= 0) return OverlapResult.Ok();
             if (!newStart.HasValue || !newEnd.HasValue) return OverlapResult.Ok();
 
-            
+
             var query = _context.RoomsToExams
                .Include(rte => rte.Exam)
                .Where(rte => rte.RoomId == roomId && rte.Exam != null);
+
+            var room = _context.Rooms.AsNoTracking().FirstOrDefault(r => r.RoomId == roomId);
 
             // Exclude a specific exam if requested
             if (excludeExamId.HasValue)
@@ -115,7 +117,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 return OverlapResult.Ok();
 
             var existing = conflicts.First().Exam!;
-            return CreateConflictResult(existing, $"Room", conflictingRoomId: roomId);
+            return CreateConflictResult(existing, $"Room: {room.Name ?? string.Empty}", conflictingRoomId: roomId);
         }
 
         // Helper to create a conflict result message
