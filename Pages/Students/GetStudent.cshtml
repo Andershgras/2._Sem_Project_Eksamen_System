@@ -151,9 +151,12 @@
                                         }
                                     </td>
                                     <td class="action-buttons">
-                                        <!-- Action links still have access to StudentId for routing -->
+                                        <!-- Updated to match exam button order and styling -->
+                                        <a asp-page="./DetailStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">
+                                            <span class="btn-icon">📋</span>
+                                            Details
+                                        </a>
                                         <a asp-page="./EditStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-edit">Edit</a>
-                                        <a asp-page="./DetailStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-details">Details</a>
                                         <a asp-page="./DeleteStudent" asp-route-id="@student.StudentId" class="btn-toggle btn-delete">Delete</a>
                                     </td>
                                 </tr>
