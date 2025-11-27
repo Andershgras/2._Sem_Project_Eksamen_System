@@ -188,8 +188,16 @@
                         <div class="reexam-toggle">
                             <input asp-for="EditReExam" type="checkbox" class="form-check-input" id="editReExamBox" />
                             <label class="form-check-label" for="editReExamBox">
-                                <span class="reexam-toggle-label">Edit linked ReExam?</span>
-                                <span class="reexam-toggle-description">Edit the re-examination linked to this exam</span>
+                                @if (Model.HasReExam)
+                                {
+                                    <span class="reexam-toggle-label">Edit linked ReExam?</span>
+                                    <span class="reexam-toggle-description">Edit the re-examination linked to this exam</span>
+                                }
+                                else
+                                {
+                                    <span class="reexam-toggle-label">Create a ReExam?</span>
+                                    <span class="reexam-toggle-description">Create a new re-examination for this exam</span>
+                                }
                             </label>
                         </div>
 
@@ -209,7 +217,7 @@
                                 <span asp-validation-for="ReExam.ExamName" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
+                            <div class="col-4">
                                 <label asp-for="ReExam.NumOfStud" class="form-label">Number of Students</label>
                                 <input asp-for="ReExam.NumOfStud" type="number" class="form-control" />
                                 <span asp-validation-for="ReExam.NumOfStud" class="text-danger"></span>
