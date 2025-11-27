@@ -31,6 +31,7 @@
                     <a asp-page="/Eksamner/Exam_Details"
                        asp-route-id="@exam.ExamId"
                        class="btn-toggle btn-details">
+                        <span class="btn-icon">📋</span>
                         Details
                     </a>
                 </td>
@@ -40,3 +41,38 @@
 </table>
 
 <a asp-page="Index" class="btn btn-secondary mb-3"> <i class="bi bi-arrow-left"></i> Back to Hold List</a>
+
+<style>
+    /* STYLING FOR THE DETAILS BUTTON ONLY */
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        white-space: nowrap;
+        height: 36px;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+
+    .btn-details {
+        background-color: #f0f9ff;
+        color: #0c6c8c;
+        border-color: #b6d7e8;
+    }
+
+    .btn-toggle:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-icon {
+        font-size: 0.875rem;
+    }
+</style>

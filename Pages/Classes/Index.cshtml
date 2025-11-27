@@ -8,11 +8,14 @@
 <partial name="~/Pages/Shared/_PageHeader.cshtml"
          model='new PageHeaderModel("Class Overview", "View, edit and manage all classes")' />
 
-@await Html.PartialAsync("_CreateButton", new CreateButtonModel
-{
-    Page = "Create",
-    Text = "Create New Class"
-})
+<div class="mb-3">
+    @await Html.PartialAsync("_CreateButton", new CreateButtonModel
+    {
+        Page = "Create",
+        Text = "Create New Class"
+        })
+</div>
+
 <!-- Filter -->
 <form method="get" class="mb-3">
     <div class="input-group" style="max-width:420px;">
@@ -22,26 +25,92 @@
     </div>
 </form>
 
-<table class="table">
+<table class="table table-sm align-middle">
     <thead>
         <tr>
-            <th></th>
             <th>Class Name</th>
             <th>No. Students</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var hold in Model.HoldList)
-    {
-        <tr>
-            <td><a asp-page="StudentsToClasses" class="btn btn-icon" asp-route-id="@hold.ClassId"><i class="bi bi-list"></i></a></td>
-            <td>@hold.ClassName</td>
-            <td>@hold.StudentsToClasses.Count</td>
-            <td>
+        @foreach (var hold in Model.HoldList)
+        {
+            <tr>
+                <td>@hold.ClassName</td>
+                <td>@hold.StudentsToClasses.Count</td>
+                <td class="action-buttons">
+                    <a asp-page="StudentsToClasses" asp-route-id="@hold.ClassId" class="btn-toggle btn-details">
+                        <span class="btn-icon">📋</span>
+                        Details
+                    </a>
                     <a asp-page="./Edit" asp-route-id="@hold.ClassId" class="btn-toggle btn-edit">Edit</a>
-                    <partial name="~/Pages/Shared/_DeleteButton.cshtml" model="@(("./Delete", hold.ClassId))" />
+                    <a asp-page="./Delete" asp-route-id="@hold.ClassId" class="btn-toggle btn-delete">Delete</a>
                 </td>
-        </tr>
-    }
+            </tr>
+        }
     </tbody>
 </table>
+
+<style>
+    /* ACTION BUTTONS STYLING ONLY - FOR CLASSES PAGE */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        white-space: nowrap;
+        height: 36px;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+
+    .btn-details {
+        background-color: #f0f9ff;
+        color: #0c6c8c;
+        border-color: #b6d7e8;
+    }
+
+    .btn-edit {
+        background-color: #e7f1ff;
+        color: #0066cc;
+        border-color: #b6d7e8;
+    }
+
+    .btn-delete {
+        background-color: #fef2f2;
+        color: #dc2626;
+        border-color: #fecaca;
+    }
+
+    .btn-toggle:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-icon {
+        font-size: 0.875rem;
+    }
+
+    @@media (max-width: 768px) {
+        .action-buttons {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+    }
+</style>
