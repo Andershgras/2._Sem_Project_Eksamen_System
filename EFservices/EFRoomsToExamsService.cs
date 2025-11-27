@@ -135,5 +135,18 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<Room>> GetRoomsByExamIdAsync(int ExamId)
+        {
+            var rooms = await _context.RoomsToExams
+                .Where(rte => rte.ExamId == ExamId)
+                .Include(rte => rte.Room)
+                .Select(rte => rte.Room)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return rooms;
+        }
+
     }
 }

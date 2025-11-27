@@ -33,5 +33,13 @@ namespace _2._Sem_Project_Eksamen_System.Interfaces
         /// </summary>
         /// <param name="examId">Target exam id</param>
         Task RemoveAllRoomsFromExamAsync(int examId);
+        /// <summary>
+        /// Asynchronously retrieves a collection of rooms associated with the specified exam ID.
+        /// </summary>
+        /// <param name="Examid">The unique identifier of the exam for which to retrieve the associated rooms.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains an <see
+        /// cref="IEnumerable{Room}"/> representing the rooms associated with the specified exam. If no rooms are found,
+        /// the result is an empty collection.</returns>
+        Task<IEnumerable<Room>> GetRoomsByExamIdAsync(int Examid);
     }    
 }

@@ -1,14 +1,11 @@
-using _2._Sem_Project_Eksamen_System.EFservices;
+
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
-using System.Globalization;
 using _2._Sem_Project_Eksamen_System.Utils;
-using Microsoft.Identity.Client;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
@@ -28,24 +25,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         #endregion
         #region Properties
 
-        // Bind properties for form Exam creation
-
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
 
         [BindProperty]
         public int? CensorTeacherId { get; set; }
 
-        //[BindProperty]
-        //public int? SelectedRoomId { get; set; }
-
         [BindProperty]
         public List<int> SelectedTeacherIds { get; set; } = new List<int>();
 
         [BindProperty]
         public List<int> SelectedRoomIds { get; set; } = new List<int>();
-
-        // ReExam related properties --------------------------------------------
 
         [BindProperty]
         public bool CreateReExam { get; set; } = false;
@@ -59,13 +49,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public List<int> SelectedReExamRoomIds { get; set; } = new List<int>();
 
-        //[BindProperty]
-        //public List<int> SelectedReExamStudentIds { get; set; } = new List<int>();  Not used currently 
-
         [BindProperty]
         public int NumberOfStudents { get; set; }
-
-        // property for Selectors ------------------------------------------------
 
         [BindProperty]
         public List<GenericMultySelect> ExaminerSelect { get; set; } = new List<GenericMultySelect>();
@@ -73,14 +58,18 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public List<GenericMultySelect> RoomSelect { get; set; } = new List<GenericMultySelect>();
 
+        [BindProperty]
+        public List<GenericMultySelect> ExaminerSelectReExam { get; set; } = new List<GenericMultySelect>();
+
+        [BindProperty]
+        public List<GenericMultySelect> RoomSelectReExam { get; set; } = new List<GenericMultySelect>();
+
         public SelectList ClassList { get; set; } = default!;
-        //public SelectList RoomList { get; set; } = default!;// skal erstattes med MultiSelectList hvis flere rum skal vælges
         public MultiSelectList TeacherList { get; set; } = default!;
-        //public SelectList TeacherListReExam { get; set; } = default!;
-        //public SelectList StudentList { get; set; } = default!;
         #endregion 
 
         #region Constructor
+
         public Create_ExamModel(
             ICRUDAsync<Exam> examService,
             ICRUDAsync<Class> classService,
@@ -100,12 +89,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _roomService = roomService;
             _roomsToExamService = roomsToExamService;
             _teacherService = teacherService;
-            _teachersToExamsService = teachersToExamService; // Now they match
+            _teachersToExamsService = teachersToExamService;
             _studentService = studentService;
             _studentsToClassesService = studentsToClassesService;
             _overlapService = overlapService;
         }
         #endregion
+
         private async Task PopulatePropertiesAsync()
         {
             // Populate rooms for Room selection
@@ -117,6 +107,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 IsSelected = SelectedRoomIds != null && SelectedRoomIds.Contains(r.RoomId)
             }).ToList();
 
+            RoomSelectReExam = rooms.Select(r => new GenericMultySelect
+            {
+                SelectValue = r.RoomId,
+                SelectText = r.Name ?? string.Empty,
+                IsSelected = SelectedReExamRoomIds != null && SelectedReExamRoomIds.Contains(r.RoomId)
+            }).ToList();
+
             // Populate teachers for Examiner selection
             var teachers = (await _teacherService.GetAllAsync()).ToList();
             ExaminerSelect = teachers.Select(t => new GenericMultySelect
@@ -126,8 +123,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 IsSelected = SelectedTeacherIds != null && SelectedTeacherIds.Contains(t.TeacherId)
             }).ToList();
 
+            ExaminerSelectReExam = teachers.Select(t => new GenericMultySelect
+            {
+                SelectValue = t.TeacherId,
+                SelectText = t.TeacherName ?? string.Empty,
+                IsSelected = SelectedReExamTeacherIds != null && SelectedReExamTeacherIds.Contains(t.TeacherId)
+            }).ToList();
+
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
-            //RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
         }
 
@@ -135,19 +138,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         {
             await PopulatePropertiesAsync();
         }
-        // Handles The student menu population based on selected class
-    
+
         public async Task<IActionResult> OnPost()
         {
-            
             await PopulatePropertiesAsync();
-            var rooms = await _roomService.GetAllAsync();
-           
 
             // Fetch rooms for validation later
             SelectedTeacherIds = ExaminerSelect.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
-
             SelectedRoomIds = RoomSelect.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
+
+            SelectedReExamTeacherIds = ExaminerSelectReExam.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
+            SelectedReExamRoomIds = RoomSelectReExam.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
 
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
@@ -155,7 +156,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 foreach (var key in ModelState.Keys.Where(k => k.StartsWith("ReExam.")))
                     ModelState[key]?.Errors.Clear();
             }
-       
+
             if (Exam.ClassId <= 0)
             {
                 ModelState.AddModelError("Exam.ClassId", "A class must be selected for the exam.");
@@ -175,15 +176,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             Exam.NumOfStud = ClassList.Count();
 
-            // Guard Exam.ExamName null and trim to max length
             if (!string.IsNullOrWhiteSpace(Exam.ExamName) && Exam.ExamName.Length > 30)
                 Exam.ExamName = Exam.ExamName.Substring(0, 30);
-            
-            if (string.IsNullOrEmpty(Exam.ExamName))
-                ModelState.AddModelError("Exam.ExamName", "Needs a Tittle");
-            
 
-            // Validate Exam dates (only when values present)
+            if (string.IsNullOrEmpty(Exam.ExamName))
+                ModelState.AddModelError("Exam.ExamName", "Needs a Title");
+
+            // Validate Exam dates
             if (Exam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && Exam.ExamStartDate.Value > Exam.ExamEndDate.Value)
                 ModelState.AddModelError("Exam.ExamStartDate", "Exam start date must not be after end date.");
             if (Exam.DeliveryDate.HasValue && Exam.ExamStartDate.HasValue && Exam.DeliveryDate.Value > Exam.ExamStartDate.Value)
@@ -194,20 +193,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 ReExam.ClassId = Exam.ClassId;
 
-
                 if (string.IsNullOrWhiteSpace(ReExam.ExamName))
                     ReExam.ExamName = $"ReEksamen-{Exam.ExamName ?? string.Empty}";
 
                 if (!string.IsNullOrWhiteSpace(ReExam.ExamName) && ReExam.ExamName.Length > 30)
                     ReExam.ExamName = ReExam.ExamName.Substring(0, 30);
 
-                // Validate ReExam dates (only when values present)
+                // Validate ReExam dates
                 if (ReExam.ExamStartDate.HasValue && ReExam.ExamEndDate.HasValue && ReExam.ExamStartDate.Value > ReExam.ExamEndDate.Value)
                     ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must not be after end date.");
                 if (ReExam.DeliveryDate.HasValue && ReExam.ExamStartDate.HasValue && ReExam.DeliveryDate.Value > ReExam.ExamStartDate.Value)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery date must not be after start date.");
-
-                // Validate ReExam dates against Exam dates (only when values present)
                 if (ReExam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && ReExam.ExamStartDate.Value <= Exam.ExamEndDate.Value)
                     ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must be after main exam end date.");
                 if (ReExam.ExamEndDate.HasValue && Exam.ExamEndDate.HasValue && ReExam.ExamEndDate.Value <= Exam.ExamEndDate.Value)
@@ -215,7 +211,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (ReExam.DeliveryDate.HasValue && Exam.DeliveryDate.HasValue && ReExam.DeliveryDate.Value <= Exam.DeliveryDate.Value)
                     ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
 
-                // if no teachers selected for ReExam, copy from main Exam
                 if (SelectedReExamTeacherIds.IsNullOrEmpty())
                     SelectedReExamTeacherIds = SelectedTeacherIds;
 
@@ -229,11 +224,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
             else
             {
-                // Unlink ReExam from Exam (just in case)
                 Exam.ReExamId = null;
             }
 
-            // clear all Class or ExamName validation errors related to ReExam if not creating
             foreach (var key in ModelState.Keys.Where(k =>
                 k == "Exam.Class" || k == "ReExam.Class" || k == "ReExam.ExamName"))
             {
@@ -242,10 +235,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
             }
 
-         
-
-            // ModelState validation checks -----------------------------------
-            if (!SelectedRoomIds.IsNullOrEmpty())// check room availability for Exam --
+            // Room availability for Exam
+            if (!SelectedRoomIds.IsNullOrEmpty())
             {
                 foreach (var roomId in SelectedRoomIds.Distinct())
                 {
@@ -253,60 +244,55 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     if (result != null && result.HasConflict)
                     {
                         ModelState.AddModelError("SelectedRoomIds", result.Message ?? "Something went wrong with Rooms");
-
                     }
                 }
             }
 
-            if(!SelectedReExamRoomIds.IsNullOrEmpty() && CreateReExam) // check room availability for ReExam if creating
+            // Room availability for ReExam
+            if (!SelectedReExamRoomIds.IsNullOrEmpty() && CreateReExam)
             {
                 foreach (var roomId in SelectedReExamRoomIds.Distinct())
                 {
                     OverlapResult result = _overlapService.RoomHasOverlap(roomId, ReExam.ExamStartDate, ReExam.ExamEndDate);
                     if (result != null && result.HasConflict)
                     {
-                        ModelState.AddModelError("SelectedRoomIds", result.Message ?? "Something went wrong with ReExam Rooms");
-
+                        ModelState.AddModelError("SelectedReExamRoomIds", result.Message ?? "Something went wrong with ReExam Rooms");
                     }
                 }
             }
 
-            if (Exam.ClassId > 0) // check class availability for Exam
+            if (Exam.ClassId > 0)
             {
                 OverlapResult result = _overlapService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate);
                 if (result != null && result.HasConflict)
                 {
                     ModelState.AddModelError("Exam.ClassId", result.Message ?? "Something went Wrong");
-
                 }
             }
 
-            if (CreateReExam && ReExam.ClassId > 0) // check class availability for ReExam if creating
+            if (CreateReExam && ReExam.ClassId > 0)
             {
                 OverlapResult result = _overlapService.ClassHasOverlap(ReExam.ClassId, ReExam.ExamStartDate, ReExam.ExamEndDate);
                 if (result != null && result.HasConflict)
                 {
                     ModelState.AddModelError("ReExam.ClassId", result.Message ?? "Something went Wrong");
-
                 }
             }
 
-            if (!SelectedTeacherIds.IsNullOrEmpty()) // check teacher availability for exam
+            if (!SelectedTeacherIds.IsNullOrEmpty())
             {
                 foreach (var teacherId in SelectedTeacherIds.Distinct())
                 {
-                    OverlapResult result = _overlapService.TeacherHasOverlap(teacherId, 
+                    OverlapResult result = _overlapService.TeacherHasOverlap(teacherId,
                         Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
                     if (result != null && result.HasConflict)
                     {
                         ModelState.AddModelError("SelectedTeacherIds", result.Message ?? "Something went wrong");
-                        
                     }
                 }
-               
             }
 
-            if (!SelectedReExamTeacherIds.IsNullOrEmpty() && CreateReExam) // check teacher availability for ReExam if creating
+            if (!SelectedReExamTeacherIds.IsNullOrEmpty() && CreateReExam)
             {
                 foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
                 {
@@ -315,13 +301,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     if (result != null && result.HasConflict)
                     {
                         ModelState.AddModelError("SelectedReExamTeacherIds", result.Message ?? "Something went wrong with ReExam Teachers");
-
                     }
                 }
             }
-            // validatetions end -------------------------------------------------
-            
-          
 
             if (!ModelState.IsValid)
             {
@@ -329,41 +311,36 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 return Page();
             }
 
-            // Create Exam and related entities -------------------------------
             try
             {
                 if (CreateReExam)
                 {
                     await _examService.AddItemAsync(ReExam);
                     Exam.ReExamId = ReExam.ExamId;
-
-                    if (NumberOfStudents > 0) // set number of students for re-exam if specified
+                    if (NumberOfStudents > 0)
                         ReExam.NumOfStud = NumberOfStudents;
                 }
 
                 await _examService.AddItemAsync(Exam);
 
-                // Map selected Room to Exam (only if selected and exists)
+                // Map selected Room to Exam
                 if (!SelectedRoomIds.IsNullOrEmpty())
                 {
-                    var roomTasks = new List<Task>();
                     foreach (var roomId in SelectedRoomIds.Distinct())
                     {
                         var mapping = new RoomsToExam
                         {
-                            ExamId = Exam.ExamId, RoomId = roomId, Role = null
+                            ExamId = Exam.ExamId,
+                            RoomId = roomId,
+                            Role = null
                         };
-                        // collect tasks so we can await them all
                         await _roomsToExamService.AddItemAsync(mapping);
                     }
-                    // await all created mapping tasks
-                 
                 }
                 // Map selected Rooms to ReExam if creating
                 if (!SelectedReExamRoomIds.IsNullOrEmpty() && CreateReExam)
                 {
-                    var roomTasks = new List<Task>();
-                    foreach (var roomId in SelectedRoomIds.Distinct())
+                    foreach (var roomId in SelectedReExamRoomIds.Distinct())
                     {
                         var mapping = new RoomsToExam
                         {
@@ -371,26 +348,20 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                             RoomId = roomId,
                             Role = null
                         };
-                        // collect tasks so we can await them all
-                        roomTasks.Add(_roomsToExamService.AddItemAsync(mapping));
+                        await _roomsToExamService.AddItemAsync(mapping);
                     }
-                    // await all created mapping tasks
-                    await Task.WhenAll(roomTasks);
                 }
 
-
-                // 1. Assign Examiner using the new property
-                if (SelectedTeacherIds.Count > 0){
+                // Assign Teachers for Exam
+                if (SelectedTeacherIds.Count > 0)
+                {
                     foreach (var teacherId in SelectedTeacherIds)
                     {
                         await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, Exam.ExamId, "Examiner");
                     }
                 }
-
-                // 2. Assign Censor
                 if (CensorTeacherId.HasValue)
                 {
-                    // validate the Censor and Examiner are different
                     if (SelectedTeacherIds.Contains(CensorTeacherId.Value))
                     {
                         ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Examiner.");
@@ -404,10 +375,9 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (CreateReExam && !SelectedReExamTeacherIds.IsNullOrEmpty())
                 {
                     foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
-                        await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, ReExam.ExamId);
+                        await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, ReExam.ExamId, "Examiner");
                 }
 
-                // Add all students from the selected class to the exam
                 await _studentsToExamService.AddStudentsFromClassToExamAsync(Exam.ClassId, Exam.ExamId);
 
                 TempData["SuccessMessage"] = "Exam created successfully!";
@@ -420,7 +390,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 return Page();
             }
         }
-
 
         private void LogModelState(string place)
         {
@@ -452,7 +421,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     var validationState = entry.Value.ValidationState;
                     var errors = entry.Value.Errors;
 
-
                     if (validationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
                         Console.ForegroundColor = ConsoleColor.Red;
                     else
@@ -465,7 +433,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     foreach (var err in errors)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"    • {err.ErrorMessage}");
+                        Console.WriteLine($"    {err.ErrorMessage}");
                         Console.ForegroundColor = prevColor;
                     }
                 }

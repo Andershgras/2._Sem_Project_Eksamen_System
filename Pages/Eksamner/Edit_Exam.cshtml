@@ -122,14 +122,6 @@
                                 <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
                             </div>
 
-                            @* <div class="form-group">
-                                <label asp-for="ExaminerTeacherId" class="form-label">Examiner</label>
-                                <select asp-for="ExaminerTeacherId" class="form-control" asp-items="Model.TeacherList">
-                                    <option value="">-- Select Examiner --</option>
-                                </select>
-                                <span asp-validation-for="ExaminerTeacherId" class="text-danger"></span>
-                            </div> *@
-
                             <div class="form-group">
                                 <label asp-for="CensorTeacherId" class="form-label">Censor</label>
                                 <select asp-for="CensorTeacherId" class="form-control" asp-items="Model.TeacherList">
@@ -138,19 +130,11 @@
                                 <span asp-validation-for="CensorTeacherId" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
-                                <label asp-for="SelectedRoomId" class="form-label">Room</label>
-                                <select asp-for="SelectedRoomId" class="form-control" asp-items="Model.RoomList">
-                                    <option value="">-- Select Room --</option>
-                                </select>
-                                <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
-                            </div>
 
                             <!-- Multy Select Examiners-->
                             <div class="divider" style="margin-bottom:1.5rem;">
                                 <div class="form-group">
                                     <legend class="form-label">Examiners</legend>
-
                                     <div style="max-height:100px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
                                         @foreach (var i in Model.ExaminerSelect)
                                         {
@@ -170,6 +154,29 @@
                                 </div>
                             </div>
 
+                            <!-- Multy Select Rooms-->
+                            <div class="divider" style="margin-bottom:1.5rem;">
+                                <div class="form-group">
+                                    <legend class="form-label">Assign Rooms</legend>
+                                    <div style="max-height:150px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
+                                        @foreach (var i in Model.RoomSelect)
+                                        {
+                                            var item = i;
+                                            <div class="form-check ms-4" style="padding:.25rem .5rem;">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="SelectedRoomIds"
+                                                       value="@item.SelectValue"
+                                                       id="room_@item.SelectValue"
+                                                       @(item.IsSelected ? "checked" : "") />
+                                                <label class="form-check-label" for="room_@item.SelectValue">@item.SelectText</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span asp-validation-for="SelectedRoomIds" class="text-danger"></span>
+                                </div>
+                            </div>
+
                             <!-- CONDITIONAL STUDENT COUNT FOR REEXAMS -->
                             @if (Model.Exam.IsReExam)
                             {
@@ -182,7 +189,6 @@
                         </div> <!-- END OF ROW-->
 
                     </div> <!-- END OF FORM GRID to Exam -->
-
                     <!-- REEXAM SECTION -->
                     <div class="reexam-section">
                         <div class="reexam-toggle">
@@ -217,6 +223,48 @@
                                 <span asp-validation-for="ReExam.ExamName" class="text-danger"></span>
                             </div>
 
+                            <div class="divider" style="margin-bottom:1.5rem;">
+                                <div class="form-group">
+                                    <legend class="form-label">ReExam Examiners</legend>
+                                    <div style="max-height:100px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
+                                        @foreach (var i in Model.ReExaminerSelect)
+                                        {
+                                            var item = i;
+                                            <div class="form-check ms-4" style="padding:.25rem .5rem;">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="SelectedReExamTeacherIds"
+                                                       value="@item.SelectValue"
+                                                       id="reexaminer_@item.SelectValue"
+                                                       @(item.IsSelected ? "checked" : "") />
+                                                <label class="form-check-label" for="reexaminer_@item.SelectValue">@item.SelectText</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span asp-validation-for="SelectedReExamTeacherIds" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="divider" style="margin-bottom:1.5rem;">
+                                <div class="form-group">
+                                    <legend class="form-label">Assign Rooms (ReExam)</legend>
+                                    <div style="max-height:150px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
+                                        @foreach (var i in Model.ReRoomSelect)
+                                        {
+                                            var item = i;
+                                            <div class="form-check ms-4" style="padding:.25rem .5rem;">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="SelectedReExamRoomIds"
+                                                       value="@item.SelectValue"
+                                                       id="reroom_@item.SelectValue"
+                                                       @(item.IsSelected ? "checked" : "") />
+                                                <label class="form-check-label" for="reroom_@item.SelectValue">@item.SelectText</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span asp-validation-for="SelectedReExamRoomIds" class="text-danger"></span>
+                                </div>
+                            </div>
                             <div class="col-4">
                                 <label asp-for="ReExam.NumOfStud" class="form-label">Number of Students</label>
                                 <input asp-for="ReExam.NumOfStud" type="number" class="form-control" />

@@ -200,7 +200,7 @@
                         </div>
                         <!-- END OF FORM GRID to Exam-->
                     </div>
-                        
+
 
                     <!-- REEXAM SECTION -->
                     <div class="reexam-section">
@@ -223,11 +223,55 @@
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="SelectedReExamTeacherIds" class="form-label">ReExam Examiners</label>
-                                <select asp-for="SelectedReExamTeacherIds" asp-items="Model.TeacherList" multiple class="form-control multi-select">
-                                    <option value="">-- Select ReExam Examiners --</option>
-                                </select>
-                                <span asp-validation-for="SelectedReExamTeacherIds" class="text-danger"></span>
+                                <label asp-for="ReExam.ExamName" class="form-label">ReExam Name</label>
+                                <input asp-for="ReExam.ExamName" class="form-control" placeholder="ReExam name" />
+                                <span asp-validation-for="ReExam.ExamName" class="text-danger"></span>
+                            </div>
+
+                            <!-- Mutli Select Teachers for ReExam (checkbox list) -->
+                            <div class="divider" style="margin-bottom:1.5rem;">
+                                <div class="form-group">
+                                    <legend class="form-label">ReExam Examiners</legend>
+                                    <div style="max-height:100px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
+                                        @foreach (var i in Model.ExaminerSelectReExam)
+                                        {
+                                            var item = i;
+                                            <div class="form-check ms-4" style="padding:.25rem .5rem;">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="SelectedReExamTeacherIds"
+                                                       value="@item.SelectValue"
+                                                       id="reexaminer_@item.SelectValue"
+                                                       @(item.IsSelected ? "checked" : "") />
+                                                <label class="form-check-label" for="reexaminer_@item.SelectValue">@item.SelectText</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span asp-validation-for="SelectedReExamTeacherIds" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Mutli Select Rooms for ReExam (checkbox list) -->
+                            <div class="divider" style="margin-bottom:1.5rem;">
+                                <div class="form-group">
+                                    <legend class="form-label">Assign Rooms (ReExam)</legend>
+                                    <div style="max-height:150px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
+                                        @foreach (var i in Model.RoomSelectReExam)
+                                        {
+                                            var item = i;
+                                            <div class="form-check ms-4" style="padding:.25rem .5rem;">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="SelectedReExamRoomIds"
+                                                       value="@item.SelectValue"
+                                                       id="reroom_@item.SelectValue"
+                                                       @(item.IsSelected ? "checked" : "") />
+                                                <label class="form-check-label" for="reroom_@item.SelectValue">@item.SelectText</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span asp-validation-for="SelectedReExamRoomIds" class="text-danger"></span>
+                                </div>
                             </div>
 
                             <div class="col-4">
@@ -255,6 +299,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <!-- FORM ACTIONS -->
                     <div class="form-actions">
