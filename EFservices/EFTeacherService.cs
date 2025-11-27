@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _2._Sem_Project_Eksamen_System.EFservices
 {
-    
+    /// <summary>
+    /// EF Core service for Teacher entity CRUD operations
+    /// </summary>
     public class EFTeacherService : ICRUDAsync<Teacher>
     {
         //DbContext Injection
@@ -36,19 +38,21 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             return await query.OrderBy(t => t.TeacherId).ToListAsync();
         }
         //Find a teacher by Primary key
-        public async Task<Teacher?> GetItemByIdAsync(int id) =>
-            await _context.Teachers.FindAsync(id);
+        public async Task<Teacher?> GetItemByIdAsync(int id)
+        {
+            return await _context.Teachers.FindAsync(id);
+        }
         //Add anew teacher and persist
         public async Task AddItemAsync(Teacher item)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
             await _context.Teachers.AddAsync(item);
             await _context.SaveChangesAsync();
         }
         // Update simple scalar fields of an existing teacher (Name, Email)
         public async Task UpdateItemAsync(Teacher item)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 
             var existing = await _context.Teachers.FindAsync(item.TeacherId);
             if (existing == null) return;

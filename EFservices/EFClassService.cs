@@ -59,7 +59,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         /// <exception cref="ArgumentNullException"></exception>
         public async Task AddItemAsync(Class item)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 
             await _context.Classes.AddAsync(item);
             await _context.SaveChangesAsync();
@@ -101,7 +101,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         /// <exception cref="ArgumentNullException"></exception>
         public async Task UpdateItemAsync(Class item)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 
             _context.Classes.Update(item);
             await _context.SaveChangesAsync();

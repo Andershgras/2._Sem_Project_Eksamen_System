@@ -41,7 +41,6 @@
                 <td>@r.Name</td>
                 <td>@(r.Capacity?.ToString() ?? "-")</td>
                 <td class="action-buttons">
-                    <!-- Combined Details button with toggle functionality -->
                     <button type="button"
                             class="btn-toggle btn-details toggle-upcoming"
                             data-room-id="@r.RoomId"
@@ -137,7 +136,6 @@
         }
     }
 </style>
-
 
 @section Scripts {
     <script>
