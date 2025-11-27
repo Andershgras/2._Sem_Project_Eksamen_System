@@ -113,8 +113,8 @@
                     @await Html.PartialAsync("_CreateButton", new CreateButtonModel
                     {
                         Page = "/Eksamner/Create_Exam",
-                        Text = "Add New Exam"
-                    })
+                                        Text = "Add New Exam"
+                                        })
                 </div>
             </div>
 
@@ -145,7 +145,6 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th></th>
                             <th>Date</th>
                             <th>Title</th>
                             <th>Class</th>
@@ -159,12 +158,6 @@
                             foreach (var eksamen in Model.Eksamner)
                             {
                                 <tr>
-                                    <td>
-                                        <a asp-page="Exam_Details" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-details">
-                                            <span class="btn-icon">📋</span>
-                                            Details
-                                        </a>
-                                    </td>
                                     <td>@(eksamen.ExamStartDate?.ToString("dd-MM-yy") ?? "")</td>
                                     <td>@eksamen.ExamName</td>
                                     <td>
@@ -202,7 +195,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="6" class="no-data">
+                                <td colspan="5" class="no-data">
                                     <div class="empty-state">
                                         <span class="empty-icon">📝</span>
                                         @if (!string.IsNullOrEmpty(Model.Filter.FilterByName))
@@ -225,6 +218,14 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.btn-close').forEach(btn => {
+            btn.onclick = () => btn.closest('.alert').style.display = 'none';
+        });
+    </script>
+}
 <!-- Style Section-->
 <style>
     .search-container {
@@ -384,16 +385,10 @@
     }
 
     /* FIXED DATE COLUMN - PREVENT WRAPPING */
-    .data-table td:nth-child(1) { /* Date column - now first column after hiding empty column */
+    .data-table td:nth-child(1) { /* Date column */
         white-space: nowrap;
         min-width: 90px;
         font-weight: 500;
-    }
-
-    /* TABLE COLUMN ADJUSTMENTS */
-    .data-table th:first-child,
-    .data-table td:first-child {
-        display: none;
     }
 
     .actions-header {
