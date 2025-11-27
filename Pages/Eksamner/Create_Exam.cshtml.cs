@@ -36,8 +36,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public int? CensorTeacherId { get; set; }
 
-        [BindProperty]
-        public int? SelectedRoomId { get; set; }
+        //[BindProperty]
+        //public int? SelectedRoomId { get; set; }
 
         [BindProperty]
         public List<int> SelectedTeacherIds { get; set; } = new List<int>();
@@ -74,10 +74,10 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         public List<GenericMultySelect> RoomSelect { get; set; } = new List<GenericMultySelect>();
 
         public SelectList ClassList { get; set; } = default!;
-        public SelectList RoomList { get; set; } = default!;// skal erstattes med MultiSelectList hvis flere rum skal vælges
+        //public SelectList RoomList { get; set; } = default!;// skal erstattes med MultiSelectList hvis flere rum skal vælges
         public MultiSelectList TeacherList { get; set; } = default!;
-        public SelectList TeacherListReExam { get; set; } = default!;
-        public SelectList StudentList { get; set; } = default!;
+        //public SelectList TeacherListReExam { get; set; } = default!;
+        //public SelectList StudentList { get; set; } = default!;
         #endregion 
 
         #region Constructor
@@ -127,7 +127,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }).ToList();
 
             ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
-            RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
+            //RoomList = new SelectList(await _roomService.GetAllAsync(), "RoomId", "Name");
             TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
         }
 
@@ -321,10 +321,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
             // validatetions end -------------------------------------------------
             
-            LogModelState();
+          
 
             if (!ModelState.IsValid)
+            {
+                LogModelState("Before Try catch");
                 return Page();
+            }
 
             // Create Exam and related entities -------------------------------
             try
@@ -351,20 +354,20 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                             ExamId = Exam.ExamId, RoomId = roomId, Role = null
                         };
                         // collect tasks so we can await them all
-                        roomTasks.Add(_roomsToExamService.AddItemAsync(mapping));
+                        await _roomsToExamService.AddItemAsync(mapping);
                     }
                     // await all created mapping tasks
-                    await Task.WhenAll(roomTasks);
+                 
                 }
-
-                if (!SelectedRoomIds.IsNullOrEmpty())
+                // Map selected Rooms to ReExam if creating
+                if (!SelectedReExamRoomIds.IsNullOrEmpty() && CreateReExam)
                 {
                     var roomTasks = new List<Task>();
                     foreach (var roomId in SelectedRoomIds.Distinct())
                     {
                         var mapping = new RoomsToExam
                         {
-                            ExamId = Exam.ExamId,
+                            ExamId = ReExam.ExamId,
                             RoomId = roomId,
                             Role = null
                         };
@@ -391,6 +394,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     if (SelectedTeacherIds.Contains(CensorTeacherId.Value))
                     {
                         ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Examiner.");
+                        LogModelState("In Add Teacher: role Censor to Exam");
                         return Page();
                     }
                     await _teachersToExamsService.AddTeachersToExamsAsync(CensorTeacherId.Value, Exam.ExamId, "Censor");
@@ -412,15 +416,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error creating exam: {ex.Message}");
+                LogModelState("Exeption");
                 return Page();
             }
         }
 
 
-        private void LogModelState()
+        private void LogModelState(string place)
         {
             Console.WriteLine();
-            Console.WriteLine("=== ModelState contents ===");
+            Console.WriteLine($"=== ModelState contents === Logger activated at: {place}");
             Console.WriteLine();
 
             var prevColor = Console.ForegroundColor;
