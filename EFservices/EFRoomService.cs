@@ -8,17 +8,21 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
     //EFCore service implimeting Async CRUD for Room entities
     public class EFRoomService : ICRUDAsync<Room>
     {
-        // DbContext injection for databse
-        private readonly EksamensDBContext _context;
+        private readonly EksamensDBContext _context; //Db injection
 
         public EFRoomService(EksamensDBContext context) => _context = context;
-        // Returns all rooms read only and ordered by RoomId
+
+        /// <summary>
+        /// Returns all rooms, read-only and ordered by RoomId
+        /// </summary>
         public async Task<IEnumerable<Room>> GetAllAsync()
         {
-            return await _context.Rooms.AsNoTracking().OrderBy(r => r.RoomId).ToListAsync();
+            return await _context.Rooms
+                .AsNoTracking()
+                .OrderBy(r => r.RoomId)
+                .ToListAsync();
         }
         //Find a single room by primary key
-
         public async Task<Room?> GetItemByIdAsync(int id)
         {
             return await _context.Rooms.FindAsync(id);
@@ -26,7 +30,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         //Add a new room and persisit
         public async Task AddItemAsync(Room item)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
             _context.Rooms.Add(item);
             await _context.SaveChangesAsync();
         }
@@ -34,7 +38,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         // Uses FindAsync to load tracked entity and updates only those fields
         public async Task UpdateItemAsync(Room item)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
             var existing = await _context.Rooms.FindAsync(item.RoomId);
             if (existing == null) return;
 
