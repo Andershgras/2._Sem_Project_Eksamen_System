@@ -28,7 +28,6 @@
 <table class="table table-sm align-middle">
     <thead>
         <tr>
-            <th style="width:36px;"></th>
             <th>Room</th>
             <th>Capacity</th>
             <th>Actions</th>
@@ -39,34 +38,106 @@
         {
             var rowId = $"room-{r.RoomId}";
             <tr>
-                <td>
+                <td>@r.Name</td>
+                <td>@(r.Capacity?.ToString() ?? "-")</td>
+                <td class="action-buttons">
+                    <!-- Combined Details button with toggle functionality -->
                     <button type="button"
-                            class="btn btn-link p-0 toggle-upcoming"
+                            class="btn-toggle btn-details toggle-upcoming"
                             data-room-id="@r.RoomId"
                             aria-expanded="false"
                             aria-controls="@($"{rowId}-upcoming")"
                             title="Show upcoming exams">
-                        ▸
+                        <span class="btn-icon">📋</span>
+                        Details
+                        <span class="toggle-arrow">▸</span>
                     </button>
-                </td>
-                <td>@r.Name</td>
-                <td>@(r.Capacity?.ToString() ?? "-")</td>
-
-                <td class="action-buttons">
                     <a asp-page="./Edit" asp-route-id="@r.RoomId" class="btn-toggle btn-edit">Edit</a>
-                    <partial name="~/Pages/Shared/_DeleteButton.cshtml"
-                             model="@(("./Delete", r.RoomId))" />
+                    <a asp-page="./Delete" asp-route-id="@r.RoomId" class="btn-toggle btn-delete">Delete</a>
                 </td>
             </tr>
             <tr id="@($"{rowId}-upcoming")" class="d-none">
-                <td></td>
-                <td colspan="3">
+                <td colspan="2">
                     <div class="upcoming-container small text-muted">Loading…</div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<style>
+    /* ACTION BUTTONS STYLING ONLY - FOR ROOMS PAGE */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .btn-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        white-space: nowrap;
+        height: 36px;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+
+    .toggle-arrow {
+        margin-left: 0.25rem;
+        font-weight: bold;
+    }
+
+    .btn-details {
+        background-color: #f0f9ff;
+        color: #0c6c8c;
+        border-color: #b6d7e8;
+    }
+
+    .btn-edit {
+        background-color: #e7f1ff;
+        color: #0066cc;
+        border-color: #b6d7e8;
+    }
+
+    .btn-delete {
+        background-color: #fef2f2;
+        color: #dc2626;
+        border-color: #fecaca;
+    }
+
+    .btn-toggle:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-icon {
+        font-size: 0.875rem;
+    }
+
+    /* Style for the toggle-upcoming button to match others */
+    .toggle-upcoming {
+        font-family: inherit;
+        font-size: 0.875rem;
+    }
+
+    @@media (max-width: 768px) {
+        .action-buttons {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+    }
+</style>
+
 
 @section Scripts {
     <script>
@@ -78,17 +149,18 @@
             const detailsRow = document.getElementById(`room-${roomId}-upcoming`);
             const box = detailsRow.querySelector('.upcoming-container');
             const expanded = btn.getAttribute('aria-expanded') === 'true';
+            const arrowSpan = btn.querySelector('.toggle-arrow');
 
             if (expanded) {
                 detailsRow.classList.add('d-none');
                 btn.setAttribute('aria-expanded', 'false');
-                btn.textContent = '▸';
+                arrowSpan.textContent = '▸';
                 return;
             }
 
             detailsRow.classList.remove('d-none');
             btn.setAttribute('aria-expanded', 'true');
-            btn.textContent = '▾';
+            arrowSpan.textContent = '▾';
 
             if (!detailsRow.dataset.loaded) {
                 box.textContent = 'Loading…';
