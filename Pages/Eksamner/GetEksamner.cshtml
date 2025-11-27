@@ -189,6 +189,10 @@
 
                                     </td>
                                     <td class="action-buttons">
+                                        <a asp-page="Exam_Details" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-details">
+                                            <span class="btn-icon">📋</span>
+                                            Details
+                                        </a>
                                         <a asp-page="./Edit_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-edit">Edit</a>
                                         <a asp-page="./Delete_Exam" asp-route-id="@eksamen.ExamId" class="btn-toggle btn-delete">Delete</a>
                                     </td>
@@ -278,43 +282,79 @@
         border-top: 1px solid #eee;
     }
 
+    /* FIXED TABLE ROW AND CELL STYLING - PERFECT ALIGNMENT */
+    .data-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .data-table tr {
+            height: 60px; /* Consistent row height */
+        }
+
+        .data-table td {
+            padding: 0.75rem 0.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #e5e7eb;
+            line-height: 1.2;
+        }
+
+        .data-table th {
+            padding: 1rem 0.5rem;
+            vertical-align: middle;
+            border-bottom: 2px solid #e5e7eb;
+            background-color: #f8fafc;
+        }
+
+    /* PERFECTLY ALIGNED ACTION BUTTONS */
     .action-buttons {
         display: flex;
         gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+        white-space: nowrap;
+        height: 100%;
+        padding: 0.75rem 0.5rem;
+        vertical-align: middle;
     }
 
     .btn-toggle {
         display: inline-flex;
         align-items: center;
         gap: 0.25rem;
-        padding: 0.375rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 4px;
         text-decoration: none;
         font-size: 0.875rem;
         transition: all 0.2s;
+        white-space: nowrap;
+        height: 36px;
+        border: 1px solid transparent;
+        box-sizing: border-box;
     }
 
     .btn-edit {
         background-color: #e7f1ff;
         color: #0066cc;
-        border: 1px solid #b6d7e8;
+        border-color: #b6d7e8;
     }
 
     .btn-details {
         background-color: #f0f9ff;
         color: #0c6c8c;
-        border: 1px solid #b6d7e8;
+        border-color: #b6d7e8;
     }
 
     .btn-delete {
         background-color: #fef2f2;
         color: #dc2626;
-        border: 1px solid #fecaca;
+        border-color: #fecaca;
     }
 
     .btn-toggle:hover {
         opacity: 0.9;
         transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .btn-icon {
@@ -343,23 +383,31 @@
         opacity: 0.5;
     }
 
-
-    @@media (max-width: 768px) {
-        .search-form {
-            grid-template-columns: 1fr;
-        }
-
-        .form-actions {
-            flex-direction: column;
-        }
-
-        .action-buttons {
-            flex-direction: column;
-        }
+    /* FIXED DATE COLUMN - PREVENT WRAPPING */
+    .data-table td:nth-child(1) { /* Date column - now first column after hiding empty column */
+        white-space: nowrap;
+        min-width: 90px;
+        font-weight: 500;
     }
-    /* ==============================================
-           BUTTON STYLES FOR ADD NEW EXAM
-        ============================================== */
+
+    /* TABLE COLUMN ADJUSTMENTS */
+    .data-table th:first-child,
+    .data-table td:first-child {
+        display: none;
+    }
+
+    .actions-header {
+        text-align: center;
+        min-width: 200px;
+    }
+
+    /* ENSURE ALL TABLE CELLS HAVE SAME HEIGHT */
+    .data-table tbody td {
+        height: 60px;
+        box-sizing: border-box;
+    }
+
+    /* BUTTON STYLES FOR ADD NEW EXAM */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -386,23 +434,42 @@
             box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
         }
 
-    .btn-icon {
-        font-size: 0.9rem;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
     /* Hide all filter fields except Exam Name */
     .search-form .form-group:not(:first-child) {
         display: none;
     }
 
-    /* Adjust grid for single field */
     .search-form {
         grid-template-columns: 1fr;
         max-width: 300px;
+    }
+
+    @@media (max-width: 768px) {
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .action-buttons {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .data-table td:nth-child(1) {
+            white-space: normal;
+            min-width: auto;
+        }
+
+        .data-table tr {
+            height: auto;
+        }
+
+        .data-table tbody td {
+            height: auto;
+        }
     }
 </style>
