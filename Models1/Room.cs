@@ -13,8 +13,8 @@ public partial class Room
     [Column("RoomID")]
     public int RoomId { get; set; }
 
-    [Required]
-    [StringLength(250)]
+    [Required(ErrorMessage = "Room name is required")]
+    [StringLength(250, ErrorMessage = "Room name cannot exceed 250 characters")]
     [Unicode(false)]
     public string Name { get; set; } = null!;
     [Range(0, 10000, ErrorMessage = "Capacity must be between 0 & 10000")]
