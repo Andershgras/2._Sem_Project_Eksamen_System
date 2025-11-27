@@ -13,6 +13,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 {
     public class Create_ExamModel : PageModel
     {
+        #region Services
         private readonly ICRUDAsync<Exam> _examService;
         private readonly ICRUDAsync<Class> _classService;
         private readonly ICRUDAsync<Student> _studentService;
@@ -23,24 +24,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         private readonly ICRUDAsync<Teacher> _teacherService;
         private readonly ITeachersToExam _teachersToExamsService;
         private readonly ICheckOverlap _overlapService;
+        #endregion
+        #region Properties
+
+        // Bind properties for form Exam creation
 
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
 
         [BindProperty]
-        public bool CreateReExam { get; set; } = false;
-
-        [BindProperty]
-        public Exam ReExam { get; set; } = new Exam();
-        
-        [BindProperty]
-        public List<GenericMultySelect> ExaminerSelect { get; set; } = new List<GenericMultySelect>();
-
-        public SelectList ClassList { get; set; } = default!;
-        public SelectList RoomList { get; set; } = default!;
-        public MultiSelectList TeacherList { get; set; } = default!;
-        public SelectList TeacherListReExam { get; set; } = default!;
-        public SelectList StudentList { get; set; } = default!;
+        public int? CensorTeacherId { get; set; }
 
         [BindProperty]
         public int? SelectedRoomId { get; set; }
@@ -48,21 +41,35 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public List<int> SelectedTeacherIds { get; set; } = new List<int>();
 
+        // ReExam related properties --------------------------------------------
+
+        [BindProperty]
+        public bool CreateReExam { get; set; } = false;
+
+        [BindProperty]
+        public Exam ReExam { get; set; } = new Exam();
+
         [BindProperty]
         public List<int> SelectedReExamTeacherIds { get; set; } = new List<int>();
 
-        [BindProperty]
-        public List<int> SelectedReExamStudentIds { get; set; } = new List<int>();
+        //[BindProperty]
+        //public List<int> SelectedReExamStudentIds { get; set; } = new List<int>();  Not used currently 
 
         [BindProperty]
         public int NumberOfStudents { get; set; }
-        /////////////////////Made to add funtioanlaity of choiceing rols still under process ///////////////////////
-        [BindProperty]
-        public int? ExaminerTeacherId { get; set; }
-       
-        [BindProperty]
-        public int? CensorTeacherId { get; set; }
 
+        // property for Selectors ------------------------------------------------
+
+        [BindProperty]
+        public List<GenericMultySelect> ExaminerSelect { get; set; } = new List<GenericMultySelect>();
+        public SelectList ClassList { get; set; } = default!;
+        public SelectList RoomList { get; set; } = default!;
+        public MultiSelectList TeacherList { get; set; } = default!;
+        public SelectList TeacherListReExam { get; set; } = default!;
+        public SelectList StudentList { get; set; } = default!;
+        #endregion 
+
+        #region Constructor
         public Create_ExamModel(
             ICRUDAsync<Exam> examService,
             ICRUDAsync<Class> classService,
@@ -87,7 +94,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             _studentsToClassesService = studentsToClassesService;
             _overlapService = overlapService;
         }
-
+        #endregion
         private async Task PopulateExaminerSelectAsync()
         {
             var teachers = (await _teacherService.GetAllAsync()).ToList();
@@ -133,10 +140,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 ModelState.AddModelError("Exam.ClassId", "A class must be selected for the exam.");
             }
-            //if (!ExaminerTeacherId.HasValue || ExaminerTeacherId.Value <= 0)
-            //{
-            //    ModelState.AddModelError("ExaminerTeacherId", "An examiner must be selected for the exam.");
-            //}
             if (!SelectedRoomId.HasValue || SelectedRoomId.Value <= 0)
             {
                 ModelState.AddModelError("SelectedRoomId", "A room/place must be selected for the exam.");
@@ -319,6 +322,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     
                         await _roomsToExamService.AddItemAsync(mapping);
                     }
+                   
                 }
 
                 // Persist selected examiners (SelectedTeacherIds) with roles
@@ -336,7 +340,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 if (CensorTeacherId.HasValue)
                 {
                     // validate the Censor and Examiner are different
-                    if (ExaminerTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
+                    if (SelectedTeacherIds.Contains(CensorTeacherId.Value))
                     {
                         ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Examiner.");
                         return Page();
@@ -345,7 +349,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     await _teachersToExamsService.AddTeachersToExamsAsync(CensorTeacherId.Value, Exam.ExamId, "Censor");
                 }
 
-                // 3. Assign any additional teachers without specific roles
+                // 3. Assign Teachers for ReExam if creating
                 if (CreateReExam && SelectedReExamTeacherIds != null && SelectedReExamTeacherIds.Count > 0)
                 {
                     foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
