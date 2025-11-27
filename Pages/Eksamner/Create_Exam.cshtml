@@ -30,10 +30,10 @@
             <div class="form-container">
                 <form method="post">
                     <!-- THREE COLUMN FORM GRID -->
-                    <div class="form-grid">
+                    <div class="row">
 
                         <!-- COLUMN 1: BASIC INFORMATION -->
-                        <div class="form-column">
+                        <div class="col">
                             <h3 class="form-section-title">Basic Information</h3>
 
                             <div class="form-group">
@@ -58,7 +58,7 @@
                         </div>
 
                         <!-- COLUMN 2: EXAM DETAILS -->
-                        <div class="form-column">
+                        <div class="col">
                             <h3 class="form-section-title">Exam Details</h3>
 
                             <div class="form-group">
@@ -79,6 +79,9 @@
 
                             <!-- CHECKBOX GROUP -->
                             <div class="checkbox-group">
+
+                                <h3 class="form-section-title">State</h3>
+
                                 <div class="form-check">
                                     <input asp-for="Exam.ExamPatrol" class="form-check-input" type="checkbox" />
                                     <label asp-for="Exam.ExamPatrol" class="form-check-label">Exam Invigilation</label>
@@ -94,11 +97,19 @@
                                     <label asp-for="Exam.IsFinalExam" class="form-check-label">Is Final Exam</label>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
+
 
                         <!-- COLUMN 3: DATES & ASSIGNMENTS -->
-                        <div class="form-column">
+                        <div class="col">
                             <h3 class="form-section-title">Dates & Assignments</h3>
+
+                            <!--Exam Delevery Date-->
+                            <div class="form-group">
+                                <label asp-for="Exam.DeliveryDate" class="form-label">Delivery Date</label>
+                                <input asp-for="Exam.DeliveryDate" type="date" class="form-control" />
+                                <span asp-validation-for="Exam.DeliveryDate" class="text-danger"></span>
+                            </div>
 
                             <div class="form-group">
                                 <label asp-for="Exam.ExamStartDate" class="form-label">Start Date</label>
@@ -112,20 +123,15 @@
                                 <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
-                                <label asp-for="Exam.DeliveryDate" class="form-label">Delivery Date</label>
-                                <input asp-for="Exam.DeliveryDate" type="date" class="form-control" />
-                                <span asp-validation-for="Exam.DeliveryDate" class="text-danger"></span>
-                            </div>
-
                             @* <div class="form-group">
-                                <label asp-for="ExaminerTeacherId" class="form-label">Examiner</label>
-                                <select asp-for="ExaminerTeacherId" class="form-control" asp-items="Model.TeacherList">
-                                    <option value="">-- Select Examiner --</option>
-                                </select>
-                                <span asp-validation-for="ExaminerTeacherId" class="text-danger"></span>
-                            </div> *@
+                                    <label asp-for="ExaminerTeacherId" class="form-label">Examiner</label>
+                                    <select asp-for="ExaminerTeacherId" class="form-control" asp-items="Model.TeacherList">
+                                        <option value="">-- Select Examiner --</option>
+                                    </select>
+                                    <span asp-validation-for="ExaminerTeacherId" class="text-danger"></span>
+                                </div> *@
 
+                            <!-- Censor selector-->
                             <div class="form-group">
                                 <label asp-for="CensorTeacherId" class="form-label">Censor</label>
                                 <select asp-for="CensorTeacherId" class="form-control" asp-items="Model.TeacherList">
@@ -134,6 +140,31 @@
                                 <span asp-validation-for="CensorTeacherId" class="text-danger"></span>
                             </div>
 
+                            <!-- Multy Select Examiners-->
+                            <div class="divider" style="margin-bottom:1.5rem;">
+                                <div class="form-group">
+                                    <legend class="form-label">Examiners</legend>
+
+                                    <div style="max-height:100px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
+                                        @foreach (var i in Model.ExaminerSelect)
+                                        {
+                                            var item = i;
+                                            <div class="form-check ms-4" style="padding:.25rem .5rem;">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="SelectedTeacherIds"
+                                                       value="@item.SelectValue"
+                                                       id="examiner_@item.SelectValue"
+                                                       @(item.IsSelected ? "checked" : "") /> <!-- Renders the check box check or empty -->
+                                                <label class="form-check-label" for="examiner_@item.SelectValue">@item.SelectText</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span asp-validation-for="SelectedTeacherIds" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!--Room Selector-->
                             <div class="form-group">
                                 <label asp-for="SelectedRoomId" class="form-label">Room</label>
                                 <select asp-for="SelectedRoomId" class="form-control" asp-items="Model.RoomList">
@@ -142,32 +173,9 @@
                                 <span asp-validation-for="SelectedRoomId" class="text-danger"></span>
                             </div>
                         </div>
-
-                        <!-- Multy Select Examiners-->
-                        <div class="divider" style="margin-bottom:1.5rem;">
-                            <div class="form-group">
-                                <legend class="form-label">Examiners</legend>
-
-                                <div style="max-height:100px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
-                                    @foreach (var i in Model.ExaminerSelect)
-                                    {
-                                        var item = i;
-                                        <div class="form-check ms-4" style="padding:.25rem .5rem;">
-                                            <input class="form-check-input"
-                                                   type="checkbox"
-                                                   name="SelectedTeacherIds"
-                                                   value="@item.SelectValue"
-                                                   id="examiner_@item.SelectValue"
-                                                   @(item.IsSelected ? "checked" : "") /> <!-- Renders the check box check or empty -->
-                                            <label class="form-check-label" for="examiner_@item.SelectValue">@item.SelectText</label>
-                                        </div>
-                                    }
-                                </div>
-                                <span asp-validation-for="SelectedTeacherIds" class="text-danger"></span>
-                            </div>
-                        </div>
-
+                        <!-- END OF FORM GRID to Exam-->
                     </div>
+                        
 
                     <!-- REEXAM SECTION -->
                     <div class="reexam-section">
@@ -197,7 +205,7 @@
                                 <span asp-validation-for="SelectedReExamTeacherIds" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
+                            <div class="col-4">
                                 <label asp-for="NumberOfStudents" class="form-label">Number of Students</label>
                                 <input asp-for="NumberOfStudents" type="number" class="form-control" />
                                 <span asp-validation-for="NumberOfStudents" class="text-danger"></span>
