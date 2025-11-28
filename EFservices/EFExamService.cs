@@ -69,6 +69,12 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
             return await query.OrderBy(e => e.ExamId).ToListAsync();
         }
+        /// <summary>
+        /// /made extended filtered search for exams
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="ef"></param>
+        /// <returns></returns>
         private IQueryable<Exam> ApplyExtendedFilters(IQueryable<Exam> query, ExtendedExamFilter ef)
         {
             if (!string.IsNullOrWhiteSpace(ef.FilterByName))
