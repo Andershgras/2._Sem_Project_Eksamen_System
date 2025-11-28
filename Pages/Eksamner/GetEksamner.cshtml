@@ -82,12 +82,18 @@
                         <!-- Date Filters -->
                         <div class="form-group">
                             <label for="Filter_FilterByStartDate" class="form-label">Start Date</label>
-                            <input type="date" asp-for="Filter.FilterByStartDate" class="form-control compact-input" />
+                            <input type="date"
+                                   asp-for="Filter.FilterByStartDate"
+                                   class="form-control compact-input"
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                         </div>
 
                         <div class="form-group">
                             <label for="Filter_FilterByEndDate" class="form-label">End Date</label>
-                            <input type="date" asp-for="Filter.FilterByEndDate" class="form-control compact-input" />
+                            <input type="date"
+                                   asp-for="Filter.FilterByEndDate"
+                                   class="form-control compact-input"
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                         </div>
                     </div>
 
@@ -124,21 +130,22 @@
                     activeFilters.Add($"Name: {Model.Filter.FilterByName}");
 
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByClass))
-                    activeFilters.Add($"Class:{Model.Filter.FilterByClass}");
+                    activeFilters.Add($"Class: {Model.Filter.FilterByClass}");
 
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByTeacher))
-                    activeFilters.Add($"Class:{Model.Filter.FilterByTeacher}");
+                    activeFilters.Add($"Teacher: {Model.Filter.FilterByTeacher}");
 
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByRoom))
-                    activeFilters.Add($"Class:{Model.Filter.FilterByRoom}");
+                    activeFilters.Add($"Room: {Model.Filter.FilterByRoom}");
 
                 if (!string.IsNullOrEmpty(Model.Filter.FilterByExaminerName))
-                    activeFilters.Add($"Class:{Model.Filter.FilterByExaminerName}");
+                    activeFilters.Add($"Examiner: {Model.Filter.FilterByExaminerName}");
+
                 if (Model.Filter.FilterByStartDate.HasValue)
                     activeFilters.Add($"Start: {Model.Filter.FilterByStartDate.Value.ToString("dd-MM-yy")}");
+
                 if (Model.Filter.FilterByEndDate.HasValue)
                     activeFilters.Add($"End: {Model.Filter.FilterByEndDate.Value.ToString("dd-MM-yy")}");
-
             }
 
             <div class="table-container">
@@ -428,16 +435,6 @@
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0, 102, 204, 0.3);
         }
-
-    /* Hide all filter fields except Exam Name */
-    .search-form .form-group:not(:first-child) {
-        display: none;
-    }
-
-    .search-form {
-        grid-template-columns: 1fr;
-        max-width: 300px;
-    }
 
     @@media (max-width: 768px) {
         .search-form {

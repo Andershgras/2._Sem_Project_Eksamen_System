@@ -369,19 +369,33 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     }
                 }
 
-                // Assign Teachers for Exam
-                if (SelectedTeacherIds.Count > 0)
+                // Assign Teachers for Exam with roles
+                // 1. Assign Primary Examiner
+                if (ExaminerTeacherId.HasValue)
+                {
+                    await _teachersToExamsService.AddTeachersToExamsAsync(ExaminerTeacherId.Value, Exam.ExamId, "Examiner");
+                }
+
+                // 2. Assign Additional Examiners (skip if same as Primary Examiner)
+                if (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
                 {
                     foreach (var teacherId in SelectedTeacherIds)
                     {
-                        await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, Exam.ExamId, "Examiner");
+                        // Don't duplicate if same as primary examiner
+                        if (teacherId != ExaminerTeacherId)
+                        {
+                            await _teachersToExamsService.AddTeachersToExamsAsync(teacherId, Exam.ExamId, "Examiner");
+                        }
                     }
                 }
+
+                // 3. Assign Censor with validation
                 if (CensorTeacherId.HasValue)
                 {
-                    if (SelectedTeacherIds.Contains(CensorTeacherId.Value))
+                    // Validate the Censor and Primary Examiner are different
+                    if (ExaminerTeacherId.HasValue && ExaminerTeacherId.Value == CensorTeacherId.Value)
                     {
-                        ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Examiner.");
+                        ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Primary Examiner.");
                         LogModelState("In Add Teacher: role Censor to Exam");
                         return Page();
                     }
