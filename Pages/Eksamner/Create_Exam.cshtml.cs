@@ -298,6 +298,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     }
                 }
             }
+            ////////R/////////
+            if (ExaminerTeacherId.HasValue)
+            {
+                OverlapResult result = _overlapService.TeacherHasOverlap(ExaminerTeacherId.Value,
+                    Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("ExaminerTeacherId", result.Message ?? "Primary examiner has scheduling conflict");
+                }
+            }
 
             if (!SelectedReExamTeacherIds.IsNullOrEmpty() && CreateReExam)
             {
