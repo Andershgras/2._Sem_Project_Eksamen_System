@@ -115,14 +115,22 @@
         <div class="section-card">
             <div class="section-header">
                 <h2>All Exams</h2>
-                <div class="header-actions">
+
+                <div class="header-actions d-flex gap-2">
+
                     @await Html.PartialAsync("_CreateButton", new CreateButtonModel
                     {
                         Page = "/Eksamner/Create_Exam",
                                         Text = "Add New Exam"
                                         })
+                    <a asp-page="/Eksamner/Unresolved"
+                       class="btn btn-outline-warning btn-sm d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        Unresolved
+                    </a>
                 </div>
             </div>
+        </div>
 
             @{
                 var activeFilters = new List<string>();

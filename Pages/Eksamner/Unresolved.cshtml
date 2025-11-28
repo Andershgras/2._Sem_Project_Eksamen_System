@@ -1,0 +1,85 @@
+﻿@page
+@using Microsoft.EntityFrameworkCore
+@using _2._Sem_Project_Eksamen_System.Models1
+@inject _2._Sem_Project_Eksamen_System.Models1.EksamensDBContext Context
+@{
+    ViewData["Title"] = "Unresolved Exams";
+
+    var unresolvedExams = await Context.Exams
+        .Include(e => e.Class)
+        .Include(e => e.TeachersToExams)
+        .Include(e => e.RoomsToExams)
+        .AsNoTracking()
+        .Where(e =>
+            string.IsNullOrEmpty(e.ExamName) ||
+            !e.ExamStartDate.HasValue ||
+            !e.ExamEndDate.HasValue ||
+            e.ClassId == null ||
+            !e.TeachersToExams.Any(te => te.Role == "Examiner") ||
+            !e.RoomsToExams.Any())
+        .OrderBy(e => e.ExamStartDate)
+        .ToListAsync();
+}
+
+<h2>Unresolved Exams</h2>
+<p class="text-muted">Exams with missing information</p>
+
+@if (!unresolvedExams.Any())
+{
+    <div class="alert alert-success">
+        ✓ All exams are properly configured!
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Exam</th>
+                <th>Issues</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var exam in unresolvedExams)
+            {
+                <tr>
+                    <td>
+                        <strong>@(exam.ExamName ?? "Unnamed")</strong><br />
+                        @(exam.Class?.ClassName ?? "No class")
+                        @if (exam.ExamStartDate.HasValue)
+                        {
+                            <span> - @exam.ExamStartDate.Value.ToString("MMM dd")</span>
+                        }
+                    </td>
+                    <td>
+                        @if (string.IsNullOrEmpty(exam.ExamName))
+                        {
+                            <span class="badge bg-danger">No name</span>
+                        }
+                        @if (!exam.ExamStartDate.HasValue || !exam.ExamEndDate.HasValue)
+                        {
+                            <span class="badge bg-danger">No dates</span>
+                        }
+                        @if (exam.ClassId == null)
+                        {
+                            <span class="badge bg-danger">No class</span>
+                        }
+                        @if (!exam.TeachersToExams.Any(te => te.Role == "Examiner"))
+                        {
+                            <span class="badge bg-warning text-dark">No examiner</span>
+                        }
+                        @if (!exam.RoomsToExams.Any())
+                        {
+                            <span class="badge bg-warning text-dark">No room</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-page="/Eksamner/Edit_Exam" asp-route-id="@exam.ExamId"
+                           class="btn btn-sm btn-primary">Fix</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
