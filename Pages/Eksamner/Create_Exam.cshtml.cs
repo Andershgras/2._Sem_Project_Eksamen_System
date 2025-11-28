@@ -27,6 +27,8 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
+        [BindProperty] 
+        public int? ExaminerTeacherId { get; set; }////R/////
 
         [BindProperty]
         public int? CensorTeacherId { get; set; }
@@ -164,6 +166,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (SelectedRoomIds.IsNullOrEmpty())
             {
                 ModelState.AddModelError("SelectedRoomIds", "A room/place must be selected for the exam.");
+            }
+            ////////////R/////////
+            if (!ExaminerTeacherId.HasValue || ExaminerTeacherId.Value <= 0)
+            {
+                ModelState.AddModelError("ExaminerTeacherId", "A primary examiner must be selected for the exam.");
             }
             if (Exam.ExamStartDate == default)
             {

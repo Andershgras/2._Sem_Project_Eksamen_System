@@ -123,13 +123,14 @@
                                 <span asp-validation-for="Exam.ExamEndDate" class="text-danger"></span>
                             </div>
 
-                            @* <div class="form-group">
-                                    <label asp-for="ExaminerTeacherId" class="form-label">Examiner</label>
-                                    <select asp-for="ExaminerTeacherId" class="form-control" asp-items="Model.TeacherList">
-                                        <option value="">-- Select Examiner --</option>
-                                    </select>
-                                    <span asp-validation-for="ExaminerTeacherId" class="text-danger"></span>
-                                </div> *@
+                            <!-- Primary Examiner selector (single, required) -->
+                            <div class="form-group">
+                                <label asp-for="ExaminerTeacherId" class="form-label">Primary Examiner *</label>
+                                <select asp-for="ExaminerTeacherId" class="form-control" asp-items="Model.TeacherList" required>
+                                    <option value="">-- Select Primary Examiner --</option>
+                                </select>
+                                <span asp-validation-for="ExaminerTeacherId" class="text-danger"></span>
+                            </div>
 
                             <!-- Censor selector-->
                             <div class="form-group">
@@ -143,7 +144,7 @@
                             <!-- Multy Select Examiners-->
                             <div class="divider" style="margin-bottom:1.5rem;">
                                 <div class="form-group">
-                                    <legend class="form-label">Examiners</legend>
+                                    <legend class="form-label">Additional Examiners</legend>
 
                                     <div style="max-height:100px; overflow-y:auto; border:1px solid #e2e8f0; padding:8px; border-radius:6px;">
                                         @foreach (var i in Model.ExaminerSelect)
