@@ -161,7 +161,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             ExamValidationCheck();
 
-            Exam.NumOfStud = ClassList.Count();
           
             // Handle ReExam logic if creating
             if (CreateReExam)
