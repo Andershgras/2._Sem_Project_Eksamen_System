@@ -1,9 +1,10 @@
 using _2._Sem_Project_Eksamen_System.Interfaces;
 using _2._Sem_Project_Eksamen_System.Models1;
+using _2._Sem_Project_Eksamen_System.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using _2._Sem_Project_Eksamen_System.Utils;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Tokens;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
@@ -23,14 +24,12 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         #region properties
         public SelectList ClassList { get; set; } = default!;
-        public SelectList TeacherList { get; set; } = default!;
-        public SelectList RoomList { get; set; } = default!;
+        public SelectList TeacherList { get; set; } = default!; // Censor and Main Examiner list
 
         [BindProperty]
         public List<GenericMultySelect> ExaminerSelect { get; set; } = new List<GenericMultySelect>();
         [BindProperty]
         public List<GenericMultySelect> RoomSelect { get; set; } = new List<GenericMultySelect>();
-
         [BindProperty]
         public List<GenericMultySelect> ReExaminerSelect { get; set; } = new List<GenericMultySelect>();
         [BindProperty]
@@ -85,113 +84,22 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         }
         #endregion
 
-        private async Task PopulateMultiSelectsAsync(
+        private async Task<IActionResult> PopulateMultiSelectsAsync(
             int examId,
-            int? reExamId,
             IEnumerable<int>? postedSelectedTeacherIds = null,
             IEnumerable<int>? postedSelectedRoomIds = null,
             IEnumerable<int>? postedSelectedReExamTeacherIds = null,
             IEnumerable<int>? postedSelectedReExamRoomIds = null)
         {
-            ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
-            TeacherList = new SelectList(await _teacherService.GetAllAsync(), "TeacherId", "TeacherName");
-            
-            var teachers = (await _teacherService.GetAllAsync()).ToList();
-            var rooms = (await _roomService.GetAllAsync()).ToList();
-
-            // Main Exam teachers: prefer posted ids, otherwise DB
-            if (postedSelectedTeacherIds != null)
-                SelectedTeacherIds = postedSelectedTeacherIds.ToList();
-            else
-            {
-                var examinerTeachers = await _teachersToExamService.GetTeachersByExamIdAndRoleAsync(examId, "Examiner");
-                SelectedTeacherIds = examinerTeachers.Select(t => t.TeacherId).ToList();
-            }
-
-            ExaminerSelect = teachers.Select(t => new GenericMultySelect
-            {
-                SelectValue = t.TeacherId,
-                SelectText = t.TeacherName ?? string.Empty,
-                IsSelected = SelectedTeacherIds.Contains(t.TeacherId)
-            }).ToList();
-
-            // Main Exam rooms: prefer posted ids, otherwise DB
-            if (postedSelectedRoomIds != null)
-                SelectedRoomIds = postedSelectedRoomIds.ToList();
-            else
-            {
-                var examRooms = await _roomsToExamService.GetRoomsByExamIdAsync(examId);
-                SelectedRoomIds = examRooms.Select(r => r.RoomId).ToList();
-            }
-
-            RoomSelect = rooms.Select(r => new GenericMultySelect
-            {
-                SelectValue = r.RoomId,
-                SelectText = r.Name ?? string.Empty,
-                IsSelected = SelectedRoomIds.Contains(r.RoomId)
-            }).ToList();
-
-            // ReExam selections
-            if (reExamId.HasValue && reExamId > 0)
-            {
-                if (postedSelectedReExamTeacherIds != null)
-                    SelectedReExamTeacherIds = postedSelectedReExamTeacherIds.ToList();
-                else
-                {
-                    var reExaminerTeachers = await _teachersToExamService.GetTeachersByExamIdAndRoleAsync(reExamId.Value, "Examiner");
-                    SelectedReExamTeacherIds = reExaminerTeachers.Select(t => t.TeacherId).ToList();
-                }
-
-                ReExaminerSelect = teachers.Select(t => new GenericMultySelect
-                {
-                    SelectValue = t.TeacherId,
-                    SelectText = t.TeacherName ?? string.Empty,
-                    IsSelected = SelectedReExamTeacherIds.Contains(t.TeacherId)
-                }).ToList();
-
-                if (postedSelectedReExamRoomIds != null)
-                    SelectedReExamRoomIds = postedSelectedReExamRoomIds.ToList();
-                else
-                {
-                    var reExamRooms = await _roomsToExamService.GetRoomsByExamIdAsync(reExamId.Value);
-                    SelectedReExamRoomIds = reExamRooms.Select(r => r.RoomId).ToList();
-                }
-
-                ReRoomSelect = rooms.Select(r => new GenericMultySelect
-                {
-                    SelectValue = r.RoomId,
-                    SelectText = r.Name ?? string.Empty,
-                    IsSelected = SelectedReExamRoomIds.Contains(r.RoomId)
-                }).ToList();
-            }
-            else
-            {
-                var postedReExamTeacherSet = new HashSet<int>(postedSelectedReExamTeacherIds ?? Enumerable.Empty<int>());
-                var postedReExamRoomSet = new HashSet<int>(postedSelectedReExamRoomIds ?? Enumerable.Empty<int>());
-
-                ReExaminerSelect = teachers.Select(t => new GenericMultySelect
-                {
-                    SelectValue = t.TeacherId,
-                    SelectText = t.TeacherName ?? string.Empty,
-                    IsSelected = postedReExamTeacherSet.Contains(t.TeacherId)
-                }).ToList();
-
-                ReRoomSelect = rooms.Select(r => new GenericMultySelect
-                {
-                    SelectValue = r.RoomId,
-                    SelectText = r.Name ?? string.Empty,
-                    IsSelected = SelectedRoomIds.Contains(r.RoomId)
-                }).ToList();
-            }
-        }
-
-        public async Task<IActionResult> OnGet(int id)
-        {
-            Exam = await _service.GetItemByIdAsync(id);
+            Exam = await _service.GetItemByIdAsync(examId);
             if (Exam == null)
                 return RedirectToPage("GetEksamner");
 
-            await PopulateMultiSelectsAsync(Exam.ExamId, Exam.ReExamId);
+            var teachers = (await _teacherService.GetAllAsync()).ToList();
+            var rooms = (await _roomService.GetAllAsync()).ToList();
+
+            TeacherList = new SelectList(teachers, "TeacherId", "TeacherName");
+            ClassList = new SelectList(await _classService.GetAllAsync(), "ClassId", "ClassName");
 
             var censor = Exam.TeachersToExams?.FirstOrDefault(t => t.Role == "Censor");
             if (censor != null)
@@ -199,14 +107,70 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 CensorTeacherId = censor.TeacherId;
             }
 
-            if (Exam.RoomsToExams != null && Exam.RoomsToExams.Any())
+            if (Exam.TeachersToExams != null && Exam.TeachersToExams.Count > 0)
             {
-                SelectedRoomIds = Exam.RoomsToExams.Select(x => x.RoomId).ToList();
+                if (postedSelectedTeacherIds != null) // if user has posted selected teachers, use those
+                    SelectedTeacherIds = postedSelectedTeacherIds.ToList();
+                else // otherwise, load from database
+                    SelectedTeacherIds = Exam.TeachersToExams.Where(t => t.Role == "Examiner").Select(t => t.TeacherId).ToList();
             }
+
+            ExaminerSelect = teachers.Select(t => new GenericMultySelect // Populate ExaminerSelect
+            {
+                SelectValue = t.TeacherId,
+                SelectText = t.TeacherName ?? string.Empty,
+                IsSelected = SelectedTeacherIds.Contains(t.TeacherId)
+            }).ToList();
+
+            if (Exam.RoomsToExams != null && Exam.RoomsToExams.Count > 0)
+            {
+                if (postedSelectedRoomIds != null) // if user has posted selected rooms, use those
+                    SelectedRoomIds = postedSelectedRoomIds.ToList();
+                else // otherwise, load from database
+                    SelectedRoomIds = Exam.RoomsToExams.Select(x => x.RoomId).ToList();
+            }
+
+            RoomSelect = rooms.Select(r => new GenericMultySelect // Populate RoomSelect
+            {
+                SelectValue = r.RoomId,
+                SelectText = r.Name ?? string.Empty,
+                IsSelected = SelectedRoomIds.Contains(r.RoomId)
+            }).ToList();
+
             if (HasReExam)
             {
                 ReExam = await _service.GetItemByIdAsync(Exam.ReExamId.Value);
                 EditReExam = true;
+
+                if (ReExam.TeachersToExams != null && ReExam.TeachersToExams.Count > 0)
+                {
+                    if (postedSelectedReExamTeacherIds != null) // if user has posted selected reexam teachers, use those
+                        SelectedReExamTeacherIds = postedSelectedReExamTeacherIds.ToList();
+                    else // otherwise, load from database
+                        SelectedReExamTeacherIds = ReExam.TeachersToExams.Where(t => t.Role == "Examiner").Select(t => t.TeacherId).ToList();
+                }
+
+                if (ReExam.RoomsToExams != null && ReExam.RoomsToExams.Count > 0)
+                {
+                    if (postedSelectedReExamRoomIds != null) // if user has posted selected reexam rooms, use those
+                        SelectedReExamRoomIds = postedSelectedReExamRoomIds.ToList();
+                    else // otherwise, load from database
+                        SelectedReExamRoomIds = ReExam.RoomsToExams.Select(x => x.RoomId).ToList();
+                }
+
+                ReRoomSelect = rooms.Select(r => new GenericMultySelect // Populate ReRoomSelect
+                {
+                    SelectValue = r.RoomId,
+                    SelectText = r.Name ?? string.Empty,
+                    IsSelected = SelectedReExamRoomIds.Contains(r.RoomId)
+                }).ToList();
+
+                ReExaminerSelect = teachers.Select(t => new GenericMultySelect // Populate ReExaminerSelect
+                {
+                    SelectValue = t.TeacherId,
+                    SelectText = t.TeacherName ?? string.Empty,
+                    IsSelected = SelectedReExamTeacherIds.Contains(t.TeacherId)
+                }).ToList();
             }
             else
             {
@@ -215,24 +179,14 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             return Page();
         }
 
+        public async Task<IActionResult> OnGet(int id)
+        {
+            await PopulateMultiSelectsAsync(id);
+            return Page();
+        }
+
         public async Task<IActionResult> OnPost()
         {
-            
-            SelectedTeacherIds = (SelectedTeacherIds != null && SelectedTeacherIds.Count > 0)
-                ? SelectedTeacherIds
-                : (ExaminerSelect?.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList() ?? new List<int>());
-
-            SelectedRoomIds = (SelectedRoomIds != null && SelectedRoomIds.Count > 0)
-                ? SelectedRoomIds
-                : (RoomSelect?.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList() ?? new List<int>());
-
-            SelectedReExamTeacherIds = (SelectedReExamTeacherIds != null && SelectedReExamTeacherIds.Count > 0)
-                ? SelectedReExamTeacherIds
-                : (ReExaminerSelect?.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList() ?? new List<int>());
-
-            SelectedReExamRoomIds = (SelectedReExamRoomIds != null && SelectedReExamRoomIds.Count > 0)
-                ? SelectedReExamRoomIds
-                : (ReRoomSelect?.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList() ?? new List<int>());
 
             // Clear validation for all ReExam fields when not editing/creating a ReExam
             if (!EditReExam)
@@ -276,12 +230,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
             if (!ModelState.IsValid)
             {
-                await PopulateMultiSelectsAsync(Exam.ExamId, Exam.ReExamId,
+                await PopulateMultiSelectsAsync(Exam.ExamId,
                     SelectedTeacherIds,
                     SelectedRoomIds,
                     SelectedReExamTeacherIds,
                     SelectedReExamRoomIds);
-
                 LogModelState("OnPost - after validations");
                 return Page();
             }
@@ -375,7 +328,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"An error occurred while saving the exam: {ex.Message}");
-                await PopulateMultiSelectsAsync(Exam.ExamId, Exam.ReExamId,
+                await PopulateMultiSelectsAsync(Exam.ExamId,
                     SelectedTeacherIds,
                     SelectedRoomIds,
                     SelectedReExamTeacherIds,
