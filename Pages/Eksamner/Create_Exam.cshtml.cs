@@ -159,70 +159,16 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key]?.Errors.Clear();
             }
 
-            if (Exam.ClassId <= 0)
-            {
-                ModelState.AddModelError("Exam.ClassId", "A class must be selected for the exam.");
-            }
-            if (SelectedRoomIds.IsNullOrEmpty())
-            {
-                ModelState.AddModelError("SelectedRoomIds", "A room/place must be selected for the exam.");
-            }
-            ////////////R/////////
-            if (!ExaminerTeacherId.HasValue || ExaminerTeacherId.Value <= 0)
-            {
-                ModelState.AddModelError("ExaminerTeacherId", "A primary examiner must be selected for the exam.");
-            }
-            if (Exam.ExamStartDate == default)
-            {
-                ModelState.AddModelError("Exam.ExamStartDate", "The Exam Start Date is required.");
-            }
-            if (Exam.ExamEndDate == default)
-            {
-                ModelState.AddModelError("Exam.ExamEndDate", "The Exam End Date is required.");
-            }
+            ExamValidationCheck();
 
             Exam.NumOfStud = ClassList.Count();
-
-            if (!string.IsNullOrWhiteSpace(Exam.ExamName) && Exam.ExamName.Length > 30)
-                Exam.ExamName = Exam.ExamName.Substring(0, 30);
-
-            if (string.IsNullOrEmpty(Exam.ExamName))
-                ModelState.AddModelError("Exam.ExamName", "Needs a Title");
-
-            // Validate Exam dates
-            if (Exam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && Exam.ExamStartDate.Value > Exam.ExamEndDate.Value)
-                ModelState.AddModelError("Exam.ExamStartDate", "Exam start date must not be after end date.");
-            if (Exam.DeliveryDate.HasValue && Exam.ExamStartDate.HasValue && Exam.DeliveryDate.Value > Exam.ExamStartDate.Value)
-                ModelState.AddModelError("Exam.DeliveryDate", "Delivery date must not be after start date.");
-
+          
             // Handle ReExam logic if creating
             if (CreateReExam)
             {
                 ReExam.ClassId = Exam.ClassId;
 
-                if (string.IsNullOrWhiteSpace(ReExam.ExamName))
-                    ReExam.ExamName = $"ReEksamen-{Exam.ExamName ?? string.Empty}";
-
-                if (!string.IsNullOrWhiteSpace(ReExam.ExamName) && ReExam.ExamName.Length > 30)
-                    ReExam.ExamName = ReExam.ExamName.Substring(0, 30);
-
-                // Validate ReExam dates
-                if (ReExam.ExamStartDate.HasValue && ReExam.ExamEndDate.HasValue && ReExam.ExamStartDate.Value > ReExam.ExamEndDate.Value)
-                    ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must not be after end date.");
-                if (ReExam.DeliveryDate.HasValue && ReExam.ExamStartDate.HasValue && ReExam.DeliveryDate.Value > ReExam.ExamStartDate.Value)
-                    ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery date must not be after start date.");
-                if (ReExam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && ReExam.ExamStartDate.Value <= Exam.ExamEndDate.Value)
-                    ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must be after main exam end date.");
-                if (ReExam.ExamEndDate.HasValue && Exam.ExamEndDate.HasValue && ReExam.ExamEndDate.Value <= Exam.ExamEndDate.Value)
-                    ModelState.AddModelError("ReExam.ExamEndDate", "ReExam end date must be after main exam end date.");
-                if (ReExam.DeliveryDate.HasValue && Exam.DeliveryDate.HasValue && ReExam.DeliveryDate.Value <= Exam.DeliveryDate.Value)
-                    ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
-
-                if (SelectedReExamTeacherIds.IsNullOrEmpty())
-                    SelectedReExamTeacherIds = SelectedTeacherIds;
-
-                if (SelectedReExamRoomIds.IsNullOrEmpty())
-                    SelectedReExamRoomIds = SelectedRoomIds;
+                ReExamValidationCheck();
 
                 ReExam.IsReExam = true;
 
@@ -234,6 +180,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 Exam.ReExamId = null;
             }
 
+            // Clear specific ModelState errors to re-validate
             foreach (var key in ModelState.Keys.Where(k =>
                 k == "Exam.Class" || k == "ReExam.Class" || k == "ReExam.ExamName"))
             {
@@ -242,85 +189,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     ModelState[key].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
             }
 
-            // Room availability for Exam
-            if (!SelectedRoomIds.IsNullOrEmpty())
-            {
-                foreach (var roomId in SelectedRoomIds.Distinct())
-                {
-                    OverlapResult result = _overlapService.RoomHasOverlap(roomId, Exam.ExamStartDate, Exam.ExamEndDate);
-                    if (result != null && result.HasConflict)
-                    {
-                        ModelState.AddModelError("SelectedRoomIds", result.Message ?? "Something went wrong with Rooms");
-                    }
-                }
-            }
-
-            // Room availability for ReExam
-            if (!SelectedReExamRoomIds.IsNullOrEmpty() && CreateReExam)
-            {
-                foreach (var roomId in SelectedReExamRoomIds.Distinct())
-                {
-                    OverlapResult result = _overlapService.RoomHasOverlap(roomId, ReExam.ExamStartDate, ReExam.ExamEndDate);
-                    if (result != null && result.HasConflict)
-                    {
-                        ModelState.AddModelError("SelectedReExamRoomIds", result.Message ?? "Something went wrong with ReExam Rooms");
-                    }
-                }
-            }
-
-            if (Exam.ClassId > 0)
-            {
-                OverlapResult result = _overlapService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate);
-                if (result != null && result.HasConflict)
-                {
-                    ModelState.AddModelError("Exam.ClassId", result.Message ?? "Something went Wrong");
-                }
-            }
-
-            if (CreateReExam && ReExam.ClassId > 0)
-            {
-                OverlapResult result = _overlapService.ClassHasOverlap(ReExam.ClassId, ReExam.ExamStartDate, ReExam.ExamEndDate);
-                if (result != null && result.HasConflict)
-                {
-                    ModelState.AddModelError("ReExam.ClassId", result.Message ?? "Something went Wrong");
-                }
-            }
-
-            if (!SelectedTeacherIds.IsNullOrEmpty())
-            {
-                foreach (var teacherId in SelectedTeacherIds.Distinct())
-                {
-                    OverlapResult result = _overlapService.TeacherHasOverlap(teacherId,
-                        Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
-                    if (result != null && result.HasConflict)
-                    {
-                        ModelState.AddModelError("SelectedTeacherIds", result.Message ?? "Something went wrong");
-                    }
-                }
-            }
-            ////////R/////////
-            if (ExaminerTeacherId.HasValue)
-            {
-                OverlapResult result = _overlapService.TeacherHasOverlap(ExaminerTeacherId.Value,
-                    Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
-                if (result != null && result.HasConflict)
-                {
-                    ModelState.AddModelError("ExaminerTeacherId", result.Message ?? "Primary examiner has scheduling conflict");
-                }
-            }
-
-            if (!SelectedReExamTeacherIds.IsNullOrEmpty() && CreateReExam)
-            {
-                foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
-                {
-                    OverlapResult result = _overlapService.TeacherHasOverlap(teacherId,
-                        ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.IsFinalExam, ReExam.IsReExam);
-                    if (result != null && result.HasConflict)
-                    {
-                        ModelState.AddModelError("SelectedReExamTeacherIds", result.Message ?? "Something went wrong with ReExam Teachers");
-                    }
-                }
-            }
+            OverlapValidationCheck();
 
             if (!ModelState.IsValid)
             {
@@ -422,6 +291,145 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
         }
 
+        private void OverlapValidationCheck()
+        {
+            // Room availability for Exam
+            if (!SelectedRoomIds.IsNullOrEmpty())
+            {
+                foreach (var roomId in SelectedRoomIds.Distinct())
+                {
+                    OverlapResult result = _overlapService.RoomHasOverlap(roomId, Exam.ExamStartDate, Exam.ExamEndDate);
+                    if (result != null && result.HasConflict)
+                    {
+                        ModelState.AddModelError("SelectedRoomIds", result.Message ?? "Something went wrong with Rooms");
+                    }
+                }
+            }
+
+            // Room availability for ReExam
+            if (!SelectedReExamRoomIds.IsNullOrEmpty() && CreateReExam)
+            {
+                foreach (var roomId in SelectedReExamRoomIds.Distinct())
+                {
+                    OverlapResult result = _overlapService.RoomHasOverlap(roomId, ReExam.ExamStartDate, ReExam.ExamEndDate);
+                    if (result != null && result.HasConflict)
+                    {
+                        ModelState.AddModelError("SelectedReExamRoomIds", result.Message ?? "Something went wrong with ReExam Rooms");
+                    }
+                }
+            }
+
+            if (Exam.ClassId > 0)
+            {
+                OverlapResult result = _overlapService.ClassHasOverlap(Exam.ClassId, Exam.ExamStartDate, Exam.ExamEndDate);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("Exam.ClassId", result.Message ?? "Something went Wrong");
+                }
+            }
+
+            if (CreateReExam && ReExam.ClassId > 0)
+            {
+                OverlapResult result = _overlapService.ClassHasOverlap(ReExam.ClassId, ReExam.ExamStartDate, ReExam.ExamEndDate);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("ReExam.ClassId", result.Message ?? "Something went Wrong");
+                }
+            }
+
+            if (!SelectedTeacherIds.IsNullOrEmpty())
+            {
+                foreach (var teacherId in SelectedTeacherIds.Distinct())
+                {
+                    OverlapResult result = _overlapService.TeacherHasOverlap(teacherId,
+                        Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
+                    if (result != null && result.HasConflict)
+                    {
+                        ModelState.AddModelError("SelectedTeacherIds", result.Message ?? "Something went wrong");
+                    }
+                }
+            }
+            ////////R/////////
+            if (ExaminerTeacherId.HasValue)
+            {
+                OverlapResult result = _overlapService.TeacherHasOverlap(ExaminerTeacherId.Value,
+                    Exam.ExamStartDate, Exam.ExamEndDate, Exam.IsFinalExam, Exam.IsReExam);
+                if (result != null && result.HasConflict)
+                {
+                    ModelState.AddModelError("ExaminerTeacherId", result.Message ?? "Primary examiner has scheduling conflict");
+                }
+            }
+
+            if (!SelectedReExamTeacherIds.IsNullOrEmpty() && CreateReExam)
+            {
+                foreach (var teacherId in SelectedReExamTeacherIds.Distinct())
+                {
+                    OverlapResult result = _overlapService.TeacherHasOverlap(teacherId,
+                        ReExam.ExamStartDate, ReExam.ExamEndDate, ReExam.IsFinalExam, ReExam.IsReExam);
+                    if (result != null && result.HasConflict)
+                    {
+                        ModelState.AddModelError("SelectedReExamTeacherIds", result.Message ?? "Something went wrong with ReExam Teachers");
+                    }
+                }
+            }
+        }
+        private void ExamValidationCheck()
+        {   // check for required fields
+            if (Exam.ClassId <= 0)
+                ModelState.AddModelError("Exam.ClassId", "A class must be selected for the exam.");
+            
+            if (SelectedRoomIds.IsNullOrEmpty())
+                ModelState.AddModelError("SelectedRoomIds", "A room/place must be selected for the exam.");
+            
+            if (!ExaminerTeacherId.HasValue || ExaminerTeacherId.Value <= 0)
+                ModelState.AddModelError("ExaminerTeacherId", "A primary examiner must be selected for the exam.");
+            
+            if (Exam.ExamStartDate == default)
+                ModelState.AddModelError("Exam.ExamStartDate", "The Exam Start Date is required.");
+            
+            if (Exam.ExamEndDate == default)
+                ModelState.AddModelError("Exam.ExamEndDate", "The Exam End Date is required.");
+
+            // Validate Exam name + reformat if too long
+            if (!string.IsNullOrWhiteSpace(Exam.ExamName) && Exam.ExamName.Length > 30)
+                Exam.ExamName = Exam.ExamName.Substring(0, 30);
+
+            if (string.IsNullOrEmpty(Exam.ExamName))
+                ModelState.AddModelError("Exam.ExamName", "Needs a Title");
+
+            // Validate Exam dates overlap
+            if (Exam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && Exam.ExamStartDate.Value > Exam.ExamEndDate.Value)
+                ModelState.AddModelError("Exam.ExamStartDate", "Exam start date must not be after end date.");
+            if (Exam.DeliveryDate.HasValue && Exam.ExamStartDate.HasValue && Exam.DeliveryDate.Value > Exam.ExamStartDate.Value)
+                ModelState.AddModelError("Exam.DeliveryDate", "Delivery date must not be after start date.");
+        }
+        private void ReExamValidationCheck()
+        {
+            if (string.IsNullOrWhiteSpace(ReExam.ExamName))
+                ReExam.ExamName = $"ReEksamen-{Exam.ExamName ?? string.Empty}";
+
+            if (!string.IsNullOrWhiteSpace(ReExam.ExamName) && ReExam.ExamName.Length > 30)
+                ReExam.ExamName = ReExam.ExamName.Substring(0, 30);
+
+            // Validate ReExam dates
+            if (ReExam.ExamStartDate.HasValue && ReExam.ExamEndDate.HasValue && ReExam.ExamStartDate.Value > ReExam.ExamEndDate.Value)
+                ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must not be after end date.");
+            if (ReExam.DeliveryDate.HasValue && ReExam.ExamStartDate.HasValue && ReExam.DeliveryDate.Value > ReExam.ExamStartDate.Value)
+                ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery date must not be after start date.");
+            if (ReExam.ExamStartDate.HasValue && Exam.ExamEndDate.HasValue && ReExam.ExamStartDate.Value <= Exam.ExamEndDate.Value)
+                ModelState.AddModelError("ReExam.ExamStartDate", "ReExam start date must be after main exam end date.");
+            if (ReExam.ExamEndDate.HasValue && Exam.ExamEndDate.HasValue && ReExam.ExamEndDate.Value <= Exam.ExamEndDate.Value)
+                ModelState.AddModelError("ReExam.ExamEndDate", "ReExam end date must be after main exam end date.");
+            if (ReExam.DeliveryDate.HasValue && Exam.DeliveryDate.HasValue && ReExam.DeliveryDate.Value <= Exam.DeliveryDate.Value)
+                ModelState.AddModelError("ReExam.DeliveryDate", "ReExam delivery must be after main exam delivery date.");
+
+            if (SelectedReExamTeacherIds.IsNullOrEmpty())
+                SelectedReExamTeacherIds = SelectedTeacherIds;
+
+            if (SelectedReExamRoomIds.IsNullOrEmpty())
+                SelectedReExamRoomIds = SelectedRoomIds;
+
+        }
         private void LogModelState(string place)
         {
             Console.WriteLine();
