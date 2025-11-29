@@ -102,17 +102,29 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             {
                 query = query.Where(e => e.TeachersToExams.Any(t => t.TeacherId == ef.FilterByExaminerId.Value && t.Role == "Examiner"));
             }
-            if (ef.FilterByStartDate.HasValue)
+            // Adjusted date filtering to ensure ExamStartDate and ExamEndDate are not null
+            if (ef.FilterByStartDate.HasValue && ef.FilterByEndDate.HasValue)
             {
+                // Both dates provided - filter by range
+                var startDate = ef.FilterByStartDate.Value;
+                var endDate = ef.FilterByEndDate.Value;
+                query = query.Where(e => e.ExamStartDate.HasValue &&
+                         e.ExamStartDate.Value >= startDate &&
+                         e.ExamStartDate.Value <= endDate);
+            }
+            else if (ef.FilterByStartDate.HasValue)
+            {
+                // Only start date provided - filter from start date onward
                 var startDate = ef.FilterByStartDate.Value;
                 query = query.Where(e => e.ExamStartDate.HasValue &&
-                 e.ExamStartDate.Value >= startDate);
+                         e.ExamStartDate.Value >= startDate);
             }
-            if (ef.FilterByEndDate.HasValue)
+            else if (ef.FilterByEndDate.HasValue)
             {
+                // Only end date provided - filter up to end date
                 var endDate = ef.FilterByEndDate.Value;
-                query = query.Where(e => e.ExamEndDate.HasValue &&
-                e.ExamEndDate.Value <= endDate);
+                query = query.Where(e => e.ExamStartDate.HasValue &&
+                         e.ExamStartDate.Value <= endDate);
             }
 
             return query;
