@@ -4,7 +4,6 @@ using _2._Sem_Project_Eksamen_System.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Tokens;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
@@ -190,11 +189,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public async Task<IActionResult> OnPost()
         {
-            await PopulateMultiSelectsAsync(Exam.ExamId,
-                    SelectedTeacherIds,
-                    SelectedRoomIds,
-                    SelectedReExamTeacherIds,
-                    SelectedReExamRoomIds);
 
             // Clear validation for all ReExam fields when not editing/creating a ReExam
             if (!EditReExam)
@@ -252,7 +246,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // ---- Persistence logic ----
             // Save or update ReExam
             try
-            {
+            { 
                 if (EditReExam)
                 {
                     if (!HasReExam)
