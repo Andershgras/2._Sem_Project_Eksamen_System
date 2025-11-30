@@ -95,6 +95,17 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (Exam == null)
                 return RedirectToPage("GetEksamner");
 
+            if (HasReExam)
+            {
+                ReExam = await _service.GetItemByIdAsync(Exam.ReExamId.Value);
+                EditReExam = true;
+            }
+            else // Create new ReExam instance for binding
+            {
+                ReExam = new Exam();
+            }
+            
+
             var teachers = (await _teacherService.GetAllAsync()).ToList();
             var rooms = (await _roomService.GetAllAsync()).ToList();
 
@@ -137,46 +148,38 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 IsSelected = SelectedRoomIds.Contains(r.RoomId)
             }).ToList();
 
-            if (HasReExam)
+
+            if (ReExam.TeachersToExams != null && ReExam.TeachersToExams.Count > 0)
             {
-                ReExam = await _service.GetItemByIdAsync(Exam.ReExamId.Value);
-                EditReExam = true;
-
-                if (ReExam.TeachersToExams != null && ReExam.TeachersToExams.Count > 0)
-                {
-                    if (postedSelectedReExamTeacherIds != null) // if user has posted selected reexam teachers, use those
-                        SelectedReExamTeacherIds = postedSelectedReExamTeacherIds.ToList();
-                    else // otherwise, load from database
-                        SelectedReExamTeacherIds = ReExam.TeachersToExams.Where(t => t.Role == "Examiner").Select(t => t.TeacherId).ToList();
-                }
-
-                if (ReExam.RoomsToExams != null && ReExam.RoomsToExams.Count > 0)
-                {
-                    if (postedSelectedReExamRoomIds != null) // if user has posted selected reexam rooms, use those
-                        SelectedReExamRoomIds = postedSelectedReExamRoomIds.ToList();
-                    else // otherwise, load from database
-                        SelectedReExamRoomIds = ReExam.RoomsToExams.Select(x => x.RoomId).ToList();
-                }
-
-                ReRoomSelect = rooms.Select(r => new GenericMultySelect // Populate ReRoomSelect
-                {
-                    SelectValue = r.RoomId,
-                    SelectText = r.Name ?? string.Empty,
-                    IsSelected = SelectedReExamRoomIds.Contains(r.RoomId)
-                }).ToList();
-
-                ReExaminerSelect = teachers.Select(t => new GenericMultySelect // Populate ReExaminerSelect
-                {
-                    SelectValue = t.TeacherId,
-                    SelectText = t.TeacherName ?? string.Empty,
-                    IsSelected = SelectedReExamTeacherIds.Contains(t.TeacherId)
-                }).ToList();
+                if (postedSelectedReExamTeacherIds != null) // if user has posted selected reexam teachers, use those
+                    SelectedReExamTeacherIds = postedSelectedReExamTeacherIds.ToList();
+                else // otherwise, load from database
+                    SelectedReExamTeacherIds = ReExam.TeachersToExams.Where(t => t.Role == "Examiner").Select(t => t.TeacherId).ToList();
             }
-            else
+
+            if (ReExam.RoomsToExams != null && ReExam.RoomsToExams.Count > 0)
             {
-                ReExam = new Exam();
+                if (postedSelectedReExamRoomIds != null) // if user has posted selected reexam rooms, use those
+                    SelectedReExamRoomIds = postedSelectedReExamRoomIds.ToList();
+                else // otherwise, load from database
+                    SelectedReExamRoomIds = ReExam.RoomsToExams.Select(x => x.RoomId).ToList();
             }
-            return Page();
+
+            ReRoomSelect = rooms.Select(r => new GenericMultySelect // Populate ReRoomSelect
+            {
+                SelectValue = r.RoomId,
+                SelectText = r.Name ?? string.Empty,
+                IsSelected = SelectedReExamRoomIds.Contains(r.RoomId)
+            }).ToList();
+
+            ReExaminerSelect = teachers.Select(t => new GenericMultySelect // Populate ReExaminerSelect
+            {
+                SelectValue = t.TeacherId,
+                SelectText = t.TeacherName ?? string.Empty,
+                IsSelected = SelectedReExamTeacherIds.Contains(t.TeacherId)
+            }).ToList();
+
+           return Page();
         }
 
         public async Task<IActionResult> OnGet(int id)
@@ -187,6 +190,11 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public async Task<IActionResult> OnPost()
         {
+            await PopulateMultiSelectsAsync(Exam.ExamId,
+                    SelectedTeacherIds,
+                    SelectedRoomIds,
+                    SelectedReExamTeacherIds,
+                    SelectedReExamRoomIds);
 
             // Clear validation for all ReExam fields when not editing/creating a ReExam
             if (!EditReExam)
@@ -200,6 +208,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             // Edit/Update ReExam logic and validations
             if (EditReExam)
             {
+
                 ReExam.ClassId = Exam.ClassId;
 
                 ReExamValidationChecks();
@@ -337,7 +346,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 return Page();
             }
         }
-        
+
         private void ExamValidationChecks()
         {
             if (!string.IsNullOrWhiteSpace(Exam.ExamName) && Exam.ExamName.Length > 30)
@@ -375,7 +384,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 SelectedReExamRoomIds = SelectedRoomIds;
 
         }
-
         private void OverlapValidation()
         {
             // Teacher validation
@@ -510,6 +518,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 Console.WriteLine();
             }
         }
+
     }
 }
         
