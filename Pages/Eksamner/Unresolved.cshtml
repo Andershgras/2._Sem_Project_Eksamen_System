@@ -15,7 +15,11 @@
             !e.ExamStartDate.HasValue ||
             !e.ExamEndDate.HasValue ||
             e.ClassId == null ||
+            // No Examiner
             !e.TeachersToExams.Any(te => te.Role == "Examiner") ||
+            // No Censor (any teacher whose role contains "Censor")
+            !e.TeachersToExams.Any(te => te.Role != null && te.Role.Contains("ensor")) ||
+            // No Room
             !e.RoomsToExams.Any())
         .OrderBy(e => e.ExamStartDate)
         .ToListAsync();
@@ -23,6 +27,12 @@
 
 <h2>Unresolved Exams</h2>
 <p class="text-muted">Exams with missing information</p>
+
+<div class="mb-3">
+    <a asp-page="/Eksamner/GetEksamner" class="btn btn-outline-secondary btn-sm">
+        ← Back to all exams
+    </a>
+</div>
 
 @if (!unresolvedExams.Any())
 {
@@ -43,6 +53,10 @@ else
         <tbody>
             @foreach (var exam in unresolvedExams)
             {
+                var hasExaminer = exam.TeachersToExams.Any(te => te.Role == "Examiner");
+                var hasCensor = exam.TeachersToExams.Any(te => te.Role != null && te.Role.Contains("ensor"));
+                var hasRoom = exam.RoomsToExams.Any();
+
                 <tr>
                     <td>
                         <strong>@(exam.ExamName ?? "Unnamed")</strong><br />
@@ -53,23 +67,38 @@ else
                         }
                     </td>
                     <td>
+                        @* Name *@
                         @if (string.IsNullOrEmpty(exam.ExamName))
                         {
                             <span class="badge bg-danger">No name</span>
                         }
+
+                        @* Dates *@
                         @if (!exam.ExamStartDate.HasValue || !exam.ExamEndDate.HasValue)
                         {
                             <span class="badge bg-danger">No dates</span>
                         }
+
+                        @* Class *@
                         @if (exam.ClassId == null)
                         {
                             <span class="badge bg-danger">No class</span>
                         }
-                        @if (!exam.TeachersToExams.Any(te => te.Role == "Examiner"))
+
+                        @* Examiner *@
+                        @if (!hasExaminer)
                         {
                             <span class="badge bg-warning text-dark">No examiner</span>
                         }
-                        @if (!exam.RoomsToExams.Any())
+
+                        @* Censor *@
+                        @if (!hasCensor)
+                        {
+                            <span class="badge bg-warning text-dark">No censor</span>
+                        }
+
+                        @* Room *@
+                        @if (!hasRoom)
                         {
                             <span class="badge bg-warning text-dark">No room</span>
                         }
