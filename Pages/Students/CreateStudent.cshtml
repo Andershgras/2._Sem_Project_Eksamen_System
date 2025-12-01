@@ -34,14 +34,19 @@
                             <!-- Student Name -->
                             <div class="form-group">
                                 <label asp-for="Student.StudentName" class="form-label">Full Name *</label>
-                                <input asp-for="Student.StudentName" class="form-control compact-input" placeholder="Enter student's full name" />
+                                <input asp-for="Student.StudentName"
+                                       class="form-control compact-input"
+                                       placeholder="Enter student's full name"
+                                       pattern="[A-Za-z\s]+"
+                                       title="Please enter only letters and spaces"
+                                       required />
                                 <span asp-validation-for="Student.StudentName" class="text-danger"></span>
                             </div>
 
                             <!--  Student Email -->
                             <div class="form-group">
                                 <label asp-for="Student.Email" class="form-label">Email *</label>
-                                <input asp-for="Student.Email" class="form-control compact-input" placeholder="student@email.com" />
+                                <input asp-for="Student.Email" type="email" class="form-control compact-input" placeholder="student@email.com" />
                                 <span asp-validation-for="Student.Email" class="text-danger"></span>
                             </div>
                         </div>
@@ -148,12 +153,6 @@
             border-color: #0066cc;
             box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
         }
-
-    .compact-input {
-        height: 36px;
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-    }
 
     /* ==============================================
               SECTION 5: FORM HELP TEXT
