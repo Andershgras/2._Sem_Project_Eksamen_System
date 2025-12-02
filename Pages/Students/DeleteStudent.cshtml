@@ -3,15 +3,13 @@
 @{
     ViewData["Title"] = "Delete Student";
 }
-
 <div class="page-body">
     <div class="dashboard-container">
         <div class="welcome-card">
             <h1>Delete Student</h1>
             <p>Remove student from the system</p>
         </div>
-
-        <!-- DELETE CONFIRMATION SECTION -->
+                <!-- ///DELETE CONFIRMATION SECTION -->
         <div class="section-card">
             <div class="section-header">
                 <h2>Confirm Deletion</h2>
@@ -21,7 +19,7 @@
             </div>
 
             <div class="delete-container">
-                <!-- WARNING ALERT -->
+                <!-- ////WARNING ALERT -->
                 <div class="alert-card alert-warning">
                     <div class="alert-icon">⚠️</div>
                     <div class="alert-content">
@@ -30,7 +28,7 @@
                     </div>
                 </div>
 
-                <!-- STUDENT INFORMATION CARD -->
+                <!-- ////STUDENT INFORMATION CARD -->
                 <div class="info-card">
                     <div class="info-card-header">
                         <h3>Student Information</h3>
@@ -80,7 +78,7 @@
                     </div>
                 </div>
 
-                <!-- DELETE FORM -->
+                <!--/// DELETE FORM -->
                 <form method="post">
                     <input type="hidden" asp-for="Student.StudentId" />
 
