@@ -28,10 +28,8 @@
 
         public int? ConflictingRoomId { get; set; }
 
-        // Convenience factory for no-conflict
+        // Creates an OverlapResult indicating no conflict
         public static OverlapResult Ok() => new OverlapResult { HasConflict = false };
 
-        // Convenience factory for conflict
-        public static OverlapResult Conflict(string message) => new OverlapResult { HasConflict = true, Message = message };
     }
 }

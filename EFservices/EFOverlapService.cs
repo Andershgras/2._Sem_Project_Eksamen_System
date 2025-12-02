@@ -92,7 +92,6 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             if (roomId <= 0) return OverlapResult.Ok();
             if (!newStart.HasValue || !newEnd.HasValue) return OverlapResult.Ok();
 
-
             var query = _context.RoomsToExams
                .Include(rte => rte.Exam)
                .Where(rte => rte.RoomId == roomId && rte.Exam != null);

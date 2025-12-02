@@ -143,8 +143,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public async Task<IActionResult> OnPost()
         {
-            
-
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
             {
@@ -153,7 +151,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             }
 
             ExamValidationCheck();
-
           
             // Handle ReExam logic if creating
             if (CreateReExam)
@@ -190,6 +187,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                 return Page();
             }
 
+            // persistens logic
             try
             {
                 if (CreateReExam)
