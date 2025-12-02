@@ -143,14 +143,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
 
         public async Task<IActionResult> OnPost()
         {
-            await PopulatePropertiesAsync();
-
-            // Fetch rooms for validation later
-            SelectedTeacherIds = ExaminerSelect.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
-            SelectedRoomIds = RoomSelect.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
-
-            SelectedReExamTeacherIds = ExaminerSelectReExam.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
-            SelectedReExamRoomIds = RoomSelectReExam.Where(x => x.IsSelected).Select(x => x.SelectValue).ToList();
+            
 
             // Clear validation for all ReExam fields when not creating a ReExam
             if (!CreateReExam)
@@ -193,6 +186,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             if (!ModelState.IsValid)
             {
                 LogModelState("Before Try catch");
+                await PopulatePropertiesAsync();
                 return Page();
             }
 
@@ -265,6 +259,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     {
                         ModelState.AddModelError("CensorTeacherId", "The Censor must be different from the Primary Examiner.");
                         LogModelState("In Add Teacher: role Censor to Exam");
+                        await PopulatePropertiesAsync();
                         return Page();
                     }
                     await _teachersToExamsService.AddTeachersToExamsAsync(CensorTeacherId.Value, Exam.ExamId, "Censor");
@@ -286,6 +281,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
             {
                 ModelState.AddModelError("", $"Error creating exam: {ex.Message}");
                 LogModelState("Exeption");
+                await PopulatePropertiesAsync();
                 return Page();
             }
         }
