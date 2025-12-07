@@ -85,7 +85,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
             }
             else
             {
-                //Simple name filter fallback
+                //Simple name filter 
                 var nameFilter = Filter.FilterByName.ToLower();
                 return await _context.Students
                     .Where(s => s.StudentName != null && s.StudentName.ToLower().Contains(nameFilter))
