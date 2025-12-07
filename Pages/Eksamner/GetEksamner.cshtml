@@ -184,7 +184,8 @@
                     <tbody>
                         @if (Model.Eksamner != null && Model.Eksamner.Any())
                         {
-                            foreach (var eksamen in Model.Eksamner)
+                            @*Made dates to be displayed in ordered farm*@
+                            foreach (var eksamen in Model.Eksamner.OrderBy(e => e.ExamStartDate))
                             {
                                 <tr>
                                     <td>@(eksamen.ExamStartDate?.ToString("dd-MM-yy") ?? "")</td>
