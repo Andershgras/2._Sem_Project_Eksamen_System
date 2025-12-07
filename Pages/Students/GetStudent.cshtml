@@ -36,12 +36,17 @@
                                    placeholder="Email..." />
                         </div>
 
+                        @*Added positive digit entry restriction*@
+
                         <div class="form-group">
                             <label for="Filter_FilterById" class="form-label">Student ID</label>
                             <input type="number"
                                    asp-for="Filter.FilterById"
                                    class="form-control compact-input"
-                                   placeholder="ID..." />
+                                   placeholder="Positive digits only — e.g., 1, 2, 3"
+                                   min="1"
+                                   step="1"/>
+                                  
                             <span asp-validation-for="Filter.FilterById" class="text-danger"></span>
                             
                         </div>
@@ -113,7 +118,7 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <!-- $$$$$$ Important Section STUDENT ID COLUMN (HIDDEN VISUALLY) -->
+                            <!--  Important Section STUDENT ID COLUMN (HIDDEN VISUALLY) -->
                             <th class="hidden-column">Student ID</th>
                             <th>Name</th>
                             <th>Email</th>
