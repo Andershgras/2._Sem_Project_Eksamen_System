@@ -28,7 +28,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
         [BindProperty]
         public Exam Exam { get; set; } = new Exam();
         [BindProperty] 
-        public int? ExaminerTeacherId { get; set; }////R/////
+        public int? ExaminerTeacherId { get; set; }
 
         [BindProperty]
         public int? CensorTeacherId { get; set; }
@@ -342,7 +342,6 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Eksamner
                     }
                 }
             }
-            ////////R/////////
             if (ExaminerTeacherId.HasValue)
             {
                 OverlapResult result = _overlapService.TeacherHasOverlap(ExaminerTeacherId.Value,
