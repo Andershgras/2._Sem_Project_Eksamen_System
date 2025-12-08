@@ -49,16 +49,15 @@
                                 <span asp-validation-for="Student.Email" class="text-danger"></span>
                             </div>
                         </div>
-
                         <!-- ////CLASS ASSIGNMENT COLUMN -->
                         <div class="form-column">
-                            <h3 class="form-section-title">Class Assignment</h3>
+                            <h3 class="form-section-title">Class Assignment *</h3>
 
-                            <!-- ///CLASS DROPDOWN -->
+                            <!-- ///CLASS Dropdown -->
                             <div class="form-group">
                                 <label asp-for="SelectedClassId" class="form-label">Assigned Class</label>
-                                <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control compact-input">
-                                    <option value="">Select a class</option>
+                                <select asp-for="SelectedClassId" asp-items="Model.ClassList" class="form-control compact-input" required>
+                                    <option value=""disabled selected>Select a class</option>
                                 </select>
                                 <span asp-validation-for="SelectedClassId" class="text-danger"></span>
                                 <small class="form-help">Select which class the student should be assigned to</small>
