@@ -97,7 +97,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             ClassList.Add(new SelectListItem
             {
                 Value = "",
-                Text = "Vælg en klasse",
+                Text = "Chose a class",
                 Selected = true
             });
 

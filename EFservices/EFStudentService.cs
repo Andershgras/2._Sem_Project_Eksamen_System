@@ -19,6 +19,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
         /// </summary>
         private readonly EksamensDBContext _context;
         // DbContext injection
+        // DbContext is expected to be injected via DI with appropriate lifetime (scoped)
         public EFStudentService(EksamensDBContext dBContext)
         {
             _context = dBContext;
@@ -63,6 +64,7 @@ namespace _2._Sem_Project_Eksamen_System.EFservices
                 }
 
                 // Apply class filter - this is more complex due to the many-to-many relationship
+                // AsNoTracking is Read-only operations to improves performance by not caching entities
                 if (!string.IsNullOrWhiteSpace(extendedFilter.FilterByClass))
                 {
                     query = query.Where(s => s.StudentsToClasses.Any(sc =>

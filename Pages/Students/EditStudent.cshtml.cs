@@ -9,6 +9,11 @@ using _2._Sem_Project_Eksamen_System.Utils;
 
 namespace _2._Sem_Project_Eksamen_System.Pages.Students
 {
+    /// <summary>
+    /// Edit an existing student's information and class assignment.
+    /// 1. Student must have unique name and email (case-insensitive)
+    /// 2. Student can be assigned to only one class at a time
+    /// </summary>
     public class EditStudentModel : PageModel
     {
         private readonly ICRUDAsync<Student> _studentService;
@@ -85,7 +90,7 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
             ClassList.Add(new SelectListItem
             {
                 Value = "",
-                Text = "Vælg en klasse"
+                Text = "Chose a class"
             });
 
             if (classes != null)

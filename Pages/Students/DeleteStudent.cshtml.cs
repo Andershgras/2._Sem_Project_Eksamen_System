@@ -43,12 +43,13 @@ namespace _2._Sem_Project_Eksamen_System.Pages.Students
                 await _studentService.DeleteItemAsync(Student.StudentId);
                 //Here we added Success Message
                 TempData["SuccessMessage"] = "Student is Deleted Successfully.";
+                //TempData is cleared after first read and GetStudent page displays it
                 return RedirectToPage("/Students/GetStudent");
             }
             catch
             {
                 // Handle any errors (e.g., database constraints)
-                ModelState.AddModelError(string.Empty, "Kunne ikke slette studenten. Tjek om studenten har tilknyttede eksaminer.");
+                ModelState.AddModelError(string.Empty, "Cannot delete student. Student has associated exams or classes. Remove associations first.");
                 return Page();
             }
         }
