@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2._Sem_Project_Eksamen_Syst
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2._Sem_Project_Eksamen_SystemTests", "..\2._Sem_Project_Eksamen_SystemTests\2._Sem_Project_Eksamen_SystemTests.csproj", "{E7250EF7-869E-49A5-8489-9C3013463EE3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MainProject", "MainProject", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{2A988369-9A9E-43F2-9C27-2BA74DE16A59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +28,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F44E90B5-BDF1-496C-93F1-C38271F3212B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E7250EF7-869E-49A5-8489-9C3013463EE3} = {2A988369-9A9E-43F2-9C27-2BA74DE16A59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3A7A7E0E-232C-4FFA-A522-71F01C00A044}
